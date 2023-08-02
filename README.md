@@ -1,2 +1,9 @@
-# embedia
-LLM agent framework, high performance, easy to learn, fast to code, ready for production
+# Embedia
+
+We are creating a universal interface for building LLM based Autonomous Agents
+
+- lightweight
+- high performance
+- easy to learn
+- fast to code
+- production ready

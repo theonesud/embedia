@@ -1,6 +1,6 @@
 # Embedia
 
-We are creating a universal interface for building LLM based Autonomous AI Agents
+Universal interface for building LLM based Autonomous AI Agents
 
 - lightweight
 - high performance

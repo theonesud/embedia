@@ -6,7 +6,6 @@ from embedia.chatllm import ChatLLM
 import asyncio
 from io import StringIO
 import sys
-import time
 
 PYTHON_EXPERT_SYSTEM = """You are an expert in writing python code.
 Write one-line commands with inbuilt libraries to solve the user's problems. Reply only with the command and nothing else."""
@@ -50,13 +49,9 @@ class PythonShell(Tool):
         queue = mp.Queue()
         process = mp.Process(target=target_func, args=(queue,))
         process.start()
-        # blocks the main thread for timeout seconds
         process.join(self.timeout)
         if process.is_alive():
             process.kill()
             raise asyncio.TimeoutError
         result = await loop.run_in_executor(None, queue.get)
         return result[0], result[1]
-
-# read a .py file
-# make some changes to the file

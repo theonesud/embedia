@@ -2,7 +2,7 @@ import pytest
 import openai
 from embedia.chatllm import ChatLLM
 from embedia.message import Message
-from embedia.tools.bashshell import BashShell
+from embedia.tools.pythonshell import PythonShell
 from dotenv import load_dotenv
 import os
 import asyncio
@@ -22,26 +22,38 @@ class OpenAIChatLLM(ChatLLM):
 
 
 @pytest.mark.asyncio
-async def test_bash_tool_without_llm():
+async def test_python_tool_without_llm():
 
-    bash_shell = BashShell(timeout=5)
-    output = await bash_shell.run('ls -l')
+    python_shell = PythonShell()
+    output = await python_shell.run('print(x+y+5)', globals={'x': 5}, locals={'y': 10})
     print(output[0])
 
     assert isinstance(output[0], str)
     assert isinstance(output[1], str)
-    assert len(output[0]) > 0
+    assert int(output[0]) == 20
     assert len(output[1]) == 0
 
 
 @pytest.mark.asyncio
-async def test_bash_tool_with_llm(monkeypatch):
-
+async def test_python_tool_with_llm(monkeypatch):
     monkeypatch.setattr('builtins.input', lambda _: 'y')
 
-    bash_shell = BashShell(chatllm=OpenAIChatLLM)
+    python_shell = PythonShell(chatllm=OpenAIChatLLM)
+    output = await python_shell.run('Print the result of adding x, y and 5', globals={'x': 5}, locals={'y': 10})
+    print(output[0])
 
-    output = await bash_shell.run('List all files in this directory')
+    assert isinstance(output[0], str)
+    assert isinstance(output[1], str)
+    assert int(output[0]) == 20
+    assert len(output[1]) == 0
+
+
+@pytest.mark.asyncio
+async def test_python_tool_with_llm_without_verification():
+
+    python_shell = PythonShell(chatllm=OpenAIChatLLM, human_verification=False)
+
+    output = await python_shell.run('Print the result of adding x, y and 5', globals={'x': 5}, locals={'y': 10})
     print(output[0])
 
     assert isinstance(output[0], str)
@@ -51,51 +63,21 @@ async def test_bash_tool_with_llm(monkeypatch):
 
 
 @pytest.mark.asyncio
-async def test_bash_tool_with_llm_without_verification():
-
-    bash_shell = BashShell(chatllm=OpenAIChatLLM, human_verification=False)
-
-    output = await bash_shell.run('List all files in this directory')
-    print(output[0])
-
-    assert isinstance(output[0], str)
-    assert len(output[0]) > 0
-    assert isinstance(output[1], str)
-    assert len(output[1]) == 0
-
-
-@pytest.mark.asyncio
-async def test_bash_tool_timeout():
-
-    bash_shell = BashShell(timeout=1)
-
+async def test_python_tool_timeout():
+    python_shell = PythonShell(timeout=1)
     with pytest.raises(asyncio.TimeoutError):
-        await bash_shell.run('sleep 10')
+        await python_shell.run('import time; time.sleep(10)')
 
 
 @pytest.mark.asyncio
-async def test_bash_tool_incorrect_command():
+async def test_python_tool_incorrect_command():
 
-    bash_shell = BashShell(timeout=1)
+    python_shell = PythonShell()
 
-    output = await bash_shell.run('asdwadawdd')
+    output = await python_shell.run('printsss("Yo")')
     print(output[1])
 
     assert isinstance(output[0], str)
     assert isinstance(output[1], str)
     assert len(output[0]) == 0
     assert len(output[1]) > 0
-
-
-@pytest.mark.asyncio
-async def test_bash_tool_different_shell():
-
-    bash_shell = BashShell(timeout=5, executable='/bin/bash')
-
-    output = await bash_shell.run('ps -p $$')
-    print(output[0])
-
-    assert isinstance(output[0], str)
-    assert isinstance(output[1], str)
-    assert len(output[0]) > 0
-    assert len(output[1]) == 0

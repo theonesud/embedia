@@ -20,12 +20,14 @@ class OpenAIChatLLM(ChatLLM):
         return Message(**completion.choices[0].message)
 
 
-@pytest.mark.asyncio
-async def test_simplify():
-    simplify_expert = Simplify(OpenAIChatLLM)
-    with open("README.md") as f:
-        text = f.read()
-    simplified = await simplify_expert(text)
-    print(simplified)
-    assert isinstance(simplified, str)
-    assert len(simplified) > 0
+# Temporarily disabled to save tokens
+
+# @pytest.mark.asyncio
+# async def test_simplify():
+#     simplify_expert = Simplify(OpenAIChatLLM)
+#     with open("README.md") as f:
+#         text = f.read()
+#     simplified = await simplify_expert(text)
+#     print(simplified)
+#     assert isinstance(simplified, str)
+#     assert len(simplified) > 0

@@ -20,12 +20,14 @@ class OpenAIChatLLM(ChatLLM):
         return Message(**completion.choices[0].message)
 
 
-@pytest.mark.asyncio
-async def test_summarize():
-    summarize_expert = Summarize(OpenAIChatLLM)
-    with open("README.md") as f:
-        text = f.read()
-    summary = await summarize_expert(text)
-    print(summary)
-    assert isinstance(summary, str)
-    assert len(summary) > 0
+# Temporarily disabled to save tokens
+
+# @pytest.mark.asyncio
+# async def test_summarize():
+#     summarize_expert = Summarize(OpenAIChatLLM)
+#     with open("README.md") as f:
+#         text = f.read()
+#     summary = await summarize_expert(text)
+#     print(summary)
+#     assert isinstance(summary, str)
+#     assert len(summary) > 0

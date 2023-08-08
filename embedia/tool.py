@@ -35,10 +35,10 @@ class Tool(ABC):
             f"Run {self.__class__.__name__} with args: {args} and kwargs: {kwargs} (y/n): ")
         if run_function.lower() != 'y':
             raise DeniedByUserException(
-                f'User denied running function: {self.__class__.__name__} with args: {args} \
-                    and kwargs: {kwargs}')
+                f'User denied running function: {self.__class__.__name__} with args: {args} '
+                f'and kwargs: {kwargs}')
 
-    async def run(self, *args, **kwargs):
+    async def __call__(self, *args, **kwargs):
         argspec = inspect.getfullargspec(self._run)
         arg_names = argspec.args
         for arg_name in arg_names:

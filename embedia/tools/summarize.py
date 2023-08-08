@@ -16,8 +16,8 @@ class Summarize(Tool):
 
     def __init__(self, chatllm: Type[ChatLLM]):
         super().__init__(name="Summarize",
-                         desc="Summarize a text with overall summary, important details, \
-                            and conclusions",
+                         desc=("Summarize a text with overall summary, important details, "
+                               "and conclusions"),
                          examples="Hello World!",
                          args="text: str",
                          returns="summary: str",
@@ -25,5 +25,5 @@ class Summarize(Tool):
 
     async def _run(self, text: str):
         summarize_expert = self.chatllm(system_prompt=SUMMARIZE_SYSTEM)
-        command = await summarize_expert.reply(Message(role='user', content=text))
+        command = await summarize_expert(Message(role='user', content=text))
         return command.content

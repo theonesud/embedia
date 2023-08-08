@@ -25,7 +25,7 @@ class OpenAIChatLLM(ChatLLM):
 async def test_python_tool_without_llm():
 
     python_shell = PythonShell()
-    output = await python_shell.run('print(x+y+5)', globals={'x': 5}, locals={'y': 10})
+    output = await python_shell('print(x+y+5)', globals={'x': 5}, locals={'y': 10})
     print(output[0])
 
     assert isinstance(output[0], str)
@@ -39,8 +39,8 @@ async def test_python_tool_with_llm(monkeypatch):
     monkeypatch.setattr('builtins.input', lambda _: 'y')
 
     python_shell = PythonShellChat(chatllm=OpenAIChatLLM)
-    output = await python_shell.run('Print the result of adding x, y and 5',
-                                    globals={'x': 5}, locals={'y': 10})
+    output = await python_shell('Print the result of adding x, y and 5',
+                                globals={'x': 5}, locals={'y': 10})
     print(output[0])
 
     assert isinstance(output[0], str)
@@ -54,8 +54,8 @@ async def test_python_tool_with_llm_without_verification():
 
     python_shell = PythonShellChat(chatllm=OpenAIChatLLM, human_verification=False)
 
-    output = await python_shell.run('Print the result of adding x, y and 5',
-                                    globals={'x': 5}, locals={'y': 10})
+    output = await python_shell('Print the result of adding x, y and 5',
+                                globals={'x': 5}, locals={'y': 10})
     print(output[0])
 
     assert isinstance(output[0], str)
@@ -68,7 +68,7 @@ async def test_python_tool_with_llm_without_verification():
 async def test_python_tool_timeout():
     python_shell = PythonShell(timeout=1)
     with pytest.raises(asyncio.TimeoutError):
-        await python_shell.run('import time; time.sleep(10)')
+        await python_shell('import time; time.sleep(10)')
 
 
 @pytest.mark.asyncio
@@ -76,7 +76,7 @@ async def test_python_tool_incorrect_command():
 
     python_shell = PythonShell()
 
-    output = await python_shell.run('printsss("Yo")')
+    output = await python_shell('printsss("Yo")')
     print(output[1])
 
     assert isinstance(output[0], str)

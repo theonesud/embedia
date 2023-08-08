@@ -27,8 +27,8 @@ async def test_pandas_llm():
     llm = OpenAILLM()
 
     prompt = Prompt(template=PANDAS_EXPERT_LLM, context={
-                    'query': 'I want to extract all the pincodes in the column "address" \
-                        and create another column "pincode"'})
+                    'query': ('I want to extract all the pincodes in the column "address" '
+                              'and create another column "pincode"')})
 
     message = await llm.complete(prompt.to_str())
     assert isinstance(message, str)

@@ -25,7 +25,7 @@ async def test_simplify():
     simplify_expert = Simplify(OpenAIChatLLM)
     with open("README.md") as f:
         text = f.read()
-    simplified = await simplify_expert.run(text)
+    simplified = await simplify_expert(text)
     print(simplified)
     assert isinstance(simplified, str)
     assert len(simplified) > 0

@@ -19,5 +19,5 @@ class Simplify(Tool):
 
     async def _run(self, text: str):
         simplify_expert = self.chatllm(system_prompt=SIMPLIFY_SYSTEM)
-        command = await simplify_expert.reply(Message(role='user', content=text))
+        command = await simplify_expert(Message(role='user', content=text))
         return command.content

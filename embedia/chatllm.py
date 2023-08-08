@@ -19,7 +19,7 @@ class ChatLLM(ABC):
         with open(filepath, 'rb') as f:
             self.chat_history = pickle.load(f)
 
-    async def reply(self, message: Message) -> Message:
+    async def __call__(self, message: Message) -> Message:
         self.chat_history.append(message)
         if self.llm:
             prompt = ''

@@ -60,15 +60,15 @@ class PythonShellChat(Tool):
 
     async def _run(self, command: str, globals: dict = {}, locals: dict = {}):
         python_expert = self.chatllm(system_prompt=PYTHON_EXPERT_SYSTEM)
-        prompt = f"query: {command}, global variables available: {globals}, \
-            local variables available: {locals}"
-        command = await python_expert.reply(Message(role='user', content=prompt))
+        prompt = (f"query: {command}, global variables available: {globals}, "
+                  f"local variables available: {locals}")
+        command = await python_expert(Message(role='user', content=prompt))
         command = command.content
 
         if self.human_verification:
             self.confirm_before_running(command=command, globals=globals, locals=locals)
 
         python_shell = PythonShell(timeout=self.timeout)
-        out, err = await python_shell.run(command=command, globals=globals, locals=locals)
+        out, err = await python_shell(command=command, globals=globals, locals=locals)
 
         return out, err

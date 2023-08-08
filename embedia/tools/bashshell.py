@@ -49,12 +49,12 @@ class BashShellChat(Tool):
     async def _run(self, command: str):
         shell_expert = self.chatllm(
             system_prompt=SHELL_EXPERT_SYSTEM.format(executable=self.executable))
-        command = await shell_expert.reply(Message(role='user', content=command))
+        command = await shell_expert(Message(role='user', content=command))
         command = command.content
         if self.human_verification:
             self.confirm_before_running(command=command)
 
         bash_shell = BashShell(executable=self.executable, timeout=self.timeout)
-        out, err = await bash_shell.run(command=command)
+        out, err = await bash_shell(command=command)
 
         return out, err

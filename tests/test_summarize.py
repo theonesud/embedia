@@ -25,7 +25,7 @@ async def test_summarize():
     summarize_expert = Summarize(OpenAIChatLLM)
     with open("README.md") as f:
         text = f.read()
-    summary = await summarize_expert.run(text)
+    summary = await summarize_expert(text)
     print(summary)
     assert isinstance(summary, str)
     assert len(summary) > 0

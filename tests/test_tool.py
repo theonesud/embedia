@@ -74,7 +74,7 @@ class IncorrectLLMBashShell(Tool):
         if self.chatllm:
             shell_expert = self.chatllm(
                 system_prompt=SHELL_EXPERT_SYSTEM.format(executable=self.executable))
-            command = await shell_expert.reply(Message(role='user', content=command))
+            command = await shell_expert(Message(role='user', content=command))
             command = command.content
 
         self.confirm_before_running(command=command)
@@ -120,7 +120,7 @@ async def test_user_denied(monkeypatch):
 
     bash_shell = BashShell()
     with pytest.raises(DeniedByUserException):
-        await bash_shell.run('ls -l')
+        await bash_shell('ls -l')
 
 
 @pytest.mark.asyncio
@@ -128,7 +128,7 @@ async def test_incorrect_docsting():
 
     bash_shell = IncorrectDocstingBashShell()
     with pytest.raises(ValueError):
-        await bash_shell.run('ls -l')
+        await bash_shell('ls -l')
 
 
 @pytest.mark.asyncio

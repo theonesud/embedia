@@ -39,7 +39,8 @@ async def test_python_tool_with_llm(monkeypatch):
     monkeypatch.setattr('builtins.input', lambda _: 'y')
 
     python_shell = PythonShellChat(chatllm=OpenAIChatLLM)
-    output = await python_shell.run('Print the result of adding x, y and 5', globals={'x': 5}, locals={'y': 10})
+    output = await python_shell.run('Print the result of adding x, y and 5',
+                                    globals={'x': 5}, locals={'y': 10})
     print(output[0])
 
     assert isinstance(output[0], str)
@@ -53,7 +54,8 @@ async def test_python_tool_with_llm_without_verification():
 
     python_shell = PythonShellChat(chatllm=OpenAIChatLLM, human_verification=False)
 
-    output = await python_shell.run('Print the result of adding x, y and 5', globals={'x': 5}, locals={'y': 10})
+    output = await python_shell.run('Print the result of adding x, y and 5',
+                                    globals={'x': 5}, locals={'y': 10})
     print(output[0])
 
     assert isinstance(output[0], str)

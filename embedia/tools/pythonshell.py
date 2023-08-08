@@ -1,6 +1,6 @@
 import multiprocessing as mp
 from embedia.tool import Tool
-from typing import Optional, Type
+from typing import Type
 from embedia.message import Message
 from embedia.chatllm import ChatLLM
 import asyncio
@@ -8,7 +8,8 @@ from io import StringIO
 import sys
 
 PYTHON_EXPERT_SYSTEM = """You are an expert in writing python code.
-Write one-line commands with inbuilt libraries to solve the user's problems. Reply only with the command and nothing else."""
+Write one-line commands with inbuilt libraries to solve the user's problems.
+Reply only with the command and nothing else."""
 
 
 class PythonShell(Tool):
@@ -59,7 +60,8 @@ class PythonShellChat(Tool):
 
     async def _run(self, command: str, globals: dict = {}, locals: dict = {}):
         python_expert = self.chatllm(system_prompt=PYTHON_EXPERT_SYSTEM)
-        prompt = f"query: {command}, global variables available: {globals}, local variables available: {locals}"
+        prompt = f"query: {command}, global variables available: {globals}, \
+            local variables available: {locals}"
         command = await python_expert.reply(Message(role='user', content=prompt))
         command = command.content
 

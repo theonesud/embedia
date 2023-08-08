@@ -1,12 +1,13 @@
 from embedia.tool import Tool
-from typing import Optional, Type
+from typing import Type
 from embedia.message import Message
 from embedia.chatllm import ChatLLM
 import subprocess
 import asyncio
 
 SHELL_EXPERT_SYSTEM = """You are an expert in writing commands for the {executable} shell.
-Write one-line commands with inbuilt libraries to solve the user's problems. Reply only with the command and nothing else."""
+Write one-line commands with inbuilt libraries to solve the user's problems.
+Reply only with the command and nothing else."""
 
 
 class BashShell(Tool):
@@ -37,7 +38,7 @@ class BashShellChat(Tool):
                  executable='/bin/sh', timeout=60, human_verification=True):
         super().__init__(name="Bash LLM",
                          desc="Convert natural language input into bash commands and run it",
-                         examples="List all files in the current directory, Print the current directory",
+                         examples="List all files in current directory, Print current directory",
                          args="command: str",
                          returns="output: str",
                          chatllm=chatllm)

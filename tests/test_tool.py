@@ -10,7 +10,8 @@ import openai
 import os
 
 SHELL_EXPERT_SYSTEM = """You are an expert in writing commands for the {executable} shell.
-Write one-line commands with inbuilt libraries to solve the user's problems. Reply only with the command and nothing else."""
+Write one-line commands with inbuilt libraries to solve the user's problems.
+Reply only with the command and nothing else."""
 
 
 class BashShell(Tool):

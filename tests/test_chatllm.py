@@ -55,16 +55,21 @@ class ExtraArgsOpenAIChatLLM(ChatLLM):
 async def test_not_implemented_error_chatllm():
     openai_chatllm = EmptyOpenAIChatLLM(PANDAS_EXPERT_SYSTEM)
     with pytest.raises(NotImplementedError):
-        await openai_chatllm.reply(Message(role='user', content='I want to extract all the pincodes in the column "address" and create another column "pincode"'))
+        await openai_chatllm.reply(Message(role='user', content='I want to extract all the \
+                                           pincodes in the column "address" and create \
+                                           another column "pincode"'))
 
 
 @pytest.mark.asyncio
 async def test_pandas_chatllm():
     openai_chatllm = OpenAIChatLLM(PANDAS_EXPERT_SYSTEM)
 
-    await openai_chatllm.reply(Message(role='user', content='I want to extract all the pincodes in the column "address" and create another column "pincode"'))
+    await openai_chatllm.reply(Message(role='user', content='I want to extract all the \
+                                       pincodes in the column "address" and create \
+                                       another column "pincode"'))
 
-    await openai_chatllm.reply(Message(role='user', content='In the above command, append "No" before each pincode'))
+    await openai_chatllm.reply(Message(role='user', content='In the above command,\
+                                        append "No" before each pincode'))
 
     openai_chatllm.save_chat('temp/openai_chatllm.pkl')
     openai_chatllm.load_chat('temp/openai_chatllm.pkl')
@@ -81,7 +86,9 @@ async def test_pandas_without_msg_chatllm():
     openai_chatllm = WithoutMessageOpenAIChatLLM(PANDAS_EXPERT_SYSTEM)
 
     with pytest.raises(ValueError):
-        await openai_chatllm.reply(Message(role='user', content='I want to extract all the pincodes in the column "address" and create another column "pincode"'))
+        await openai_chatllm.reply(Message(role='user', content='I want to extract all the\
+                                            pincodes in the column "address" and create \
+                                           another column "pincode"'))
 
 
 @pytest.mark.asyncio
@@ -89,4 +96,6 @@ async def test_pandas_extra_args_chatllm():
     openai_chatllm = ExtraArgsOpenAIChatLLM(PANDAS_EXPERT_SYSTEM)
 
     with pytest.raises(ValueError):
-        await openai_chatllm.reply(Message(role='user', content='I want to extract all the pincodes in the column "address" and create another column "pincode"'))
+        await openai_chatllm.reply(Message(role='user', content='I want to extract all the \
+                                           pincodes in the column "address" and create \
+                                           another column "pincode"'))

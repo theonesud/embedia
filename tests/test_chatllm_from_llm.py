@@ -29,9 +29,11 @@ async def test_llm_to_chatllm():
     openai_llm = OpenAILLM()
     openai_chatllm = ChatLLM.from_llm(openai_llm, PANDAS_EXPERT_SYSTEM)
 
-    await openai_chatllm.reply(Message(role='user', content='I want to extract all the pincodes in the column "address" and create another column "pincode"'))
+    await openai_chatllm.reply(Message(role='user', content='I want to extract all the pincodes in \
+                                       the column "address" and create another column "pincode"'))
 
-    await openai_chatllm.reply(Message(role='user', content='In the above command, append "No" before each pincode'))
+    await openai_chatllm.reply(Message(role='user', content='In the above command, append "No" \
+                                       before each pincode'))
 
     openai_chatllm.save_chat('temp/openai_chatllm.pkl')
     openai_chatllm.load_chat('temp/openai_chatllm.pkl')

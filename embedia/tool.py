@@ -14,8 +14,12 @@ class Tool(ABC):
     def __init__(self, name: str, desc: str, examples: str,
                  args: Optional[str] = None, returns: Optional[str] = None,
                  chatllm: Optional[Type[ChatLLM]] = None):
-        if chatllm is not None and not issubclass(chatllm, ChatLLM):
+        try:
+            if chatllm is not None and not issubclass(chatllm, ChatLLM):
+                raise TypeError("chatllm must be a subclass of ChatLLM")
+        except TypeError:
             raise TypeError("chatllm must be a subclass of ChatLLM")
+
         self.chatllm = chatllm
         self.args = args
         self.docstring = (f"Name: {name}\n"

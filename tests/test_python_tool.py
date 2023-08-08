@@ -2,7 +2,7 @@ import pytest
 import openai
 from embedia.chatllm import ChatLLM
 from embedia.message import Message
-from embedia.tools.pythonshell import PythonShell
+from embedia.tools.pythonshell import PythonShell, PythonShellChat
 from dotenv import load_dotenv
 import os
 import asyncio
@@ -38,7 +38,7 @@ async def test_python_tool_without_llm():
 async def test_python_tool_with_llm(monkeypatch):
     monkeypatch.setattr('builtins.input', lambda _: 'y')
 
-    python_shell = PythonShell(chatllm=OpenAIChatLLM)
+    python_shell = PythonShellChat(chatllm=OpenAIChatLLM)
     output = await python_shell.run('Print the result of adding x, y and 5', globals={'x': 5}, locals={'y': 10})
     print(output[0])
 
@@ -51,7 +51,7 @@ async def test_python_tool_with_llm(monkeypatch):
 @pytest.mark.asyncio
 async def test_python_tool_with_llm_without_verification():
 
-    python_shell = PythonShell(chatllm=OpenAIChatLLM, human_verification=False)
+    python_shell = PythonShellChat(chatllm=OpenAIChatLLM, human_verification=False)
 
     output = await python_shell.run('Print the result of adding x, y and 5', globals={'x': 5}, locals={'y': 10})
     print(output[0])

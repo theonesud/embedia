@@ -43,11 +43,6 @@ class ChatLLM(ABC):
     def from_llm(cls, llm: LLM, system_prompt: str):
         instance = cls(system_prompt)
         instance.llm = llm
-
-        async def _reply(self):
-            pass
-
-        instance._reply = _reply
         return instance
 
     async def _reply(self, message: Message) -> Message:

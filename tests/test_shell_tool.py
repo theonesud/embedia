@@ -2,7 +2,7 @@ import pytest
 import openai
 from embedia.chatllm import ChatLLM
 from embedia.message import Message
-from embedia.tools.bashshell import BashShell
+from embedia.tools.bashshell import BashShell, BashShellChat
 from dotenv import load_dotenv
 import os
 import asyncio
@@ -39,7 +39,7 @@ async def test_bash_tool_with_llm(monkeypatch):
 
     monkeypatch.setattr('builtins.input', lambda _: 'y')
 
-    bash_shell = BashShell(chatllm=OpenAIChatLLM)
+    bash_shell = BashShellChat(chatllm=OpenAIChatLLM)
 
     output = await bash_shell.run('List all files in this directory')
     print(output[0])
@@ -53,7 +53,7 @@ async def test_bash_tool_with_llm(monkeypatch):
 @pytest.mark.asyncio
 async def test_bash_tool_with_llm_without_verification():
 
-    bash_shell = BashShell(chatllm=OpenAIChatLLM, human_verification=False)
+    bash_shell = BashShellChat(chatllm=OpenAIChatLLM, human_verification=False)
 
     output = await bash_shell.run('List all files in this directory')
     print(output[0])

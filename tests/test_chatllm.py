@@ -5,6 +5,7 @@ from embedia.message import Message
 from dotenv import load_dotenv
 import os
 load_dotenv()
+os.makedirs('temp', exist_ok=True)
 
 PANDAS_EXPERT_SYSTEM = """You are an expert in writing commands for the python pandas library.
 Write one-line commands to solve the user's problems"""
@@ -65,8 +66,8 @@ async def test_pandas_chatllm():
 
     await openai_chatllm.reply(Message(role='user', content='In the above command, append "No" before each pincode'))
 
-    openai_chatllm.save_chat('tests/openai_chatllm.pkl')
-    openai_chatllm.load_chat('tests/openai_chatllm.pkl')
+    openai_chatllm.save_chat('temp/openai_chatllm.pkl')
+    openai_chatllm.load_chat('temp/openai_chatllm.pkl')
 
     for message in openai_chatllm.chat_history:
         assert isinstance(message, Message)

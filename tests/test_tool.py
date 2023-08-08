@@ -131,7 +131,7 @@ async def test_incorrect_docsting():
 
 
 @pytest.mark.asyncio
-async def test_incorrect_llm(monkeypatch):
+async def test_incorrect_llm():
 
     with pytest.raises(TypeError):
         IncorrectLLMBashShell(chatllm=OpenAILLM)

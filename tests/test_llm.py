@@ -11,7 +11,7 @@ Write a one-line command to solve the following problem: {query}. Command:"""
 
 
 class OpenAILLM(LLM):
-    async def complete(self, prompt: str) -> str:
+    async def _complete(self, prompt: str) -> str:
         openai.api_key = os.getenv("OPENAI_API_KEY")
         completion = await openai.Completion.acreate(
             model="text-davinci-003",
@@ -30,7 +30,7 @@ async def test_pandas_llm():
                     'query': ('I want to extract all the pincodes in the column "address" '
                               'and create another column "pincode"')})
 
-    message = await llm.complete(prompt.to_str())
+    message = await llm(prompt.to_str())
     assert isinstance(message, str)
     assert len(message) > 0
     print(message)

@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
 
 
-class LLM(ABC):
+class Tokenizer(ABC):
 
     @abstractmethod
-    async def _complete(self):
+    async def _tokenize(self):
         pass
 
     async def __call__(self, *args, **kwargs):
-        return await self._complete(*args, **kwargs)
+        return await self._tokenize(*args, **kwargs)

@@ -26,7 +26,7 @@ class ChatLLM(ABC):
             for message in self.chat_history:
                 prompt += "{}: {}\n".format(message.role, message.content)
             prompt += "assistant: "
-            reply = await self.llm.complete(prompt)
+            reply = await self.llm(prompt)
             reply = Message(role='assistant', content=reply)
         else:
             argspec = inspect.getfullargspec(self._reply)

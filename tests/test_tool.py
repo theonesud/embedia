@@ -90,7 +90,7 @@ class IncorrectLLMBashShell(Tool):
 
 
 class OpenAILLM(LLM):
-    async def complete(self, prompt: str) -> str:
+    async def _complete(self, prompt: str) -> str:
         openai.api_key = os.getenv("OPENAI_API_KEY")
         completion = await openai.Completion.acreate(
             model="text-davinci-003",

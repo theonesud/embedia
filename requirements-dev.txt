@@ -5,3 +5,4 @@ pytest-asyncio
 python-dotenv
 
 openai
+tiktoken

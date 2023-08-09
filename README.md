@@ -5,7 +5,7 @@
 
 ---
 <br>
-<i><b>Embedia is what Langchain should have been.</b></i>
+<i><b>Embedia is what Langchain, Llamaindex and AutoGPT should have been.</b></i>
 
 - It lets you create LLM (think ChatGPT) powered Autonomous AI Agents that are ready for a production release
 - We created a universal API interface so you can connect any LLM, Tool, DB to it

@@ -17,7 +17,7 @@ class OpenAILLM(LLM):
             model="text-davinci-003",
             prompt=prompt,
             max_tokens=500,
-            temperature=0,
+            temperature=0.1,
         )
         return completion.choices[0].text
 

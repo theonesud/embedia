@@ -10,6 +10,7 @@ in the following format:
 -Overall summary of the content
 -Important details from the content
 -Any conclusions derived from the content"""
+# TODO: Write better arg docs
 
 
 class Summarize(Tool):
@@ -18,9 +19,7 @@ class Summarize(Tool):
         super().__init__(name="Summarize",
                          desc=("Summarize a text with overall summary, important details, "
                                "and conclusions"),
-                         examples="Hello World!",
                          args="text: str",
-                         returns="summary: str",
                          chatllm=chatllm)
 
     async def _run(self, text: str):

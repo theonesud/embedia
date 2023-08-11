@@ -14,6 +14,16 @@ Write one-line commands with inbuilt libraries to solve the user's problems.
 Reply only with the command and nothing else."""
 
 
+class PassTool(Tool):
+    def __init__(self):
+        super().__init__(name="Pass Tool",
+                         desc="Doesnt do anything",
+                         examples="")
+
+    async def _run(self):
+        pass
+
+
 class BashShell(Tool):
     def __init__(self, executable='/bin/sh', timeout=60):
         super().__init__(name="Bash Shell",
@@ -96,7 +106,7 @@ class OpenAILLM(LLM):
             model="text-davinci-003",
             prompt=prompt,
             max_tokens=500,
-            temperature=0,
+            temperature=0.1,
         )
         return completion.choices[0].text
 
@@ -106,7 +116,7 @@ class OpenAIChatLLM(ChatLLM):
         openai.api_key = os.getenv("OPENAI_API_KEY")
         completion = await openai.ChatCompletion.acreate(
             model="gpt-3.5-turbo",
-            temperature=0,
+            temperature=0.1,
             max_tokens=500,
             messages=[message.to_json() for message in self.chat_history],
         )
@@ -139,3 +149,10 @@ async def test_incorrect_llm():
 
     with pytest.raises(TypeError):
         IncorrectLLMBashShell(chatllm=OpenAIChatLLM())
+
+
+@pytest.mark.asyncio
+async def test_pass_tool():
+
+    passtool = PassTool()
+    await passtool()

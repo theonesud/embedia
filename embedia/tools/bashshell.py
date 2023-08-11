@@ -6,8 +6,11 @@ import subprocess
 import asyncio
 
 SHELL_EXPERT_SYSTEM = """You are an expert in writing commands for the {executable} shell.
-Write one-line commands with inbuilt libraries to solve the user's problems.
+Write one-line commands with inbuilt libraries to answer the user's question.
 Reply only with the command and nothing else."""
+# TODO: Remove one-line commands restriction
+# TODO: Write better arg docs
+# TODO: Restrict to one output str variable
 
 
 class BashShell(Tool):
@@ -15,9 +18,7 @@ class BashShell(Tool):
     def __init__(self, executable='/bin/sh', timeout=60):
         super().__init__(name="Bash Shell",
                          desc="Run bash commands",
-                         examples="ls -l, pwd",
-                         args="command: str",
-                         returns="output: str")
+                         args="command: str")
         self.executable = executable
         self.timeout = timeout
 
@@ -38,18 +39,16 @@ class BashShellChat(Tool):
                  executable='/bin/sh', timeout=60, human_verification=True):
         super().__init__(name="Bash LLM",
                          desc="Convert natural language input into bash commands and run it",
-                         examples="List all files in current directory, Print current directory",
-                         args="command: str",
-                         returns="output: str",
+                         args="question: str",
                          chatllm=chatllm)
         self.executable = executable
         self.timeout = timeout
         self.human_verification = human_verification
 
-    async def _run(self, command: str):
+    async def _run(self, question: str):
         shell_expert = self.chatllm(
             system_prompt=SHELL_EXPERT_SYSTEM.format(executable=self.executable))
-        command = await shell_expert(Message(role='user', content=command))
+        command = await shell_expert(Message(role='user', content=question))
         command = command.content
         if self.human_verification:
             self.confirm_before_running(command=command)

@@ -2,15 +2,15 @@ from embedia.tool import Tool
 import aiohttp
 from typing import Optional
 import json
+# TODO: Write better arg docs
+# TODO: Restrict to one output str variable
 
 
 class HTTPGet(Tool):
     def __init__(self):
         super().__init__(name="HTTP Get",
                          desc="Make a HTTP GET request",
-                         examples="https://www.google.com",
-                         args="url: str, headers: Optional[dict] = None",
-                         returns="response: str, status: int")
+                         args="url: str, headers: Optional[dict] = None")
 
     async def _run(self, url: str, headers: Optional[dict] = None):
         async with aiohttp.ClientSession() as session:
@@ -22,9 +22,7 @@ class HTTPPost(Tool):
     def __init__(self):
         super().__init__(name="HTTP Post",
                          desc="Make a HTTP POST request",
-                         examples="https://www.google.com",
-                         args="url: str, data: dict, headers: Optional[dict] = None",
-                         returns="response: str, status: int")
+                         args="url: str, data: dict, headers: Optional[dict] = None")
 
     async def _run(self, url: str, data: dict, headers: Optional[dict] = None):
         async with aiohttp.ClientSession() as session:
@@ -36,9 +34,7 @@ class HTTPPut(Tool):
     def __init__(self):
         super().__init__(name="HTTP Put",
                          desc="Make a HTTP PUT request",
-                         examples="https://www.google.com",
-                         args="url: str, data: dict, headers: Optional[dict] = None",
-                         returns="response: str, status: int")
+                         args="url: str, data: dict, headers: Optional[dict] = None")
 
     async def _run(self, url: str, data: dict, headers: Optional[dict] = None):
         async with aiohttp.ClientSession() as session:
@@ -50,9 +46,7 @@ class HTTPDelete(Tool):
     def __init__(self):
         super().__init__(name="HTTP Delete",
                          desc="Make a HTTP DELETE request",
-                         examples="https://www.google.com",
-                         args="url: str, headers: Optional[dict] = None",
-                         returns="response: str, status: int")
+                         args="url: str, headers: Optional[dict] = None")
 
     async def _run(self, url: str, headers: Optional[dict] = None):
         async with aiohttp.ClientSession() as session:
@@ -64,9 +58,7 @@ class HTTPPatch(Tool):
     def __init__(self):
         super().__init__(name="HTTP Patch",
                          desc="Make a HTTP PATCH request",
-                         examples="https://www.google.com",
-                         args="url: str, data: dict, headers: Optional[dict] = None",
-                         returns="response: str, status: int")
+                         args="url: str, data: dict, headers: Optional[dict] = None")
 
     async def _run(self, url: str, data: dict, headers: Optional[dict] = None):
         async with aiohttp.ClientSession() as session:

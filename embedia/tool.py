@@ -12,19 +12,14 @@ class DeniedByUserException(Exception):
 
 class Tool(ABC):
 
-    def __init__(self, name: str, desc: str, examples: str,
-                 args: Optional[str] = None, returns: Optional[str] = None,
+    def __init__(self, name: str, desc: str,
+                 args: Optional[str] = None,
                  chatllm: Optional[Type[ChatLLM]] = None):
         enforce_class_type(chatllm, ChatLLM)
         self.chatllm = chatllm
+        self.name = name
+        self.desc = desc
         self.args = args
-        self.docstring = (f"Name: {name}\n"
-                          f"Description: {desc}\n"
-                          f"Examples: {examples}\n")
-        if args:
-            self.docstring += f"Args: {args}\n"
-        if returns:
-            self.docstring += f"Returns: {returns}\n"
 
     def confirm_before_running(self, *args, **kwargs):
         run_function = input(
@@ -41,10 +36,12 @@ class Tool(ABC):
             if arg_name == 'self':
                 continue
             if arg_name not in self.args:
+                # TODO: Do better checking of args docs as per agent.py
                 raise ValueError(f"Argument: {arg_name} not found in args docsting: {self.args}")
 
         logging.info(f"Running {self.__class__.__name__} with args: {args} and kwargs: {kwargs}")
         output = await self._run(*args, **kwargs)
+        # TODO: Restrict to one output str variable
         logging.info(f"Finished running {self.__class__.__name__} with output: {output}")
         return output
 

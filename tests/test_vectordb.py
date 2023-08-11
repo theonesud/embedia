@@ -74,11 +74,3 @@ async def test_create_embedding():
     assert results['metadatas'] == [[{'lorem': 'ipsum'}]]
     similarity_score = distance_to_similarity(results['distances'][0][0], 'l2')
     print(similarity_score)
-
-
-# TODO:
-# Add MMR to the similarity search
-# Add embedding as optional field to TextDoc
-# Make every string use TextDoc
-# Add Tokenizer to ChatLLM for preventing max_input_tokens
-# Add graph db classes

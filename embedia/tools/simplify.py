@@ -5,6 +5,7 @@ from embedia.message import Message
 
 
 SIMPLIFY_SYSTEM = """Summarize content you are provided with for a second-grade student."""
+# TODO: Write better arg docs
 
 
 class Simplify(Tool):
@@ -12,9 +13,7 @@ class Simplify(Tool):
     def __init__(self, chatllm: Type[ChatLLM]):
         super().__init__(name="Simplify",
                          desc="Simplify a text for a second-grade student",
-                         examples="Hello World!",
                          args="text: str",
-                         returns="summary: str",
                          chatllm=chatllm)
 
     async def _run(self, text: str):

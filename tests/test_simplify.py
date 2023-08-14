@@ -1,8 +1,7 @@
-from embedia.tools.simplify import Simplify
+from embedia.tools import Simplify
 import pytest
 import openai
-from embedia.chatllm import ChatLLM
-from embedia.message import Message
+from embedia import ChatLLM, Message
 from dotenv import load_dotenv
 import os
 load_dotenv()
@@ -28,6 +27,5 @@ class OpenAIChatLLM(ChatLLM):
 #     with open("README.md") as f:
 #         text = f.read()
 #     simplified = await simplify_expert(text)
-#     print(simplified)
-#     assert isinstance(simplified, str)
-#     assert len(simplified) > 0
+#     assert isinstance(simplified[0], str)
+#     assert len(simplified[0]) > 0

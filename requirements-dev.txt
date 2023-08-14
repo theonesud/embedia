@@ -3,6 +3,8 @@ autopep8
 pytest
 pytest-asyncio
 python-dotenv
+mypy
+isort
 
 openai
 tiktoken

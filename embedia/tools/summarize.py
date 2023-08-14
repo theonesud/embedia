@@ -1,7 +1,6 @@
-from embedia.tool import Tool
+from embedia import Tool
 from typing import Type
-from embedia.chatllm import ChatLLM
-from embedia.message import Message
+from embedia import ChatLLM, Message
 
 
 SUMMARIZE_SYSTEM = """You will be provided with some content, and your task is to summarize it
@@ -10,7 +9,6 @@ in the following format:
 -Overall summary of the content
 -Important details from the content
 -Any conclusions derived from the content"""
-# TODO: Write better arg docs
 
 
 class Summarize(Tool):
@@ -19,10 +17,10 @@ class Summarize(Tool):
         super().__init__(name="Summarize",
                          desc=("Summarize a text with overall summary, important details, "
                                "and conclusions"),
-                         args="text: str",
+                         args={"text": "The text to be summarized"},
                          chatllm=chatllm)
 
     async def _run(self, text: str):
         summarize_expert = self.chatllm(system_prompt=SUMMARIZE_SYSTEM)
         command = await summarize_expert(Message(role='user', content=text))
-        return command.content
+        return command.content, 0

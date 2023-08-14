@@ -1,5 +1,5 @@
 import pytest
-from embedia.textdoc import TextDoc
+from embedia import TextDoc
 
 
 @pytest.mark.asyncio

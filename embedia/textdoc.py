@@ -31,7 +31,7 @@ class TextDoc(BaseModel):
                 content = content.strip()
             result.append(TextDoc(name=self.name, description=self.description,
                           contents=content, src=self.src, parent_id=self.id,
-                          parent_segment_number=idx+1))
+                          parent_segment_number=idx + 1))
         return result
 
     def extract_regex(self, pattern: str) -> list:

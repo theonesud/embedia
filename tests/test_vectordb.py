@@ -1,20 +1,18 @@
 import pytest
 import openai
 import tiktoken
-from embedia.vectordb import VectorDB, EmbeddingModel
-from embedia.tokenizer import Tokenizer
+from embedia import VectorDB, EmbeddingModel, Tokenizer
 import os
 from embedia.utils.vectordb import distance_to_similarity
 from tenacity import retry, wait_random_exponential, stop_after_attempt, retry_if_not_exception_type
 import chromadb
-import numpy as np
 from dotenv import load_dotenv
 load_dotenv()
 os.makedirs('temp/chromadb', exist_ok=True)
 
 text = """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu arcu risus. Proin sed fringilla tellus. Donec scelerisque elit sed sapien bibendum rutrum. Morbi blandit justo in urna semper volutpat. Nunc consectetur ex vitae consequat blandit. Duis sit amet metus quis mi molestie bibendum rutrum et ante. Nam aliquam metus magna, eget porta lacus dictum sit amet. Morbi dictum tellus a semper tristique. Duis ipsum ex, pharetra non rhoncus in, gravida quis magna. Nam pretium enim non lectus efficitur, sit amet sagittis elit finibus. Vivamus varius ligula turpis, sit amet vehicula mi eleifend eget. Cras dignissim mauris eu feugiat euismod. Integer dapibus dolor eu nulla euismod finibus. """
 
-complete_text = text*50
+complete_text = text * 50
 
 
 class GPTTokenizer(Tokenizer):
@@ -73,4 +71,4 @@ async def test_create_embedding():
     assert results['documents'] == [[complete_text]]
     assert results['metadatas'] == [[{'lorem': 'ipsum'}]]
     similarity_score = distance_to_similarity(results['distances'][0][0], 'l2')
-    print(similarity_score)
+    assert similarity_score > 0.8

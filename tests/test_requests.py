@@ -1,4 +1,4 @@
-from embedia.tools.requests import HTTPGet, HTTPPost, HTTPPut, HTTPDelete, HTTPPatch
+from embedia.tools import HTTPGet, HTTPPost, HTTPPut, HTTPDelete, HTTPPatch
 import pytest
 
 
@@ -8,12 +8,12 @@ async def test_http_get():
     response = await http_get("https://jsonplaceholder.typicode.com/posts/1")
     assert isinstance(response[0], str)
     assert len(response[0]) > 2
-    assert response[1] == 200
+    assert response[1] == 0
 
     response = await http_get("https://jsonplaceholder.typicode.com/postzzs/1")
     assert isinstance(response[0], str)
     assert len(response[0]) == 2
-    assert response[1] == 404
+    assert response[1] == 0
 
 
 @pytest.mark.asyncio
@@ -24,7 +24,7 @@ async def test_http_post():
                                {"Content-type": "application/json; charset=UTF-8"})
     assert isinstance(response[0], str)
     assert len(response[0]) > 2
-    assert response[1] == 201
+    assert response[1] == 0
 
 
 @pytest.mark.asyncio
@@ -35,7 +35,7 @@ async def test_http_put():
                               {"Content-type": "application/json; charset=UTF-8"})
     assert isinstance(response[0], str)
     assert len(response[0]) > 2
-    assert response[1] == 200
+    assert response[1] == 0
 
 
 @pytest.mark.asyncio
@@ -46,7 +46,7 @@ async def test_http_patch():
                                 {"Content-type": "application/json; charset=UTF-8"})
     assert isinstance(response[0], str)
     assert len(response[0]) > 2
-    assert response[1] == 200
+    assert response[1] == 0
 
 
 @pytest.mark.asyncio
@@ -55,4 +55,4 @@ async def test_http_delete():
     response = await http_delete("https://jsonplaceholder.typicode.com/posts/1")
     assert isinstance(response[0], str)
     assert len(response[0]) == 2
-    assert response[1] == 200
+    assert response[1] == 0

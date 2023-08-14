@@ -1,8 +1,7 @@
-from embedia.tools.summarize import Summarize
+from embedia.tools import Summarize
 import pytest
 import openai
-from embedia.chatllm import ChatLLM
-from embedia.message import Message
+from embedia import ChatLLM, Message
 from dotenv import load_dotenv
 import os
 load_dotenv()
@@ -28,6 +27,5 @@ class OpenAIChatLLM(ChatLLM):
 #     with open("README.md") as f:
 #         text = f.read()
 #     summary = await summarize_expert(text)
-#     print(summary)
-#     assert isinstance(summary, str)
-#     assert len(summary) > 0
+#     assert isinstance(summary[0], str)
+#     assert len(summary[0]) > 0

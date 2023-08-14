@@ -1,13 +1,12 @@
 import pytest
 import openai
-from embedia.llm import LLM
-from embedia.prompt import Prompt
+from embedia import LLM
 from dotenv import load_dotenv
 import os
 load_dotenv()
 
 PANDAS_EXPERT_LLM = """You are an expert in writing commands for the python pandas library.
-Write a one-line command to solve the following problem: {query}. Command:"""
+Write commands to solve the following problem: {query}. Command:"""
 
 
 class OpenAILLM(LLM):
@@ -25,12 +24,9 @@ class OpenAILLM(LLM):
 @pytest.mark.asyncio
 async def test_pandas_llm():
     llm = OpenAILLM()
-
-    prompt = Prompt(template=PANDAS_EXPERT_LLM, context={
-                    'query': ('I want to extract all the pincodes in the column "address" '
-                              'and create another column "pincode"')})
-
-    message = await llm(prompt.to_str())
+    prompt = PANDAS_EXPERT_LLM.format(
+        query=('I want to extract all the pincodes in the '
+               'column "address" and create another column "pincode"'))
+    message = await llm(prompt)
     assert isinstance(message, str)
     assert len(message) > 0
-    print(message)

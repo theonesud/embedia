@@ -1,12 +1,8 @@
-from embedia.tools.pythonshell import PythonShell, PythonShellChat
-from embedia.tools.bashshell import BashShell, BashShellChat
-from embedia.agent import Agent
-from embedia.chatllm import ChatLLM
-from embedia.message import Message
+from embedia.tools import PythonShell, PythonShellChat, BashShell, BashShellChat
+from embedia import Agent, ChatLLM, Message
 from dotenv import load_dotenv
 import os
 import openai
-import asyncio
 import pytest
 load_dotenv()
 
@@ -20,7 +16,8 @@ class OpenAIChatLLM(ChatLLM):
             max_tokens=500,
             messages=[message.to_json() for message in self.chat_history],
         )
-        return Message(**completion.choices[0].message)
+        msg = Message(**completion.choices[0].message)
+        return msg
 
 
 @pytest.mark.asyncio
@@ -31,5 +28,4 @@ async def test_agent():
     # bash_shell = BashShell()
     agent = Agent(chatllm=OpenAIChatLLM, tools=[python_shell_chat])
     # print(agent.agent.chat_history)
-    resp = await agent('How many lines of code are there in the current directory?')
-    # print(resp)
+    resp = await agent('How many lines of code are there in the ~/embedia?')

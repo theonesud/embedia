@@ -1,14 +1,12 @@
 from abc import ABC, abstractmethod
-from embedia.tokenizer import Tokenizer
+from embedia import Tokenizer
 from typing import List
-from embedia.utils.typechecking import enforce_class_type
 import numpy as np
 import logging
 
 
 class EmbeddingModel(ABC):
     def __init__(self, max_input_tokens: int, tokenizer: Tokenizer):
-        # enforce_class_type(tokenizer, Tokenizer)
         self.max_input_tokens = max_input_tokens
         self.tokenizer = tokenizer
 
@@ -22,7 +20,7 @@ class EmbeddingModel(ABC):
             logging.warning("Input text is too long. It will be split into chunks.")
             tokens_split = []
             for j in range(0, len(tokens), self.max_input_tokens):
-                tokens_split.append(tokens[j:j+self.max_input_tokens])
+                tokens_split.append(tokens[j:j + self.max_input_tokens])
             embeddings = []
             lengths = []
             for chunk in tokens_split:

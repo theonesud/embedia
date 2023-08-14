@@ -1,16 +1,12 @@
 from embedia.tool import Tool
 from typing import Type
-from embedia.message import Message
-from embedia.chatllm import ChatLLM
+from embedia import Message, ChatLLM
 import subprocess
 import asyncio
 
 SHELL_EXPERT_SYSTEM = """You are an expert in writing commands for the {executable} shell.
 Write one-line commands with inbuilt libraries to answer the user's question.
 Reply only with the command and nothing else."""
-# TODO: Remove one-line commands restriction
-# TODO: Write better arg docs
-# TODO: Restrict to one output str variable
 
 
 class BashShell(Tool):
@@ -18,7 +14,7 @@ class BashShell(Tool):
     def __init__(self, executable='/bin/sh', timeout=60):
         super().__init__(name="Bash Shell",
                          desc="Run bash commands",
-                         args="command: str")
+                         args={"command": "The bash command to be run"})
         self.executable = executable
         self.timeout = timeout
 
@@ -30,7 +26,10 @@ class BashShell(Tool):
         except asyncio.TimeoutError:
             process.kill()
             raise
-        return stdout.decode(), stderr.decode()
+        if process.returncode != 0:
+            return stderr.decode(), 1
+        else:
+            return stdout.decode(), 0
 
 
 class BashShellChat(Tool):
@@ -39,7 +38,7 @@ class BashShellChat(Tool):
                  executable='/bin/sh', timeout=60, human_verification=True):
         super().__init__(name="Bash LLM",
                          desc="Convert natural language input into bash commands and run it",
-                         args="question: str",
+                         args={"question": "natural language question that can be answered by running a bash command"},
                          chatllm=chatllm)
         self.executable = executable
         self.timeout = timeout
@@ -54,6 +53,6 @@ class BashShellChat(Tool):
             self.confirm_before_running(command=command)
 
         bash_shell = BashShell(executable=self.executable, timeout=self.timeout)
-        out, err = await bash_shell(command=command)
+        out, exit_code = await bash_shell(command=command)
 
-        return out, err
+        return out, exit_code

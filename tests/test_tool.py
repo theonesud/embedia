@@ -1,9 +1,6 @@
 from embedia.tool import DeniedByUserException
 import pytest
-from embedia.tool import Tool
-from embedia.message import Message
-from embedia.chatllm import ChatLLM
-from embedia.llm import LLM
+from embedia import Tool, Message, ChatLLM, LLM
 from typing import Optional, Type
 import subprocess
 import openai
@@ -17,20 +14,17 @@ Reply only with the command and nothing else."""
 class PassTool(Tool):
     def __init__(self):
         super().__init__(name="Pass Tool",
-                         desc="Doesnt do anything",
-                         examples="")
+                         desc="Doesnt do anything")
 
     async def _run(self):
-        pass
+        return None, 0
 
 
 class BashShell(Tool):
     def __init__(self, executable='/bin/sh', timeout=60):
         super().__init__(name="Bash Shell",
                          desc="Run bash commands",
-                         examples="ls -l, pwd",
-                         args="command: str",
-                         returns="output: str")
+                         args={"command": "The bash command to be run"})
         self.executable = executable
         self.timeout = timeout
 
@@ -40,19 +34,16 @@ class BashShell(Tool):
             command, executable=self.executable, shell=True, capture_output=True,
             text=True, timeout=self.timeout)
         if completed_process.returncode != 0:
-            output = completed_process.stderr
+            return completed_process.stderr, 1
         else:
-            output = completed_process.stdout
-        return output
+            return completed_process.stdout, 0
 
 
 class IncorrectDocstingBashShell(Tool):
     def __init__(self, executable='/bin/sh', timeout=60):
         super().__init__(name="Bash Shell",
                          desc="Run bash commands",
-                         examples="ls -l, pwd",
-                         args="query: str",
-                         returns="output: str")
+                         args={"query": "The bash command to be run"})
         self.executable = executable
         self.timeout = timeout
 
@@ -62,10 +53,9 @@ class IncorrectDocstingBashShell(Tool):
             command, executable=self.executable, shell=True, capture_output=True,
             text=True, timeout=self.timeout)
         if completed_process.returncode != 0:
-            output = completed_process.stderr
+            return completed_process.stderr, 1
         else:
-            output = completed_process.stdout
-        return output
+            return completed_process.stdout, 0
 
 
 class IncorrectLLMBashShell(Tool):
@@ -73,9 +63,7 @@ class IncorrectLLMBashShell(Tool):
     def __init__(self, chatllm: Optional[Type[ChatLLM]] = None, executable='/bin/sh', timeout=60):
         super().__init__(name="Bash Shell",
                          desc="Run bash commands",
-                         examples="ls -l, pwd",
-                         args="command: str",
-                         returns="output: str",
+                         args={"command": "The bash command to be run"},
                          chatllm=chatllm)
         self.executable = executable
         self.timeout = timeout
@@ -93,10 +81,9 @@ class IncorrectLLMBashShell(Tool):
             command, executable=self.executable, shell=True, capture_output=True,
             text=True, timeout=self.timeout)
         if completed_process.returncode != 0:
-            output = completed_process.stderr
+            return completed_process.stderr, 1
         else:
-            output = completed_process.stdout
-        return output
+            return completed_process.stdout, 0
 
 
 class OpenAILLM(LLM):

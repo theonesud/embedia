@@ -1,5 +1,5 @@
 import tiktoken
-from embedia.tokenizer import Tokenizer
+from embedia import Tokenizer
 import pytest
 
 
@@ -23,4 +23,3 @@ async def test_tokenizer():
     tokens = await tokenizer(text)
     assert len(text.split()) == 107
     assert len(tokens) == 192
-    print(tokens)

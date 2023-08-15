@@ -6,7 +6,7 @@ import logging
 
 
 class EmbeddingModel(ABC):
-    def __init__(self, max_input_tokens: int, tokenizer: Tokenizer):
+    def __init__(self, max_input_tokens: int, tokenizer: Tokenizer) -> None:
         self.max_input_tokens = max_input_tokens
         self.tokenizer = tokenizer
 

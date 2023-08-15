@@ -1,5 +1,5 @@
 from embedia.tool import Tool
-from typing import Type, List, Optional
+from typing import Type, List, Optional, Tuple, Any
 from embedia.chatllm import ChatLLM
 from embedia.message import Message
 from embedia.scratchpad import ScratchpadEntry
@@ -31,7 +31,7 @@ Do not reply with anything else.
 
 class Agent(Tool):
     def __init__(self, chatllm: Type[ChatLLM], tools: Optional[List[Tool]] = None,
-                 max_steps: int = 2, max_time: int = 60):
+                 max_steps: int = 2, max_time: int = 60) -> None:
         super().__init__(name="Agent",
                          desc="Use the available tools to solve problems",
                          args={'question': 'The input question from the user'},
@@ -44,7 +44,7 @@ class Agent(Tool):
         if len(self.tools) == 0:
             raise ValueError('No tools provided to Agent, Should Act as a ChatLLM?')
 
-    async def _choose_tool(self, question):
+    async def _choose_tool(self, question: str) -> Tool:
         available_tools = "\n".join([f"{tool.name}: {tool.desc}" for tool in self.tools])
         prompt = (f"Question: {question}\n\n"
                   f"Tools:\n{available_tools}")
@@ -59,7 +59,7 @@ class Agent(Tool):
             raise ValueError(f"Agent's tool choice: {tool_choice} could not be found")
         return tool_choice
 
-    async def _choose_args(self, question, tool_choice):
+    async def _choose_args(self, question: str, tool_choice: Tool) -> dict:
         arg_docs = ''
         for arg_key, arg_desc in tool_choice.args.items():
             arg_docs += f"{arg_key}: {arg_desc}\n"
@@ -94,7 +94,7 @@ class Agent(Tool):
                 kwargs[arg_name] = arg_choice_dict[arg_name]
         return kwargs
 
-    async def _run(self, question: str):
+    async def _run(self, question: str) -> Tuple[Any, int]:
         steps = 1
         now = time.time()
         while steps <= self.max_steps and time.time() - now <= self.max_time:

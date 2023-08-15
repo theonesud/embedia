@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Optional, Type
+from typing import Optional, Type, Tuple, Any
 from embedia import ChatLLM
 import inspect
 from embedia.utils.pubsub import publish_event
@@ -55,7 +55,7 @@ class Tool(ABC):
         self.desc = desc
         self.args = args
 
-    def confirm_before_running(self, *args, **kwargs):
+    def confirm_before_running(self, *args, **kwargs) -> None:
         """Asks for human confirmation.
 
         Arguments:
@@ -74,7 +74,7 @@ class Tool(ABC):
                 f'User denied running function: {self.__class__.__name__} with args: {args} '
                 f'and kwargs: {kwargs}')
 
-    async def __call__(self, *args, **kwargs):
+    async def __call__(self, *args, **kwargs) -> Tuple[Any, int]:
         publish_event('tool_start', data={
                       'name': self.__class__.__name__, 'args': args, 'kwargs': kwargs})
         argspec = inspect.getfullargspec(self._run)

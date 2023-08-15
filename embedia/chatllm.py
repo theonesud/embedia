@@ -42,7 +42,7 @@ class ChatLLM(ABC):
     >>> df['pincode'] = df['address'].str.extract(r'(\\d{6})')
     """
 
-    def __init__(self, system_prompt: str):
+    def __init__(self, system_prompt: str) -> None:
         publish_event('chatllm_init', data={'system_prompt': system_prompt})
         self.chat_history = [Message(role='system', content=system_prompt)]
         self.llm: LLM = None
@@ -104,7 +104,7 @@ class ChatLLM(ABC):
         return reply
 
     @classmethod
-    def from_llm(cls, llm: LLM, system_prompt: str):
+    def from_llm(cls, llm: LLM, system_prompt: str) -> 'ChatLLM':
         """Create a ChatLLM instance from an LLM instance.
 
         Arguments:

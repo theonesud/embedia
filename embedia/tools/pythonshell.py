@@ -1,14 +1,17 @@
-import multiprocessing as mp
-from embedia import Tool, Message, ChatLLM
-from typing import Type
-import asyncio
 import ast
-from io import StringIO
+import asyncio
+import multiprocessing as mp
 from contextlib import redirect_stdout
+from io import StringIO
+from typing import Type
 
-PYTHON_EXPERT_SYSTEM = """You are an expert python programmer.
-Write python code to answer the user's question.
-Reply only with the code and nothing else."""
+from embedia.core.chatllm import ChatLLM
+from embedia.core.tool import Tool
+from embedia.schema.message import Message
+
+# PYTHON_EXPERT_SYSTEM = """You are an expert python programmer.
+# Write python code to answer the user's question.
+# Reply only with the code and nothing else."""
 
 
 class PythonShell(Tool):
@@ -66,28 +69,28 @@ class PythonShell(Tool):
         return result[0], result[1]
 
 
-class PythonShellChat(Tool):
-    def __init__(self, chatllm: Type[ChatLLM],
-                 timeout=60, human_verification=True):
-        super().__init__(name="Python LLM",
-                         desc="Convert natural language input to python code and run it",
-                         args={"question": "natural language question that can be answered by running python code",
-                               "vars": "A python dictionary containing variables to be passed to the code"},
-                         chatllm=chatllm)
-        self.timeout = timeout
-        self.human_verification = human_verification
+# class PythonShellChat(Tool):
+#     def __init__(self, chatllm: Type[ChatLLM],
+#                  timeout=60, human_verification=True):
+#         super().__init__(name="Python LLM",
+#                          desc="Convert natural language input to python code and run it",
+#                          args={"question": "natural language question that can be answered by running python code",
+#                                "vars": "A python dictionary containing variables to be passed to the code"},
+#                          chatllm=chatllm)
+#         self.timeout = timeout
+#         self.human_verification = human_verification
 
-    async def _run(self, question: str, vars: dict = {}):
+#     async def _run(self, question: str, vars: dict = {}):
 
-        python_expert = self.chatllm(system_prompt=PYTHON_EXPERT_SYSTEM)
-        prompt = (f"question: {question}, variables available: {vars}")
-        code = await python_expert(Message(role='user', content=prompt))
-        code = code.content
+#         python_expert = self.chatllm(system_prompt=PYTHON_EXPERT_SYSTEM)
+#         prompt = (f"question: {question}, variables available: {vars}")
+#         code = await python_expert(Message(role='user', content=prompt))
+#         code = code.content
 
-        if self.human_verification:
-            self.confirm_before_running(code=code, vars=vars)
+#         if self.human_verification:
+#             self.confirm_before_running(code=code, vars=vars)
 
-        python_shell = PythonShell(timeout=self.timeout)
-        output, exit_code = await python_shell(code=code, vars=vars)
+#         python_shell = PythonShell(timeout=self.timeout)
+#         output, exit_code = await python_shell(code=code, vars=vars)
 
-        return output, exit_code
+#         return output, exit_code

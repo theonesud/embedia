@@ -1,9 +1,12 @@
-import pytest
 import os
-from embedia.tools import (FileRead, FileWrite, FileAppend, FileDelete, FileFolderMove,
-                           FileFolderExists, FolderSearch, FolderCreate, FolderDelete,
-                           FolderCopy, FolderList, FileCopy)
 import shutil
+
+import pytest
+
+from embedia.tools import (FileAppend, FileCopy, FileDelete, FileFolderExists,
+                           FileFolderMove, FileRead, FileWrite, FolderCopy,
+                           FolderCreate, FolderDelete, FolderList,
+                           FolderSearch)
 
 shutil.rmtree('temp', ignore_errors=True)
 shutil.rmtree('_temp', ignore_errors=True)

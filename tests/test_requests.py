@@ -1,5 +1,6 @@
-from embedia.tools import HTTPGet, HTTPPost, HTTPPut, HTTPDelete, HTTPPatch
 import pytest
+
+from embedia.tools import HTTPDelete, HTTPGet, HTTPPatch, HTTPPost, HTTPPut
 
 
 @pytest.mark.asyncio

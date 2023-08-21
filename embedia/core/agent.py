@@ -1,10 +1,11 @@
-from embedia.tool import Tool
-from typing import Type, List, Optional, Tuple, Any
-from embedia.chatllm import ChatLLM
-from embedia.message import Message
-from embedia.scratchpad import ScratchpadEntry
-import time
 import inspect
+import time
+from typing import Any, List, Optional, Tuple, Type
+
+from embedia.core.chatllm import ChatLLM
+from embedia.core.tool import Tool
+from embedia.schema.message import Message
+from embedia.schema.scratchpad import ScratchpadEntry
 
 TOOL_CHOOSER = """You're an expert in choosing the best tool for answering the user's question.
 The list of tools and their descriptions will be provided to you.
@@ -27,6 +28,20 @@ If not, reply with the first plan of action that comes to you in the following f
 Thought: <next step>
 Do not reply with anything else.
 """
+
+# make it a configure your own agent loop scenario
+# add system2 thnking
+# thinking=Slow (System 2 thinking)
+# - ask for all required context
+# - plan entire project with expected results for each step
+# - prioratize things from the above plan
+# - human verification (add / remove / move steps from the plan)
+# thinking=Fast (System 1 thinking)
+# - next action's plan (which tool to use and with what params)
+# - provide reason for using a tool, reason for its param choice
+# - if action observation != expected result, suggest fix, approve by human
+
+# create a multiagent - agent as tool
 
 
 class Agent(Tool):

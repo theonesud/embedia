@@ -1,8 +1,9 @@
-from pydantic import BaseModel
 import uuid
+from datetime import datetime, timezone
 from enum import Enum
 from uuid import uuid4
-from datetime import datetime, timezone
+
+from pydantic import BaseModel
 
 
 class RoleEnum(str, Enum):

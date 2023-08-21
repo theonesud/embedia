@@ -1,4 +1,5 @@
 import pytest
+
 from embedia import TextDoc
 
 
@@ -29,3 +30,15 @@ async def test_extract_regex():
     assert len(child_docs) > 0
     for child in child_docs:
         assert child.parent_id == parent_id
+
+
+@pytest.mark.asyncio
+async def test_textdoc_to_tokens():
+    tokenizer = GPTTokenizer()
+    textdoc = TextDoc.from_file('./README.md',
+                                'README.md',
+                                ('Overview of Embedia repo,'
+                                 ' usage guide, and helpful links'),
+                                './README.md')
+    tokens = await textdoc.to_tokens(tokenizer)
+    assert len(tokens) > 0

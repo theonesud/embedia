@@ -1,9 +1,8 @@
-from abc import ABC, abstractmethod
-from typing import Optional, Type, Tuple, Any
-from embedia import ChatLLM
 import inspect
+from abc import ABC, abstractmethod
+from typing import Any, Optional, Tuple
+
 from embedia.utils.pubsub import publish_event
-from embedia.utils.typechecking import enforce_class_type
 
 
 class DeniedByUserException(Exception):
@@ -46,16 +45,19 @@ class Tool(ABC):
     await file_read_tool("temp/file.txt")
     """
 
-    def __init__(self, name: str, desc: str,
-                 args: Optional[dict] = None,
-                 chatllm: Optional[Type[ChatLLM]] = None):
-        enforce_class_type(chatllm, ChatLLM)
-        self.chatllm = chatllm
+    def __init__(self, name: str, desc: str, args: Optional[dict] = None):
         self.name = name
         self.desc = desc
         self.args = args
+        argspec = inspect.getfullargspec(self._run)
+        arg_names = argspec.args
+        for arg_name in arg_names:
+            if arg_name == 'self':
+                continue
+            if arg_name not in self.args.keys():
+                raise ValueError(f"Argument: {arg_name} not found in args docsting: {self.args}")
 
-    def confirm_before_running(self, *args, **kwargs) -> None:
+    def human_confirmation(self, details: dict) -> None:
         """Asks for human confirmation.
 
         Arguments:
@@ -67,23 +69,15 @@ class Tool(ABC):
         -------
         - `DeniedByUserException`: If the user denies running the tool.
         """
-        run_function = input(
-            f"Run {self.__class__.__name__} with args: {args} and kwargs: {kwargs} (y/n): ")
+        run_function = input(f"\nTool: {self.__class__.__name__} Details: {details} (y/n): ")
         if run_function.lower() != 'y':
-            raise DeniedByUserException(
-                f'User denied running function: {self.__class__.__name__} with args: {args} '
-                f'and kwargs: {kwargs}')
+            raise DeniedByUserException(f'Tool: {self.__class__.__name__} Details: {details}')
 
     async def __call__(self, *args, **kwargs) -> Tuple[Any, int]:
         publish_event('tool_start', data={
                       'name': self.__class__.__name__, 'args': args, 'kwargs': kwargs})
-        argspec = inspect.getfullargspec(self._run)
-        arg_names = argspec.args
-        for arg_name in arg_names:
-            if arg_name == 'self':
-                continue
-            if arg_name not in self.args.keys():
-                raise ValueError(f"Argument: {arg_name} not found in args docsting: {self.args}")
+
+        # keyboard interrupt to stop tool
 
         output = await self._run(*args, **kwargs)
         assert len(output) == 2, ("Output must be a tuple of length 2 like (output, exit_code),"

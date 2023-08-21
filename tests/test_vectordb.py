@@ -1,12 +1,16 @@
-import pytest
-import openai
-import tiktoken
-from embedia import VectorDB, EmbeddingModel, Tokenizer
 import os
-from embedia.utils.vectordb import distance_to_similarity
-from tenacity import retry, wait_random_exponential, stop_after_attempt, retry_if_not_exception_type
+
 import chromadb
+import openai
+import pytest
+import tiktoken
 from dotenv import load_dotenv
+from tenacity import (retry, retry_if_not_exception_type, stop_after_attempt,
+                      wait_random_exponential)
+
+from embedia import EmbeddingModel, Tokenizer, VectorDB
+from embedia.utils.vectordb import distance_to_similarity
+
 load_dotenv()
 os.makedirs('temp/chromadb', exist_ok=True)
 
@@ -15,41 +19,9 @@ text = """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eu arcu 
 complete_text = text * 50
 
 
-class GPTTokenizer(Tokenizer):
-    async def _tokenize(self, text):
-        enc = tiktoken.encoding_for_model("gpt-3.5-turbo")
-        return enc.encode(text, allowed_special=set(),
-                          disallowed_special='all')
-
-
-class OpenAIEmbedding(EmbeddingModel):
-
-    @retry(wait=wait_random_exponential(min=1, max=20), stop=stop_after_attempt(6),
-           retry=retry_if_not_exception_type(openai.InvalidRequestError))
-    async def _embed(self, text):
-        openai.api_key = os.getenv("OPENAI_API_KEY")
-        result = await openai.Embedding.acreate(input=text, model='text-embedding-ada-002')
-        return result["data"][0]["embedding"]
-
-
-class ChromaDB(VectorDB):
-    def __init__(self, db_path, collection_name, collection_metadata):
-        self.client = chromadb.PersistentClient(path=db_path)
-        self.collection = self.client.get_or_create_collection(
-            name=collection_name, metadata=collection_metadata)
-
-    async def _save_embeddings(self, embeddings, metadatas, texts, ids):
-        # can add a single / list of embeddings, metadatas, texts, ids
-        self.collection.upsert(metadatas=metadatas, embeddings=embeddings, documents=texts, ids=ids)
-
-    async def _similarity_search(self, embeddings, k=5):
-        return self.collection.query(query_embeddings=embeddings, n_results=k)
-
-
 @pytest.mark.asyncio
 async def test_create_embedding():
-    embedding_model = OpenAIEmbedding(max_input_tokens=8191,
-                                      tokenizer=GPTTokenizer())
+    embedding_model = OpenAIEmbedding()
     embedding = await embedding_model(complete_text)
     assert len(embedding) == 1536
 

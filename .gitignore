@@ -4,3 +4,4 @@ __pycache__/
 temp/
 _temp/
 .mypy_cache/
+*.Identifier

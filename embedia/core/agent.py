@@ -7,6 +7,8 @@ from embedia.core.tool import Tool
 from embedia.schema.message import Message
 from embedia.schema.scratchpad import ScratchpadEntry
 
+# create callbacks
+
 TOOL_CHOOSER = """You're an expert in choosing the best tool for answering the user's question.
 The list of tools and their descriptions will be provided to you.
 Reply with the name of the chosen tool and nothing else.

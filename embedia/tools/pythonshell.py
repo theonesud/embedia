@@ -13,6 +13,8 @@ from embedia.schema.message import Message
 # Write python code to answer the user's question.
 # Reply only with the code and nothing else."""
 
+# make the timeout and background process a tool function
+
 
 class PythonShell(Tool):
 

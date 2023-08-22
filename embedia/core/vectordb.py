@@ -4,6 +4,8 @@ from typing import List
 from embedia.core.embedding import EmbeddingModel
 from embedia.schema.textdoc import TextDoc
 
+# add metadata with each embedding and text
+
 
 class VectorDB(ABC):
     """Abstract class for vector databases.

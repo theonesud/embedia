@@ -6,6 +6,8 @@ import numpy as np
 from embedia.core.tokenizer import Tokenizer
 from embedia.schema.textdoc import TextDoc
 
+# create callbacks
+
 
 class EmbeddingModel(ABC):
     """Abstract class for embedding models.

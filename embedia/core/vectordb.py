@@ -3,8 +3,7 @@ from typing import List
 
 from embedia.core.embedding import EmbeddingModel
 from embedia.schema.textdoc import TextDoc
-
-# add metadata with each embedding and text
+from embedia.utils.exceptions import DefinitionError
 
 
 class VectorDB(ABC):
@@ -18,22 +17,32 @@ class VectorDB(ABC):
     - `similarity_search()`: This method will call the _similarity_search() internally.
     """
 
-    def __init__(self, embedding_model: EmbeddingModel) -> None:
+    def __init__(self, embedding_model: EmbeddingModel, print=False, log=False) -> None:
         self.embedding_model = embedding_model
 
     async def insert(self, docs: List[TextDoc]) -> None:
         for doc in docs:
             embedding = await self.embedding_model(doc)
-            await self._insert(embedding)
+            # TODO: check if _insert can take all 4 params with same var names
+            # TODO: make embedding creation optional (if is handled by the db)
+            await self._insert(embedding=embedding, meta=doc.meta, text=doc.contents, id=doc.id)
 
-    async def get_similar(self, query: str):
+    async def get_similar(self, query: str, n_results: int) -> List[TextDoc]:
         embedding = await self.embedding_model(query)
-        return await self._get_similar(embedding)
+        # TODO: check if _get_similar can take all 2 params with same var names
+        resp = await self._get_similar(embedding=embedding, n_results=n_results)
+
+        if not isinstance(resp, list):
+            raise DefinitionError(f"_get_similar output must be a list, got: {type(resp)}")
+        if resp and not isinstance(resp[0], TextDoc):
+            raise DefinitionError(f"_get_similar output must be a list of TextDoc, got: {type(resp[0])}")
+
+        return resp
 
     @abstractmethod
-    async def _insert(self):
-        pass
+    async def _insert(self, embedding: List[float], meta: dict, text: str, id: str) -> None:
+        raise NotImplementedError
 
     @abstractmethod
-    async def _get_similar(self):
-        pass
+    async def _get_similar(self, embedding: List[float], n_results: int) -> List[TextDoc]:
+        raise NotImplementedError

@@ -1,4 +1,3 @@
-import inspect
 import pickle
 from abc import ABC
 from typing import Optional
@@ -7,9 +6,8 @@ from embedia.core.llm import LLM
 from embedia.core.tokenizer import Tokenizer
 from embedia.schema.message import Message
 from embedia.utils.pubsub import publish_event
-
-# check what happens if a derived class is not calling the super.__init__
-# check what happens if they create a new __init__/ __call__ method or any other
+from embedia.utils.tokens import check_token_length
+from embedia.utils.exceptions import DefinitionError
 
 
 class ChatLLM(ABC):
@@ -59,17 +57,10 @@ class ChatLLM(ABC):
         if system_prompt:
             self.set_system_prompt(system_prompt)
         else:
-            self.chat_history = None
+            self.chat_history = []
         self.llm: LLM = None
         self.tokenizer = tokenizer
         self.max_input_tokens = max_input_tokens
-        if not self.llm:
-            argspec = inspect.getfullargspec(self._reply)
-            arg_names = argspec.args
-            if 'message' not in arg_names:
-                raise ValueError("Argument: message not found in _reply definition")
-            if set(arg_names) - {'self', 'message'}:
-                raise ValueError("Only message argument is allowed in _reply definition")
 
     def set_system_prompt(self, system_prompt: str) -> None:
         """
@@ -129,25 +120,30 @@ class ChatLLM(ABC):
         return reply
 
     async def _call_chatllm(self, message: Message) -> Message:
-
-        # keep a default log of all chats
-
         tokens = self.tokenizer(message.content)
-        if len(tokens) > self.max_input_tokens:
-            raise ValueError(f"Input text: {len(tokens)} is longer than max_input_tokens: {self.max_input_tokens}")
+        # TODO: should probably check the token length of the entire history
+        check_token_length(tokens, self.max_input_tokens)
         publish_event('chatllm_start', data={
             'message_role': message.role, 'message_content': message.content,
             'num_tokens': len(tokens)})
+
         reply = await self._reply(message)
+
+        if not isinstance(reply, Message):
+            raise DefinitionError(f"_reply output must be of type: Message, got: {type(reply)}")
+
         tokens = self.tokenizer(reply.content)
         publish_event('chatllm_end', data={
             'reply_role': reply.role, 'reply_content': reply.content,
-            'num_tokens': len(tokens)})
+            'num_tokens': len(tokens), 'chat_history': self.chat_history})
+
         return reply
 
     async def __call__(self, message: Message, meta_prompting=False) -> Message:
         if not self.chat_history:
-            raise ValueError("Please set the system prompt using the set_system_prompt method or pass it in the constructor")
+            raise DefinitionError("Please set the system prompt using the set_system_prompt method or pass it in the constructor")
+        if not isinstance(message, Message):
+            raise DefinitionError(f"Input must be of type: Message, got: {type(message)}")
 
         if meta_prompting:
             pass
@@ -159,6 +155,7 @@ class ChatLLM(ABC):
         else:
             reply = await self._call_chatllm(message)
         self.chat_history.append(reply)
+
         return reply
 
     @classmethod
@@ -197,4 +194,4 @@ class ChatLLM(ABC):
         --------
         - `reply`: The reply of Message type.
         """
-        raise NotImplementedError("Please implement _reply method in your ChatLLM subclass")
+        raise NotImplementedError

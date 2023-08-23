@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List
+from embedia.utils.exceptions import DefinitionError
 
 
 class Tokenizer(ABC):
@@ -21,8 +22,11 @@ class Tokenizer(ABC):
             return enc.encode(text)
     """
 
+    def __init__(self):
+        pass
+
     @abstractmethod
-    async def _tokenize(self):
+    async def _tokenize(self, input: str) -> List[int]:
         """This function calls the tokenizer with the input
 
         Use the __call__ method of the Tokenizer object to call this method. Do not call this method directly.
@@ -35,7 +39,12 @@ class Tokenizer(ABC):
         --------
         - `tokens`: The tokens of the input.
         """
-        pass
+        raise NotImplementedError
 
     async def __call__(self, *args, **kwargs) -> List[int]:
-        return await self._tokenize(*args, **kwargs)
+        tokens = await self._tokenize(*args, **kwargs)
+        if not isinstance(tokens, list):
+            raise DefinitionError(f"Tokenizer output must be a list, got: {type(tokens)}")
+        if tokens and not isinstance(tokens[0], int):
+            raise DefinitionError(f"Tokenizer output must be a list of integers, got: {type(tokens[0])}")
+        return tokens

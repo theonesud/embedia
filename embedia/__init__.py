@@ -6,9 +6,11 @@ from embedia.core.tokenizer import Tokenizer
 from embedia.core.tool import Tool
 from embedia.core.vectordb import VectorDB
 from embedia.schema.message import Message
-from embedia.schema.scratchpad import ScratchpadEntry
+from embedia.schema.actionstep import ActionStep
 from embedia.schema.textdoc import TextDoc
-from embedia.utils.logger_callback import setup_logger_callback
+from embedia.utils.print_callback import setup_print_callback
+from embedia.utils.file_callback import setup_file_callback
 from embedia.utils.pubsub import subscribe_event
 
-setup_logger_callback()
+setup_print_callback()
+setup_file_callback()

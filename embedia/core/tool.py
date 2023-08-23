@@ -1,12 +1,8 @@
 import inspect
 from abc import ABC, abstractmethod
 from typing import Any, Optional, Tuple
-
 from embedia.utils.pubsub import publish_event
-
-
-class DeniedByUserException(Exception):
-    pass
+from embedia.utils.exceptions import DeniedByUserException, DefinitionError
 
 
 class Tool(ABC):
@@ -49,13 +45,15 @@ class Tool(ABC):
         self.name = name
         self.desc = desc
         self.args = args
+        self._validate_args()
+
+    def _validate_args(self) -> None:
+        args = self.args.keys() + ['self']
         argspec = inspect.getfullargspec(self._run)
         arg_names = argspec.args
-        for arg_name in arg_names:
-            if arg_name == 'self':
-                continue
-            if arg_name not in self.args.keys():
-                raise ValueError(f"Argument: {arg_name} not found in args docsting: {self.args}")
+        if set(arg_names) != set(args):
+            raise DefinitionError(f"{self._run.__qualname__} expects arguments: {args},"
+                                  f" got: {set(arg_names)}")
 
     def human_confirmation(self, details: dict) -> None:
         """Asks for human confirmation.
@@ -74,20 +72,27 @@ class Tool(ABC):
             raise DeniedByUserException(f'Tool: {self.__class__.__name__} Details: {details}')
 
     async def __call__(self, *args, **kwargs) -> Tuple[Any, int]:
-        publish_event('tool_start', data={
-                      'name': self.__class__.__name__, 'args': args, 'kwargs': kwargs})
+        publish_event('tool_start', data={'name': self.__class__.__name__,
+                                          'args': args, 'kwargs': kwargs})
 
-        # keyboard interrupt to stop tool
+        try:
+            output = await self._run(*args, **kwargs)
+        except KeyboardInterrupt:
+            output = 'Interrupted by User', 1
 
-        output = await self._run(*args, **kwargs)
-        assert len(output) == 2, ("Output must be a tuple of length 2 like (output, exit_code),"
+        if not len(output) == 2:
+            raise DefinitionError(f"_run output must be a tuple like (output, exit_code),"
                                   f" got: {output}")
-        assert output[1] in [0, 1], f"Exit code must be 0 or 1, got: {output[1]}"
-        publish_event('tool_end', data={'name': self.__class__.__name__, 'output': output})
+        if output[1] not in [0, 1]:
+            raise DefinitionError(f"_run exit code must be 0 or 1, got: {output[1]}")
+
+        publish_event('tool_end', data={'name': self.__class__.__name__, 'output': output,
+                                        'args': args, 'kwargs': kwargs})
+
         return output
 
     @abstractmethod
-    async def _run(self):
+    async def _run(self, *args, **kwargs) -> Tuple[Any, int]:
         """This function runs the tool with the arguments and returns the output.
 
         Use the __call__ method of the tool object to call this method. Do not call this method directly.
@@ -104,8 +109,5 @@ class Tool(ABC):
 
         Raises:
         -------
-        - `ValueError`: If the arguments are not added to the docstring.
-        - `AssertionError`: If the output is not a tuple of length 2 like (output, exit_code).
-        - `AssertionError`: If the exit_code is not 0 or 1.
         """
-        pass
+        raise NotImplementedError

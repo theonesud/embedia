@@ -1,8 +1,9 @@
-import inspect
 from abc import ABC, abstractmethod
 
 from embedia.core.tokenizer import Tokenizer
 from embedia.utils.pubsub import publish_event
+from embedia.utils.tokens import check_token_length
+from embedia.utils.exceptions import DefinitionError
 
 
 class LLM(ABC):
@@ -40,15 +41,9 @@ class LLM(ABC):
     def __init__(self, tokenizer: Tokenizer, max_input_tokens: int) -> None:
         self.tokenizer = tokenizer
         self.max_input_tokens = max_input_tokens
-        argspec = inspect.getfullargspec(self._complete)
-        arg_names = argspec.args
-        if 'prompt' not in arg_names:
-            raise ValueError("Argument: prompt not found in _complete definition")
-        if set(arg_names) - {'self', 'prompt'}:
-            raise ValueError("Only prompt argument is allowed in _complete definition")
 
     @abstractmethod
-    async def _complete(self):
+    async def _complete(self, prompt: str) -> str:
         """This function calls the next token generation based LLM with the prompt
         and returns the completion.
 
@@ -62,17 +57,23 @@ class LLM(ABC):
         --------
         - `completion`: The completion of the prompt.
         """
-        pass
+        raise NotImplementedError
 
     async def __call__(self, prompt: str) -> str:
-
-        # keep a default log of all chats
+        if not isinstance(prompt, str):
+            raise DefinitionError(f"Input must be of type: String, got: {type(prompt)}")
 
         tokens = await self.tokenizer(prompt)
-        if len(tokens) > self.max_input_tokens:
-            raise ValueError(f"Input text: {len(tokens)} is longer than max_input_tokens: {self.max_input_tokens}")
+        check_token_length(tokens, self.max_input_tokens)
         publish_event('llm_start', data={'prompt': prompt, 'num_tokens': len(tokens)})
+
         completion = await self._complete(prompt)
+
+        if not isinstance(completion, str):
+            raise DefinitionError(f"_complete output must be of type: String, got: {type(completion)}")
+
         tokens = await self.tokenizer(completion)
-        publish_event('llm_end', data={'completion': completion, 'num_tokens': len(tokens)})
+        publish_event('llm_end', data={'prompt': prompt, 'completion': completion,
+                                       'num_tokens': len(tokens)})
+
         return completion

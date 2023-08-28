@@ -3,7 +3,7 @@ from typing import Dict, Optional
 subscribers = {}
 
 
-def publish_event(event_type: str, data: Optional[Dict] = None):
+def publish_event(event_type: str, data: Optional[Dict] = {}):
     if event_type not in subscribers.keys():
         return
     for callback in subscribers[event_type]:

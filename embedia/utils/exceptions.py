@@ -1,4 +1,4 @@
-class DeniedByUserException(Exception):
+class DeniedByUserError(Exception):
     pass
 
 

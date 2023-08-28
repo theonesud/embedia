@@ -13,7 +13,7 @@ class HTTPGet(Tool):
                          args={'url': 'The URL to make the request to',
                                'headers': 'Optional headers dictionary to send with the request'})
 
-    async def _run(self, url: str, headers: Optional[dict] = None):
+    async def _run(self, url: str, headers: Optional[dict] = {}):
         async with aiohttp.ClientSession() as session:
             async with session.get(url, headers=headers) as response:
                 return await response.text(), 0
@@ -27,7 +27,7 @@ class HTTPPost(Tool):
                                'data': 'The data to send with the request',
                                'headers': 'Optional headers dictionary to send with the request'})
 
-    async def _run(self, url: str, data: dict, headers: Optional[dict] = None):
+    async def _run(self, url: str, data: dict, headers: Optional[dict] = {}):
         async with aiohttp.ClientSession() as session:
             async with session.post(url, data=json.dumps(data), headers=headers) as response:
                 return await response.text(), 0
@@ -41,7 +41,7 @@ class HTTPPut(Tool):
                                'data': 'The data to send with the request',
                                'headers': 'Optional headers dictionary to send with the request'})
 
-    async def _run(self, url: str, data: dict, headers: Optional[dict] = None):
+    async def _run(self, url: str, data: dict, headers: Optional[dict] = {}):
         async with aiohttp.ClientSession() as session:
             async with session.put(url, data=json.dumps(data), headers=headers) as response:
                 return await response.text(), 0
@@ -54,7 +54,7 @@ class HTTPDelete(Tool):
                          args={'url': 'The URL to make the request to',
                                'headers': 'Optional headers dictionary to send with the request'})
 
-    async def _run(self, url: str, headers: Optional[dict] = None):
+    async def _run(self, url: str, headers: Optional[dict] = {}):
         async with aiohttp.ClientSession() as session:
             async with session.delete(url, headers=headers) as response:
                 return await response.text(), 0
@@ -68,7 +68,7 @@ class HTTPPatch(Tool):
                                'data': 'The data to send with the request',
                                'headers': 'Optional headers dictionary to send with the request'})
 
-    async def _run(self, url: str, data: dict, headers: Optional[dict] = None):
+    async def _run(self, url: str, data: dict, headers: Optional[dict] = {}):
         async with aiohttp.ClientSession() as session:
             async with session.patch(url, data=json.dumps(data), headers=headers) as response:
                 return await response.text(), 0

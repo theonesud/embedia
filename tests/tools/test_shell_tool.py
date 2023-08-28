@@ -3,7 +3,7 @@ import asyncio
 import pytest
 from dotenv import load_dotenv
 
-from tests.utils import OpenAIChatLLM
+from tests.definitions import OpenAIChatLLM
 from embedia.tools import BashShell, BashShellChat
 
 load_dotenv()

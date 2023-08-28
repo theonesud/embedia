@@ -2,7 +2,7 @@ import asyncio
 import pytest
 
 from embedia.tools import PythonShell, PythonShellChat
-from tests.utils import OpenAIChatLLM
+from tests.definitions import OpenAIChatLLM
 
 
 @pytest.mark.asyncio

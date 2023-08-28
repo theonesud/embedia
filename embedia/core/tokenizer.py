@@ -1,50 +1,34 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Any
+import inspect
 from embedia.utils.exceptions import DefinitionError
 
 
 class Tokenizer(ABC):
-    """Abstract class for tokenizers.
+    def __init__(self) -> None:
+        self._check_init()
 
-    Methods:
-    --------
-    - `_tokenize()`: Implement this method to return the tokens of the input.
-    - `__call__()`: This method will call the _tokenize() internally.
+    def _check_init(self) -> None:
+        sig = inspect.signature(self._tokenize)
+        if not len(sig.parameters) == 1:
+            raise DefinitionError("_tokenize must have one argument: text (string)")
 
-    Example:
-    --------
-    ```
-    import tiktoken
+    async def _check_call(self, text: str) -> None:
+        if not isinstance(text, str):
+            raise DefinitionError(f"Tokenizer input must be of type: String, got: {type(text)}")
+        if not text:
+            raise DefinitionError("Tokenizer input must not be empty")
 
-    class OpenAITokenizer(Tokenizer):
-        async def _tokenize(self, text: str) -> List[int]:
-            enc = tiktoken.encoding_for_model("gpt-3.5-turbo")
-            return enc.encode(text)
-    """
-
-    def __init__(self):
-        pass
+    async def _check_output(self, tokens: List[Any]) -> None:
+        if not isinstance(tokens, list):
+            raise DefinitionError(f"_tokenize should return a list, got: {type(tokens)}")
 
     @abstractmethod
-    async def _tokenize(self, input: str) -> List[int]:
-        """This function calls the tokenizer with the input
-
-        Use the __call__ method of the Tokenizer object to call this method. Do not call this method directly.
-
-        Arguments:
-        ----------
-        - `input`: The input to be passed to the tokenizer.
-
-        Returns:
-        --------
-        - `tokens`: The tokens of the input.
-        """
+    async def _tokenize(self, text: str) -> List[Any]:
         raise NotImplementedError
 
-    async def __call__(self, *args, **kwargs) -> List[int]:
-        tokens = await self._tokenize(*args, **kwargs)
-        if not isinstance(tokens, list):
-            raise DefinitionError(f"Tokenizer output must be a list, got: {type(tokens)}")
-        if tokens and not isinstance(tokens[0], int):
-            raise DefinitionError(f"Tokenizer output must be a list of integers, got: {type(tokens[0])}")
+    async def __call__(self, text: str) -> List[Any]:
+        await self._check_call(text)
+        tokens = await self._tokenize(text)
+        await self._check_output(tokens)
         return tokens

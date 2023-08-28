@@ -1,6 +1,7 @@
 import pickle
 from abc import ABC
-from typing import Optional
+import inspect
+import aiofiles
 
 from embedia.core.llm import LLM
 from embedia.core.tokenizer import Tokenizer
@@ -11,104 +12,36 @@ from embedia.utils.exceptions import DefinitionError
 
 
 class ChatLLM(ABC):
-    """Abstract class for chat based LLMs.
-
-    For LLMs that have a next token generation based interface, use the LLM class.
-
-    Arguments:
-    ----------
-    - `system_prompt`: The first message in the chat history with a `system` role
-    which defines the overall behaviour of the chatbot.
-    - `tokenizer`: An object of the `Tokenizer` class used for counting number of tokens.
-    - `max_input_tokens`: The maximum number of tokens allowed in the input message.
-
-    Methods:
-    --------
-    - `_reply()`: Implement this method to return the reply to the user's message.
-    - `__call__()`: This method will call the _reply() internally.
-    - `save_chat()`: Save the chat history to a file.
-    - `load_chat()`: Load the chat history from a file.
-    - `from_llm()`: Create a ChatLLM instance from an LLM instance.
-
-    Example:
-    --------
-    ```
-    class OpenAIChatLLM(ChatLLM):
-        async def _reply(self, message: Message) -> Message:
-            completion = await openai.ChatCompletion.acreate(
-                model="gpt-3.5-turbo",
-                messages=[message.to_json() for message in self.chat_history],
-            )
-            return Message(**completion.choices[0].message)
-
-    class OpenAITokenizer(Tokenizer):
-        async def _tokenize(self, text):
-            return tiktoken.encoding_for_model("gpt-3.5-turbo").encode(text)
-
-    pandas_expert = OpenAIChatLLM("You are an expert in writing commands for the python pandas library. Write one-line commands to solve the user's problems",
-                                  OpenAITokenizer(), 4096)
-    msg = await openai_chatllm(Message(role='user', content='I want to extract all the pincodes in the column "address" and create another column "pincode"'))
-    print(msg.content)
-
-    >>> df['pincode'] = df['address'].str.extract(r'(\\d{6})')
-    """
-
-    def __init__(self, tokenizer: Tokenizer, max_input_tokens: int, system_prompt: Optional[str] = None) -> None:
-        if system_prompt:
-            self.set_system_prompt(system_prompt)
-        else:
-            self.chat_history = []
+    def __init__(self, tokenizer: Tokenizer, max_input_tokens: int) -> None:
+        self.chat_history = []
         self.llm: LLM = None
         self.tokenizer = tokenizer
         self.max_input_tokens = max_input_tokens
+        self.id = id(self)
+        self._check_init()
 
-    def set_system_prompt(self, system_prompt: str) -> None:
-        """
-        Clears the chat history and sets the system prompt.
+    def _check_init(self) -> None:
+        if not isinstance(self.tokenizer, Tokenizer):
+            raise DefinitionError(f"Tokenizer must be of type: Tokenizer, got: {type(self.tokenizer)}")
+        if not isinstance(self.max_input_tokens, int):
+            raise DefinitionError(f"Max input tokens must be of type: Integer, got: {type(self.max_input_tokens)}")
+        if self.max_input_tokens < 1:
+            raise DefinitionError(f"Max input tokens must be greater than 0, got: {self.max_input_tokens}")
+        sig = inspect.signature(self._reply)
+        if not len(sig.parameters) == 1:
+            raise DefinitionError("_reply must have one argument: message (Message)")
 
-        Arguments:
-        ----------
-        - `system_prompt`: The first message in the chat history with a `system` role which defines the overall behaviour of the chatbot.
+    async def _check_call(self, message: Message) -> None:
+        if not self.chat_history:
+            raise DefinitionError("Please set the system prompt using the set_system_prompt method")
+        if not isinstance(message, Message):
+            raise DefinitionError(f"ChatLLM input must be of type: Message, got: {type(message)}")
+        if not message.content:
+            raise DefinitionError("ChatLLM Message contents must not be empty")
 
-        Example:
-        --------
-        ```
-        chatllm.set_system_prompt('You are an expert in writing commands for the python pandas library. Write one-line commands to solve the user's problems')
-        """
-        publish_event('chatllm_init', data={'system_prompt': system_prompt})
-        self.chat_history = [Message(role='system', content=system_prompt)]
-
-    def save_chat(self, filepath: str) -> None:
-        """Save the chat history to a file.
-
-        Arguments:
-        ----------
-        - `filepath`: The path to the file where the chat history will be saved.
-
-        Example:
-        --------
-        ```
-        chatllm.save_chat('temp/chatllm.pkl')
-        """
-        with open(filepath, 'wb') as f:
-            pickle.dump(self.chat_history, f)
-        publish_event('chatllm_saved', data={'filepath': filepath})
-
-    def load_chat(self, filepath: str) -> None:
-        """Load the chat history from a file.
-
-        Arguments:
-        ----------
-        - `filepath`: The path to the file from where the chat history will be loaded.
-
-        Example:
-        --------
-        ```
-        chatllm.load_chat('temp/chatllm.pkl')
-        """
-        with open(filepath, 'rb') as f:
-            self.chat_history = pickle.load(f)
-        publish_event('chatllm_loaded', data={'filepath': filepath})
+    async def _check_output(self, reply: Message) -> None:
+        if not isinstance(reply, Message):
+            raise DefinitionError(f"_reply must return a Message, got: {type(reply)}")
 
     async def _call_llm(self, message: Message) -> Message:
         prompt = ''
@@ -119,35 +52,34 @@ class ChatLLM(ABC):
         reply = Message(role='assistant', content=reply)
         return reply
 
+    async def _calculate_chat_history_tokens(self) -> int:
+        # Ref: https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb
+        total_tokens = 0
+        for message in self.chat_history:
+            total_tokens += len(await self.tokenizer(message.content)) + 3
+        return total_tokens + 3
+
     async def _call_chatllm(self, message: Message) -> Message:
-        tokens = self.tokenizer(message.content)
-        # TODO: should probably check the token length of the entire history
-        check_token_length(tokens, self.max_input_tokens)
-        publish_event('chatllm_start', data={
-            'message_role': message.role, 'message_content': message.content,
-            'num_tokens': len(tokens)})
+        total_tokens = await self._calculate_chat_history_tokens()
+        check_token_length(total_tokens, self.max_input_tokens)
+        publish_event('chatllm_start', data={'id': self.id, 'role': message.role, 'content': message.content,
+                                             'num_tokens': 3 + len(await self.tokenizer(message.content))})
 
         reply = await self._reply(message)
 
-        if not isinstance(reply, Message):
-            raise DefinitionError(f"_reply output must be of type: Message, got: {type(reply)}")
+        await self._check_output(reply)
 
-        tokens = self.tokenizer(reply.content)
-        publish_event('chatllm_end', data={
-            'reply_role': reply.role, 'reply_content': reply.content,
-            'num_tokens': len(tokens), 'chat_history': self.chat_history})
+        tokens = await self.tokenizer(reply.content)
+        publish_event('chatllm_end', data={'id': self.id, 'role': reply.role, 'content': reply.content,
+                                           'num_tokens': 3 + len(tokens)})
 
         return reply
 
-    async def __call__(self, message: Message, meta_prompting=False) -> Message:
-        if not self.chat_history:
-            raise DefinitionError("Please set the system prompt using the set_system_prompt method or pass it in the constructor")
-        if not isinstance(message, Message):
-            raise DefinitionError(f"Input must be of type: Message, got: {type(message)}")
+    async def _reply(self, message: Message) -> Message:
+        raise NotImplementedError
 
-        if meta_prompting:
-            pass
-            # send prompt to a prompt generator with the system message
+    async def __call__(self, message: Message) -> Message:
+        await self._check_call(message)
 
         self.chat_history.append(message)
         if self.llm:
@@ -159,39 +91,21 @@ class ChatLLM(ABC):
         return reply
 
     @classmethod
-    def from_llm(cls, llm: LLM, system_prompt: Optional[str] = None) -> 'ChatLLM':
-        """Create a ChatLLM instance from an LLM instance.
-
-        Arguments:
-        ----------
-        - `llm`: The LLM instance.
-        - `system_prompt`: The first message in the chat history with a `system` role which defines the overall behaviour of the chatbot.
-
-        Returns:
-        --------
-        - `instance`: The ChatLLM instance.
-
-        Example:
-        --------
-        ```
-        openai_llm = OpenAILLM()
-        openai_chatllm = ChatLLM.from_llm(openai_llm, SYSTEM_PROMPT)
-        """
-        instance = cls(llm.tokenizer, llm.max_input_tokens, system_prompt)
+    def from_llm(cls, llm: LLM) -> 'ChatLLM':
+        instance = cls(llm.tokenizer, llm.max_input_tokens)
         instance.llm = llm
         return instance
 
-    async def _reply(self, message: Message) -> Message:
-        """This function calls the chat based LLM with the message and returns the reply.
+    async def set_system_prompt(self, system_prompt: str) -> None:
+        tokens = await self.tokenizer(system_prompt)
+        publish_event('chatllm_init', data={'id': self.id, 'role': 'system', 'content': system_prompt,
+                                            'num_tokens': 3 + len(tokens)})
+        self.chat_history = [Message(role='system', content=system_prompt)]
 
-        Use the __call__ method of the ChatLLM object to call this method. Do not call this method directly.
+    async def save_chat(self, filepath: str) -> None:
+        async with aiofiles.open(filepath, "wb") as f:
+            await f.write(pickle.dumps(self.chat_history))
 
-        Arguments:
-        ----------
-        - `message`: The message of Message type to be passed to the chat based LLM.
-
-        Returns:
-        --------
-        - `reply`: The reply of Message type.
-        """
-        raise NotImplementedError
+    async def load_chat(self, filepath: str) -> None:
+        async with aiofiles.open(filepath, "rb") as f:
+            self.chat_history = pickle.loads(await f.read())

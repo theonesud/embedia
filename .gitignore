@@ -5,3 +5,4 @@ temp/
 _temp/
 .mypy_cache/
 *.Identifier
+logs/

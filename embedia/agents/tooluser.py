@@ -6,17 +6,17 @@ from embedia.core.chatllm import ChatLLM
 from embedia.core.tool import Tool
 from embedia.schema.message import Message
 from embedia.schema.actionstep import ActionStep, Action
-from embedia.utils.prompts import Persona
+from embedia.schema.persona import Persona
 from embedia.utils.pubsub import publish_event
 from embedia.utils.exceptions import DefinitionError, AgentError
 
 
-class Agent(Tool):
+class ToolUser(Tool):
     def __init__(self, chatllm: ChatLLM, tools: List[Tool],
                  max_steps: int = 10, max_duration: int = 60) -> Tuple[Any, int]:
-        super().__init__(name="Agent",
+        super().__init__(name="Tool User",
                          desc="It uses the available tools to answer the user's question",
-                         args={'question': '(type: str) The main question that needs to be answered'})
+                         args={'question': 'The main question that needs to be answered (Type: str)'})
         self.tools = tools
         self.max_steps = max_steps
         self.max_duration = max_duration
@@ -24,6 +24,9 @@ class Agent(Tool):
         self.tool_chooser = deepcopy(chatllm)
         self.sys1_thinker = deepcopy(chatllm)
         self.action_steps = []
+        self._check_init()
+
+    def _check_init(self) -> None:
         if not isinstance(self.chatllm, ChatLLM):
             raise DefinitionError(f"Agent's chatllm: {self.chatllm} is not of type ChatLLM")
         if len(self.tools) == 0:
@@ -54,7 +57,8 @@ class Agent(Tool):
             return {}
         arg_docs = ''
         for arg_key, arg_desc in tool_choice.args.items():
-            # TODO: Change arg_docs to a json and expect a json from the LLM (b/c '\n' in arg_desc might become unreliable)
+            # TODO: Change arg_docs to a json and expect a json from the LLM
+            # (b/c '\n' in arg_desc might become unreliable)
             arg_docs += f"{arg_key}: {arg_desc}\n"
         prompt = (f"Question: {question}\n"
                   f"Function: {tool_choice.desc}\n"
@@ -82,7 +86,7 @@ class Agent(Tool):
 
         return kwargs
 
-    async def _think(self):
+    async def _choose_next_step(self):
         self.sys1_thinker.set_system_prompt(Persona.Sys1Thinker)
         prompt = "\n".join([str(step) for step in self.action_steps])
         resp = await self.sys1_thinker(Message(role='user', content=prompt))
@@ -100,7 +104,7 @@ class Agent(Tool):
         while steps <= self.max_steps and time.time() - now <= self.max_duration:
 
             if self.action_steps:
-                thought, thought_type = self._think()
+                thought, thought_type = self._choose_next_step()
                 if thought_type == 'Question':
                     question = thought
                 elif thought_type == 'Final Answer':

@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List, Any
-import inspect
-from embedia.utils.exceptions import DefinitionError
+from embedia.utils.typechecking import check_num_args, check_type, check_not_false
 
 
 class Tokenizer(ABC):
@@ -9,19 +8,14 @@ class Tokenizer(ABC):
         self._check_init()
 
     def _check_init(self) -> None:
-        sig = inspect.signature(self._tokenize)
-        if not len(sig.parameters) == 1:
-            raise DefinitionError("_tokenize must have one argument: text (string)")
+        check_num_args(self._tokenize, 1, "type: str")
 
     async def _check_call(self, text: str) -> None:
-        if not isinstance(text, str):
-            raise DefinitionError(f"Tokenizer input must be of type: String, got: {type(text)}")
-        if not text:
-            raise DefinitionError("Tokenizer input must not be empty")
+        check_type(text, str, self.__call__)
+        check_not_false(text, "Tokenizer __call__ input")
 
     async def _check_output(self, tokens: List[Any]) -> None:
-        if not isinstance(tokens, list):
-            raise DefinitionError(f"_tokenize should return a list, got: {type(tokens)}")
+        check_type(tokens, list, self._tokenize, 'output')
 
     @abstractmethod
     async def _tokenize(self, text: str) -> List[Any]:

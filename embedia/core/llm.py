@@ -1,39 +1,30 @@
 from abc import ABC, abstractmethod
-import inspect
 
 from embedia.core.tokenizer import Tokenizer
 from embedia.utils.pubsub import publish_event
 from embedia.utils.tokens import check_token_length
-from embedia.utils.exceptions import DefinitionError
+from embedia.utils.typechecking import check_num_args, check_type, check_not_false, check_min_val
+from embedia.schema.pubsub import Event
 
 
 class LLM(ABC):
     def __init__(self, tokenizer: Tokenizer, max_input_tokens: int) -> None:
         self.tokenizer = tokenizer
         self.max_input_tokens = max_input_tokens
-        self.id = id(self)
         self._check_init()
 
     def _check_init(self) -> None:
-        if not isinstance(self.tokenizer, Tokenizer):
-            raise DefinitionError(f"Tokenizer must be of type: Tokenizer, got: {type(self.tokenizer)}")
-        if not isinstance(self.max_input_tokens, int):
-            raise DefinitionError(f"Max input tokens must be of type: Integer, got: {type(self.max_input_tokens)}")
-        if self.max_input_tokens < 1:
-            raise DefinitionError(f"Max input tokens must be greater than 0, got: {self.max_input_tokens}")
-        sig = inspect.signature(self._complete)
-        if not len(sig.parameters) == 1:
-            raise DefinitionError("_complete must have one argument: prompt (string)")
+        check_type(self.tokenizer, Tokenizer, self.__init__, 'tokenizer')
+        check_type(self.max_input_tokens, int, self.__init__, 'max_input_tokens')
+        check_min_val(self.max_input_tokens, 1, 'max_input_tokens')
+        check_num_args(self._complete, 1, "type: str")
 
     async def _check_call(self, prompt: str) -> None:
-        if not isinstance(prompt, str):
-            raise DefinitionError(f"LLM input must be of type: String, got: {type(prompt)}")
-        if not prompt:
-            raise DefinitionError("LLM input must not be empty")
+        check_type(prompt, str, self.__call__)
+        check_not_false(prompt, "LLM __call__ input")
 
     async def _check_output(self, completion: str) -> None:
-        if not isinstance(completion, str):
-            raise DefinitionError(f"_complete should return a string, got: {type(completion)}")
+        check_type(completion, str, self._complete, 'output')
 
     @abstractmethod
     async def _complete(self, prompt: str) -> str:
@@ -44,13 +35,13 @@ class LLM(ABC):
 
         tokens = await self.tokenizer(prompt)
         check_token_length(len(tokens), self.max_input_tokens)
-        publish_event('llm_start', data={'id': self.id, 'prompt': prompt, 'num_tokens': 3 + len(tokens)})
+        publish_event(Event.LLMStart, data={'id': id(self), 'prompt': prompt, 'num_tokens': 3 + len(tokens)})
 
         completion = await self._complete(prompt)
         await self._check_output(completion)
 
         tokens = await self.tokenizer(completion)
-        publish_event('llm_end', data={'id': self.id, 'completion': completion,
-                                       'num_tokens': 3 + len(tokens)})
+        publish_event(Event.LLMEnd, data={'id': id(self), 'completion': completion,
+                                          'num_tokens': 3 + len(tokens)})
 
         return completion

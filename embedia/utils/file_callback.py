@@ -2,6 +2,8 @@ from embedia.utils.pubsub import subscribe_event
 import logging
 import json
 import os
+from embedia.schema.pubsub import Event
+
 home = os.path.expanduser('~')
 os.makedirs(f'{home}/.embedia', exist_ok=True)
 logger = logging.getLogger()
@@ -32,18 +34,12 @@ def file_agent_callback(data):
 
 
 def setup_file_callback():
-    subscribe_event('llm_start', file_llm_callback)
-    subscribe_event('llm_end', file_llm_callback)
-    subscribe_event('chatllm_init', file_chatllm_callback)
-    subscribe_event('chatllm_start', file_chatllm_callback)
-    subscribe_event('chatllm_end', file_chatllm_callback)
-    subscribe_event('tool_start', file_tool_callback)
-    subscribe_event('tool_end', file_tool_callback)
-    subscribe_event('agent_step', file_agent_callback)
-    subscribe_event('agent_timeout', file_agent_callback)
-
-
-# TODO: make them enum
-# TODO: make async
-# TODO: make print using logging
-# TODO: make time with timezone
+    subscribe_event(Event.LLMStart, file_llm_callback)
+    subscribe_event(Event.LLMEnd, file_llm_callback)
+    subscribe_event(Event.ChatLLMInit, file_chatllm_callback)
+    subscribe_event(Event.ChatLLMStart, file_chatllm_callback)
+    subscribe_event(Event.ChatLLMEnd, file_chatllm_callback)
+    subscribe_event(Event.ToolStart, file_tool_callback)
+    subscribe_event(Event.ToolEnd, file_tool_callback)
+    subscribe_event(Event.AgentStep, file_agent_callback)
+    subscribe_event(Event.AgentTimeout, file_agent_callback)

@@ -19,8 +19,6 @@ class TextDoc(BaseModel):
             instance = cls(meta=meta, contents=f.read())
         return instance
 
-    # TODO: add splitter for coding languages
-
     def split_on_separator(self, separator: str = '\n', strip_after_split: bool = False) -> List['TextDoc']:
         result = []
         for idx, content in enumerate(self.contents.split(separator)):

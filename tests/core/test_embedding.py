@@ -1,5 +1,5 @@
 import pytest
-from tests.definitions import OpenAIEmbedding
+from tests.core.definitions import OpenAIEmbedding, OpenAIEmbeddingBroken1, OpenAIEmbeddingBroken2
 from embedia.utils.exceptions import DefinitionError
 from embedia import TextDoc
 import json
@@ -26,11 +26,19 @@ async def test_emb_model():
 @pytest.mark.asyncio
 async def test_emb_model_error():
     embmodel = OpenAIEmbedding()
-    with pytest.raises(DefinitionError):
+    with pytest.raises(DefinitionError) as e:
         await embmodel(5)
-    with pytest.raises(DefinitionError):
+    print(e)
+    with pytest.raises(DefinitionError) as e:
         await embmodel('')
-    with pytest.raises(DefinitionError):
+    print(e)
+    with pytest.raises(DefinitionError) as e:
         await embmodel([])
-    with pytest.raises(DefinitionError):
-        await embmodel({})
+    print(e)
+    with pytest.raises(DefinitionError) as e:
+        OpenAIEmbeddingBroken1()
+    print(e)
+    with pytest.raises(DefinitionError) as e:
+        embmodel = OpenAIEmbeddingBroken2()
+        await embmodel(lorem)
+    print(e)

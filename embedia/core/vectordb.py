@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Any
-import inspect
 
-from embedia.utils.exceptions import DefinitionError
+from embedia.utils.typechecking import check_num_args, check_type, check_not_false, check_min_val
 
 
 class VectorDB(ABC):
@@ -10,44 +9,26 @@ class VectorDB(ABC):
         self._check_init()
 
     def _check_init(self) -> None:
-        sig = inspect.signature(self._insert)
-        if not len(sig.parameters) == 4:
-            raise DefinitionError("_insert must have four argument in this order: "
-                                  "id: str, text: str, meta: dict, embedding: List[Any]")
-        sig = inspect.signature(self._get_similar)
-        if not len(sig.parameters) == 2:
-            raise DefinitionError("_get_similar must have two argument in this order: "
-                                  "embedding: List[Any], n_results: int")
+        check_num_args(self._insert, 4, "In order - id: str, text: str, meta: dict, embedding: List[Any]")
+        check_num_args(self._get_similar, 2, "In order - embedding: List[Any], n_results: int")
 
     async def _check_insert(self, id: str, text: str, meta: dict, embedding: List[Any]) -> None:
-        if not isinstance(id, str):
-            raise DefinitionError(f"VectorDB id must be of type: String, got: {type(id)}")
-        if not isinstance(text, str):
-            raise DefinitionError(f"VectorDB text must be of type: String, got: {type(text)}")
-        if not isinstance(meta, dict):
-            raise DefinitionError(f"VectorDB meta must be of type: Dictionary, got: {type(meta)}")
-        if not isinstance(embedding, list):
-            raise DefinitionError(f"VectorDB embedding must be of type: List[Any], got: {type(embedding)}")
-        if not id:
-            raise DefinitionError("VectorDB id must not be empty")
-        if not text:
-            raise DefinitionError("VectorDB text must not be empty")
-        if not embedding:
-            raise DefinitionError("VectorDB embedding must not be empty")
+        check_type(id, str, self._insert, 'id')
+        check_type(text, str, self._insert, 'text')
+        check_type(meta, dict, self._insert, 'meta')
+        check_type(embedding, list, self._insert, 'embedding')
+        check_not_false(id, "VectorDB id")
+        check_not_false(text, "VectorDB text")
+        check_not_false(embedding, "VectorDB embedding")
 
     async def _check_get_similar(self, embedding: List[Any], n_results: int) -> None:
-        if not isinstance(embedding, list):
-            raise DefinitionError(f"VectorDB embedding must be of type: List[Any], got: {type(embedding)}")
-        if not isinstance(n_results, int):
-            raise DefinitionError(f"VectorDB n_results must be of type: Integer, got: {type(n_results)}")
-        if n_results < 1:
-            raise DefinitionError(f"VectorDB n_results must be greater than 0, got: {n_results}")
-        if not embedding:
-            raise DefinitionError("VectorDB embedding must not be empty")
+        check_type(embedding, list, self._get_similar, 'embedding')
+        check_type(n_results, int, self._get_similar, 'n_results')
+        check_not_false(embedding, "VectorDB embedding")
+        check_min_val(n_results, 1, 'VectorDB n_results')
 
     async def _check_output(self, similar: List[Any]) -> None:
-        if not isinstance(similar, list):
-            raise DefinitionError(f"_get_similar output must be a list, got: {type(similar)}")
+        check_type(similar, list, self._get_similar, 'output')
 
     async def insert(self, id: str, text: str, meta: dict, embedding: List[Any]) -> None:
         await self._check_insert(id, text, meta, embedding)

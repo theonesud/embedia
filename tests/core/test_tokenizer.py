@@ -1,5 +1,5 @@
 import pytest
-from tests.definitions import OpenAITokenizer
+from tests.core.definitions import OpenAITokenizer, OpenAITokenizerBroken1, OpenAITokenizerBroken2
 from embedia.utils.exceptions import DefinitionError
 
 
@@ -17,7 +17,16 @@ async def test_tokenizer():
 @pytest.mark.asyncio
 async def test_tokenizer_error():
     tokenizer = OpenAITokenizer()
-    with pytest.raises(DefinitionError):
+    with pytest.raises(DefinitionError) as e:
         await tokenizer('')
-    with pytest.raises(DefinitionError):
+    print(e)
+    with pytest.raises(DefinitionError) as e:
         await tokenizer(4)
+    print(e)
+    with pytest.raises(DefinitionError) as e:
+        OpenAITokenizerBroken1()
+    print(e)
+    with pytest.raises(DefinitionError) as e:
+        tokenizer = OpenAITokenizerBroken2()
+        await tokenizer(text)
+    print(e)

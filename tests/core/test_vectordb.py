@@ -1,6 +1,7 @@
 import pytest
 from embedia import TextDoc
-from tests.definitions import OpenAIEmbedding, ChromaDB
+from tests.core.definitions import OpenAIEmbedding, ChromaDB, ChromaDBBroken1, ChromaDBBroken2, ChromaDBBroken3
+
 from embedia.utils.exceptions import DefinitionError
 import json
 
@@ -31,25 +32,46 @@ async def test_vectordb():
 @pytest.mark.asyncio
 async def test_vectordb_error():
     db = ChromaDB()
-    with pytest.raises(DefinitionError):
+    with pytest.raises(DefinitionError) as e:
         await db.insert(id=3, text='test', meta={}, embedding=[1, 2, 3])
-    with pytest.raises(DefinitionError):
+    print(e)
+    with pytest.raises(DefinitionError) as e:
         await db.insert(id='', text='test', meta={}, embedding=[1, 2, 3])
-    with pytest.raises(DefinitionError):
+    print(e)
+    with pytest.raises(DefinitionError) as e:
         await db.insert(id='123-123-12', text=4, meta={}, embedding=[1, 2, 3])
-    with pytest.raises(DefinitionError):
+    print(e)
+    with pytest.raises(DefinitionError) as e:
         await db.insert(id='123-123-12', text='', meta={}, embedding=[1, 2, 3])
-    with pytest.raises(DefinitionError):
+    print(e)
+    with pytest.raises(DefinitionError) as e:
         await db.insert(id='123-123-12', text='asdasd', meta=None, embedding=[1, 2, 3])
-    with pytest.raises(DefinitionError):
+    print(e)
+    with pytest.raises(DefinitionError) as e:
         await db.insert(id='123-123-12', text='asdasd', meta={}, embedding={})
-    with pytest.raises(DefinitionError):
+    print(e)
+    with pytest.raises(DefinitionError) as e:
         await db.insert(id='123-123-12', text='asdasd', meta={}, embedding=[])
-    with pytest.raises(DefinitionError):
+    print(e)
+    with pytest.raises(DefinitionError) as e:
         await db.get_similar(embedding=None, n_results=5)
-    with pytest.raises(DefinitionError):
+    print(e)
+    with pytest.raises(DefinitionError) as e:
         await db.get_similar(embedding=[], n_results=5)
-    with pytest.raises(DefinitionError):
+    print(e)
+    with pytest.raises(DefinitionError) as e:
         await db.get_similar(embedding=[1, 2, 3], n_results='5')
-    with pytest.raises(DefinitionError):
+    print(e)
+    with pytest.raises(DefinitionError) as e:
         await db.get_similar(embedding=[1, 2, 3], n_results=0)
+    print(e)
+    with pytest.raises(DefinitionError) as e:
+        ChromaDBBroken1()
+    print(e)
+    with pytest.raises(DefinitionError) as e:
+        ChromaDBBroken2()
+    print(e)
+    with pytest.raises(DefinitionError) as e:
+        db = ChromaDBBroken3()
+        await db.get_similar(embedding=[1, 2, 3], n_results=5)
+    print(e)

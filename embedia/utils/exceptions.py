@@ -1,12 +1,8 @@
-class DeniedByUserError(Exception):
+class UserDeniedError(Exception):
     pass
 
 
 class DefinitionError(Exception):
-    pass
-
-
-class MaxTokenError(Exception):
     pass
 
 

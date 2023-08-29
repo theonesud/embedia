@@ -3,12 +3,7 @@ import asyncio
 import multiprocessing as mp
 from contextlib import redirect_stdout
 from io import StringIO
-
 from embedia.core.tool import Tool
-
-# PYTHON_EXPERT_SYSTEM = """You are an expert python programmer.
-# Write python code to answer the user's question.
-# Reply only with the code and nothing else."""
 
 # make the timeout and background process a tool function
 
@@ -66,30 +61,3 @@ class PythonShell(Tool):
             raise asyncio.TimeoutError
         result = await loop.run_in_executor(None, queue.get)
         return result[0], result[1]
-
-
-# class PythonShellChat(Tool):
-#     def __init__(self, chatllm: Type[ChatLLM],
-#                  timeout=60, human_verification=True):
-#         super().__init__(name="Python LLM",
-#                          desc="Convert natural language input to python code and run it",
-#                          args={"question": "natural language question that can be answered by running python code",
-#                                "vars": "A python dictionary containing variables to be passed to the code"},
-#                          chatllm=chatllm)
-#         self.timeout = timeout
-#         self.human_verification = human_verification
-
-#     async def _run(self, question: str, vars: dict = {}):
-
-#         python_expert = self.chatllm(system_prompt=PYTHON_EXPERT_SYSTEM)
-#         prompt = (f"question: {question}, variables available: {vars}")
-#         code = await python_expert(Message(role='user', content=prompt))
-#         code = code.content
-
-#         if self.human_verification:
-#             self.confirm_before_running(code=code, vars=vars)
-
-#         python_shell = PythonShell(timeout=self.timeout)
-#         output, exit_code = await python_shell(code=code, vars=vars)
-
-#         return output, exit_code

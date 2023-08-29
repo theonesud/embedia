@@ -1,6 +1,6 @@
 import pytest
 
-from tests.definitions import OpenAIChatLLM
+from tests.core.definitions import OpenAIChatLLM
 from embedia import Agent, ChatLLM, Message, Tokenizer
 from embedia.tools import (BashShell, BashShellChat, PythonShell,
                            PythonShellChat)

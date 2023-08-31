@@ -1,9 +1,13 @@
 import os
+import shutil
+
 import pytest
-from tests.core.definitions import OpenAIChatLLM, OpenAILLM, ChatLLM, OpenAIChatLLMBroken1, OpenAIChatLLMBroken2, OpenAIChatLLMBroken3, OpenAIChatLLMBroken4, OpenAIChatLLMBroken5
-from embedia.utils.exceptions import DefinitionError
+
 from embedia import Persona
-os.makedirs('temp', exist_ok=True)
+from embedia.utils.exceptions import DefinitionError
+from tests.core.definitions import (ChatLLM, OpenAIChatLLM,
+                                    OpenAIChatLLMOptional1, OpenAIChatLLMOptional2,
+                                    OpenAIChatLLMOptional3, OpenAILLM)
 
 
 @pytest.mark.asyncio
@@ -12,8 +16,12 @@ async def test_chatllm():
     await chatllm.set_system_prompt(Persona.LibraryExpert.format(
         language='python', library='pandas'))
 
+    shutil.rmtree('temp', ignore_errors=True)
+    os.makedirs('temp')
     await chatllm.save_chat('temp/openai_chatllm.pkl')
     await chatllm.load_chat('temp/openai_chatllm.pkl')
+    assert os.path.exists('temp/openai_chatllm.pkl')
+    shutil.rmtree('temp')
 
     reply = await chatllm('How to merge two dataframes?')
     assert isinstance(reply, str)

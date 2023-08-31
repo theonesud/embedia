@@ -1,8 +1,9 @@
-from embedia.core.chatllm import ChatLLM
-from typing import List
 from copy import deepcopy
+from typing import List
+
+from embedia.core.chatllm import ChatLLM
 from embedia.schema.persona import Persona
-from embedia.utils.typechecking import check_type, check_min_val
+from embedia.utils.typechecking import check_min_val, check_type
 
 
 async def panel_discussion(question: str, personas: List[Persona], chatllm: ChatLLM, rounds: int = 5) -> None:

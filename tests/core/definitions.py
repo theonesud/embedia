@@ -1,13 +1,17 @@
+import os
+import time
+from typing import List
+
+import chromadb
+import openai
 import tiktoken
 from dotenv import load_dotenv
-import os
-import openai
-import time
-import chromadb
-from typing import List
-from embedia import Tokenizer, LLM, ChatLLM, Tool, EmbeddingModel, VectorDB, TextDoc
 from tenacity import (retry, retry_if_not_exception_type, stop_after_attempt,
                       wait_random_exponential)
+
+from embedia import (LLM, ChatLLM, EmbeddingModel, TextDoc, Tokenizer, Tool,
+                     VectorDB)
+
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 # TODO: make this setup and teardown
@@ -108,26 +112,9 @@ class ChromaDB(VectorDB):
         return result
 
 
-class OpenAITokenizerBroken1(Tokenizer):
+class OpenAILLMOptional1(LLM):
     def __init__(self):
-        super().__init__()
-
-    async def _tokenize(self) -> List[int]:
-        return tiktoken.encoding_for_model("gpt-3.5-turbo").encode('text')
-
-
-class OpenAITokenizerBroken2(Tokenizer):
-    def __init__(self):
-        super().__init__()
-
-    async def _tokenize(self, text: str) -> List[int]:
-        return 'asd'
-
-
-class OpenAILLMBroken1(LLM):
-    def __init__(self):
-        super().__init__(tokenizer=OpenAITokenizer,
-                         max_input_tokens=4000)
+        super().__init__(max_input_tokens=4000)
 
     async def _complete(self, prompt: str) -> str:
         completion = await openai.Completion.acreate(
@@ -139,10 +126,9 @@ class OpenAILLMBroken1(LLM):
         return completion.choices[0].text
 
 
-class OpenAILLMBroken2(LLM):
+class OpenAILLMOptional2(LLM):
     def __init__(self):
-        super().__init__(tokenizer=OpenAITokenizer(),
-                         max_input_tokens='4000')
+        super().__init__(tokenizer=OpenAITokenizer())
 
     async def _complete(self, prompt: str) -> str:
         completion = await openai.Completion.acreate(
@@ -154,10 +140,10 @@ class OpenAILLMBroken2(LLM):
         return completion.choices[0].text
 
 
-class OpenAILLMBroken3(LLM):
+class OpenAILLMOptional3(LLM):
     def __init__(self):
         super().__init__(tokenizer=OpenAITokenizer(),
-                         max_input_tokens=0)
+                         max_input_tokens=2)
 
     async def _complete(self, prompt: str) -> str:
         completion = await openai.Completion.acreate(
@@ -168,35 +154,94 @@ class OpenAILLMBroken3(LLM):
         )
         return completion.choices[0].text
 
+# class OpenAITokenizerBroken1(Tokenizer):
+#     def __init__(self):
+#         super().__init__()
 
-class OpenAILLMBroken4(LLM):
+#     async def _tokenize(self) -> List[int]:
+#         return tiktoken.encoding_for_model("gpt-3.5-turbo").encode('text')
+
+
+# class OpenAITokenizerBroken2(Tokenizer):
+#     def __init__(self):
+#         super().__init__()
+
+#     async def _tokenize(self, text: str) -> List[int]:
+#         return 'asd'
+
+
+# class OpenAILLMBroken1(LLM):
+#     def __init__(self):
+#         super().__init__(tokenizer=OpenAITokenizer,
+#                          max_input_tokens=4000)
+
+#     async def _complete(self, prompt: str) -> str:
+#         completion = await openai.Completion.acreate(
+#             model="text-davinci-003",
+#             prompt=prompt,
+#             max_tokens=500,
+#             temperature=0.1,
+#         )
+#         return completion.choices[0].text
+
+
+# class OpenAILLMBroken2(LLM):
+#     def __init__(self):
+#         super().__init__(tokenizer=OpenAITokenizer(),
+#                          max_input_tokens='4000')
+
+#     async def _complete(self, prompt: str) -> str:
+#         completion = await openai.Completion.acreate(
+#             model="text-davinci-003",
+#             prompt=prompt,
+#             max_tokens=500,
+#             temperature=0.1,
+#         )
+#         return completion.choices[0].text
+
+
+# class OpenAILLMBroken3(LLM):
+#     def __init__(self):
+#         super().__init__(tokenizer=OpenAITokenizer(),
+#                          max_input_tokens=0)
+
+#     async def _complete(self, prompt: str) -> str:
+#         completion = await openai.Completion.acreate(
+#             model="text-davinci-003",
+#             prompt=prompt,
+#             max_tokens=500,
+#             temperature=0.1,
+#         )
+#         return completion.choices[0].text
+
+
+# class OpenAILLMBroken4(LLM):
+#     def __init__(self):
+#         super().__init__(tokenizer=OpenAITokenizer(),
+#                          max_input_tokens=4000)
+
+#     async def _complete(self) -> str:
+#         completion = await openai.Completion.acreate(
+#             model="text-davinci-003",
+#             prompt='prompt',
+#             max_tokens=500,
+#             temperature=0.1,
+#         )
+#         return completion.choices[0].text
+
+
+# class OpenAILLMBroken5(LLM):
+#     def __init__(self):
+#         super().__init__(tokenizer=OpenAITokenizer(),
+#                          max_input_tokens=4000)
+
+#     async def _complete(self, prompt: str) -> str:
+#         return [1, 2, 3]
+
+
+class OpenAIChatLLMOptional1(ChatLLM):
     def __init__(self):
-        super().__init__(tokenizer=OpenAITokenizer(),
-                         max_input_tokens=4000)
-
-    async def _complete(self) -> str:
-        completion = await openai.Completion.acreate(
-            model="text-davinci-003",
-            prompt='prompt',
-            max_tokens=500,
-            temperature=0.1,
-        )
-        return completion.choices[0].text
-
-
-class OpenAILLMBroken5(LLM):
-    def __init__(self):
-        super().__init__(tokenizer=OpenAITokenizer(),
-                         max_input_tokens=4000)
-
-    async def _complete(self, prompt: str) -> str:
-        return [1, 2, 3]
-
-
-class OpenAIChatLLMBroken1(ChatLLM):
-    def __init__(self):
-        super().__init__(tokenizer=OpenAITokenizer,
-                         max_input_tokens=4096)
+        super().__init__(max_input_tokens=4096)
 
     async def _reply(self, prompt: str) -> str:
         completion = await openai.ChatCompletion.acreate(
@@ -208,10 +253,9 @@ class OpenAIChatLLMBroken1(ChatLLM):
         return completion.choices[0].message.content
 
 
-class OpenAIChatLLMBroken2(ChatLLM):
+class OpenAIChatLLMOptional2(ChatLLM):
     def __init__(self):
-        super().__init__(tokenizer=OpenAITokenizer(),
-                         max_input_tokens='4096')
+        super().__init__(tokenizer=OpenAITokenizer())
 
     async def _reply(self, prompt: str) -> str:
         completion = await openai.ChatCompletion.acreate(
@@ -223,10 +267,10 @@ class OpenAIChatLLMBroken2(ChatLLM):
         return completion.choices[0].message.content
 
 
-class OpenAIChatLLMBroken3(ChatLLM):
+class OpenAIChatLLMOptional3(ChatLLM):
     def __init__(self):
         super().__init__(tokenizer=OpenAITokenizer(),
-                         max_input_tokens=0)
+                         max_input_tokens=2)
 
     async def _reply(self, prompt: str) -> str:
         completion = await openai.ChatCompletion.acreate(
@@ -238,10 +282,10 @@ class OpenAIChatLLMBroken3(ChatLLM):
         return completion.choices[0].message.content
 
 
-class OpenAIChatLLMBroken4(ChatLLM):
+class OpenAIChatLLMOptional4(ChatLLM):
     def __init__(self):
         super().__init__(tokenizer=OpenAITokenizer(),
-                         max_input_tokens=4096)
+                         max_input_tokens=2)
 
     async def _reply(self) -> str:
         completion = await openai.ChatCompletion.acreate(
@@ -253,13 +297,28 @@ class OpenAIChatLLMBroken4(ChatLLM):
         return completion.choices[0].message.content
 
 
-class OpenAIChatLLMBroken5(ChatLLM):
-    def __init__(self):
-        super().__init__(tokenizer=OpenAITokenizer(),
-                         max_input_tokens=4096)
+# class OpenAIChatLLMBroken4(ChatLLM):
+#     def __init__(self):
+#         super().__init__(tokenizer=OpenAITokenizer(),
+#                          max_input_tokens=4096)
 
-    async def _reply(self, prompt: str) -> str:
-        return 44
+#     async def _reply(self) -> str:
+#         completion = await openai.ChatCompletion.acreate(
+#             model="gpt-3.5-turbo",
+#             temperature=0.1,
+#             max_tokens=500,
+#             messages=[message.to_json() for message in self.chat_history],
+#         )
+#         return completion.choices[0].message.content
+
+
+# class OpenAIChatLLMBroken5(ChatLLM):
+#     def __init__(self):
+#         super().__init__(tokenizer=OpenAITokenizer(),
+#                          max_input_tokens=4096)
+
+#     async def _reply(self, prompt: str) -> str:
+#         return 44
 
 
 class PrintToolBroken1(Tool):

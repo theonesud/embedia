@@ -1,5 +1,6 @@
-from embedia.utils.exceptions import DefinitionError
 import inspect
+
+from embedia.utils.exceptions import DefinitionError
 
 
 def check_type(var, type, func, src='input'):
@@ -12,10 +13,11 @@ def check_values(var, values: list, var_name: str):
         raise ValueError(f"Var: {var_name} should be one of {values}, got: {var}")
 
 
-def check_num_args(func, num_args: int, msg: str):
+def get_num_args(func):
     sig = inspect.signature(func)
-    if not len(sig.parameters) == num_args:
-        raise DefinitionError(f"Func: {func.__qualname__} must have {num_args} argument(s) - {msg}")
+    return len(sig.parameters)
+    # if not len(sig.parameters) == num_args:
+    #     raise DefinitionError(f"Func: {func.__qualname__} must have {num_args} argument(s) - {msg}")
 
 
 def check_num_outputs(outputs, num: int, func, msg: str):

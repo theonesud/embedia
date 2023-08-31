@@ -1,9 +1,11 @@
-import pytest
-from embedia import TextDoc
-from tests.core.definitions import OpenAIEmbedding, ChromaDB, ChromaDBBroken1, ChromaDBBroken2, ChromaDBBroken3
-
-from embedia.utils.exceptions import DefinitionError
 import json
+
+import pytest
+
+from embedia import TextDoc
+from embedia.utils.exceptions import DefinitionError
+from tests.core.definitions import (ChromaDB, ChromaDBBroken1, ChromaDBBroken2,
+                                    ChromaDBBroken3, OpenAIEmbedding)
 
 
 @pytest.mark.asyncio

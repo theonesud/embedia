@@ -6,7 +6,7 @@
 # autopep8
 # isort
 
-command="python -m pytest"
+command="python -m pytest -s"
 
 for arg in "$@"
 do
@@ -14,3 +14,7 @@ do
 done
 
 eval $command
+
+# --cov=./ --cov-report=html
+
+# python -m pytest

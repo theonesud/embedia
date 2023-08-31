@@ -1,8 +1,9 @@
 import pytest
-from embedia import string_similarity, embedding_similarity
+
+from embedia import (EmbeddingSimilarityMetric, StringSimilarityMetric,
+                     embedding_similarity, string_similarity)
 from embedia.utils.exceptions import DefinitionError
 from tests.core.definitions import OpenAIEmbedding
-from embedia import StringSimilarityMetric, EmbeddingSimilarityMetric
 
 
 @pytest.mark.asyncio

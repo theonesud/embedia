@@ -1,6 +1,6 @@
+from embedia.schema.pubsub import Event
 from embedia.utils.pubsub import subscribe_event
 from embedia.utils.terminal_colors import colored
-from embedia.schema.pubsub import Event
 
 
 def print_llm_start_callback(data):

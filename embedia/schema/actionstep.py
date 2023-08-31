@@ -1,5 +1,6 @@
-from pydantic import BaseModel
 from typing import Any, Tuple
+
+from pydantic import BaseModel
 
 
 class Action(BaseModel):

@@ -1,8 +1,9 @@
-from embedia.utils.pubsub import subscribe_event
-import logging
 import json
+import logging
 import os
+
 from embedia.schema.pubsub import Event
+from embedia.utils.pubsub import subscribe_event
 
 home = os.path.expanduser('~')
 os.makedirs(f'{home}/.embedia', exist_ok=True)

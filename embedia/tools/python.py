@@ -3,21 +3,21 @@ import asyncio
 import multiprocessing as mp
 from contextlib import redirect_stdout
 from io import StringIO
+from typing import Tuple
+
 from embedia.core.tool import Tool
 
-# make the timeout and background process a tool function
 
-
-class PythonShell(Tool):
+class PythonInterpreter(Tool):
 
     def __init__(self, timeout=60):
-        super().__init__(name="Python Shell",
-                         desc="Run valid python code",
-                         args={"code": "Valid python code to be run by a python interpreter",
+        super().__init__(name="Python Interpreter",
+                         desc="Runs the provided python code in the current interpreter",
+                         args={"code": "Python code to be run (type: str)",
                                "vars": "A python dictionary containing variables to be passed to the code"})
         self.timeout = timeout
 
-    def _target_func(self, queue, code, vars):
+    def _target_func(self, queue, code: str, vars: dict) -> None:
         try:
             global_vars = {'__builtins__': __builtins__}
             local_vars = vars
@@ -50,7 +50,7 @@ class PythonShell(Tool):
         except Exception as e:
             queue.put([str(e), 1])
 
-    async def _run(self, code: str, vars: dict = {}):
+    async def _run(self, code: str, vars: dict = {}) -> Tuple[str, int]:
         loop = asyncio.get_running_loop()
         queue = mp.Queue()
         process = mp.Process(target=self._target_func, args=(queue, code, vars))

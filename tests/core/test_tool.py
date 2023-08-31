@@ -1,8 +1,13 @@
 import pytest
-from tests.core.definitions import SleepTool, PrintTool, PrintToolBroken1, PrintToolBroken2, PrintToolBroken3, \
-    PrintToolBroken4, PrintToolBroken5, PrintToolBroken6, PrintToolBroken7, PrintToolBroken8, PrintToolBroken9, \
-    PrintToolBroken10, PrintToolBroken11, PrintToolBroken12
-from embedia.utils.exceptions import UserDeniedError, DefinitionError
+
+from embedia.utils.exceptions import DefinitionError, UserDeniedError
+from tests.core.definitions import (PrintTool, PrintToolBroken1,
+                                    PrintToolBroken2, PrintToolBroken3,
+                                    PrintToolBroken4, PrintToolBroken5,
+                                    PrintToolBroken6, PrintToolBroken7,
+                                    PrintToolBroken8, PrintToolBroken9,
+                                    PrintToolBroken10, PrintToolBroken11,
+                                    PrintToolBroken12, SleepTool)
 
 
 @pytest.mark.asyncio

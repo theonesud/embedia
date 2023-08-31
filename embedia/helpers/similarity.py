@@ -1,8 +1,12 @@
-from rapidfuzz.distance import DamerauLevenshtein, Hamming, Indel, Jaro, JaroWinkler, Levenshtein, OSA, Prefix, Postfix
 from typing import List
+
 import numpy as np
+from rapidfuzz.distance import (OSA, DamerauLevenshtein, Hamming, Indel, Jaro,
+                                JaroWinkler, Levenshtein, Postfix, Prefix)
+
+from embedia.schema.similarity import (EmbeddingSimilarityMetric,
+                                       StringSimilarityMetric)
 from embedia.utils.typechecking import check_type
-from embedia.schema.similarity import StringSimilarityMetric, EmbeddingSimilarityMetric
 
 
 async def string_similarity(s1: str, s2: str, method: StringSimilarityMetric = StringSimilarityMetric.JaroWinkler) -> float:

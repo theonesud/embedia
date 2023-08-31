@@ -1,4 +1,5 @@
 from typing import Dict, Optional
+
 from embedia.schema.pubsub import Event
 
 subscribers = {}

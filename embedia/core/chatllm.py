@@ -1,8 +1,6 @@
-import pickle
 from abc import ABC
 from typing import Optional
-
-import aiofiles
+import pickle
 
 from embedia.core.llm import LLM
 from embedia.core.tokenizer import Tokenizer
@@ -19,21 +17,6 @@ class ChatLLM(ABC):
         self.llm: LLM = None
         self.tokenizer = tokenizer
         self.max_input_tokens = max_input_tokens
-        # self._check_init()
-
-    # def _check_init(self) -> None:
-    #     check_type(self.tokenizer, Tokenizer, self.__init__, 'tokenizer')
-    #     check_type(self.max_input_tokens, int, self.__init__, 'max_input_tokens')
-    #     check_min_val(self.max_input_tokens, 1, 'max_input_tokens')
-    #     check_num_args(self._reply, 1, "type: str")
-
-    # async def _check_call(self, prompt: str) -> None:
-    #     check_not_false(self.chat_history, "System Prompt")
-    #     check_type(prompt, str, self.__call__)
-    #     check_not_false(prompt, "ChatLLM __call__ prompt")
-
-    # async def _check_output(self, reply: str) -> None:
-    #     check_type(reply, str, self._reply, 'output')
 
     async def _call_llm(self, message: Message) -> Message:
         prompt = ''
@@ -54,30 +37,34 @@ class ChatLLM(ABC):
             total_tokens = await self._calculate_chat_history_tokens()
             if self.max_input_tokens:
                 check_token_length(total_tokens, self.max_input_tokens)
-            num_tokens = len(await self.tokenizer(message.content))
+            msg_tokens = len(await self.tokenizer(message.content))
         else:
-            num_tokens = None
-        publish_event(Event.ChatLLMStart, data={'id': id(self), 'role': message.role, 'content': message.content,
-                                                'num_tokens': num_tokens})
+            msg_tokens = None
+        publish_event(Event.ChatLLMStart, id(self), {'msg_role': message.role,
+                                                     'msg_content': message.content,
+                                                     'msg_tokens': msg_tokens})
 
         if not get_num_args(self._reply):
             reply = await self._reply()
         else:
             reply = await self._reply(message.content)
-        # await self._check_output(reply)
+        reply = Message(role=MessageRole.assistant, content=reply)
         if self.tokenizer:
-            num_tokens = len(await self.tokenizer(reply))
+            reply_tokens = len(await self.tokenizer(reply.content))
         else:
-            num_tokens = None
-        publish_event(Event.ChatLLMEnd, data={'id': id(self), 'role': reply.role, 'content': reply.content,
-                                              'num_tokens': num_tokens})
+            reply_tokens = None
+        publish_event(Event.ChatLLMEnd, id(self), {'msg_role': message.role,
+                                                   'msg_content': message.content,
+                                                   'msg_tokens': msg_tokens,
+                                                   'reply_role': reply.role,
+                                                   'reply_content': reply.content,
+                                                   'reply_tokens': reply_tokens})
         return reply
 
     async def _reply(self, prompt: Optional[str] = None) -> str:
         raise NotImplementedError
 
     async def __call__(self, prompt: str) -> str:
-        # await self._check_call(prompt)
         message = Message(role=MessageRole.user, content=prompt)
         self.chat_history.append(message)
         if self.llm:
@@ -99,14 +86,15 @@ class ChatLLM(ABC):
             num_tokens = len(tokens)
         else:
             num_tokens = None
-        publish_event(Event.ChatLLMInit, data={'id': id(self), 'role': MessageRole.system, 'content': system_prompt,
-                                               'num_tokens': num_tokens})
+        publish_event(Event.ChatLLMInit, id(self), {'system_role': MessageRole.system,
+                                                    'system_content': system_prompt,
+                                                    'system_tokens': num_tokens})
         self.chat_history = [Message(role=MessageRole.system, content=system_prompt)]
 
     async def save_chat(self, filepath: str) -> None:
-        async with aiofiles.open(filepath, "wb") as f:
-            await f.write(pickle.dumps(self.chat_history))
+        with open(filepath, "wb") as f:
+            pickle.dump(self.chat_history, f)
 
     async def load_chat(self, filepath: str) -> None:
-        async with aiofiles.open(filepath, "rb") as f:
-            self.chat_history = pickle.loads(await f.read())
+        with open(filepath, "rb") as f:
+            self.chat_history = pickle.loads(f.read())

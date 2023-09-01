@@ -13,10 +13,10 @@ async def test_bash_tool_without_llm():
     bash_shell = Terminal(timeout=5)
     output = await bash_shell('ls -l')
 
-    assert isinstance(output[0], str)
-    assert isinstance(output[1], int)
-    assert len(output[0]) > 0
-    assert output[1] == 0
+    assert isinstance(output.output, str)
+    assert isinstance(output.exit_code, int)
+    assert len(output.output) > 0
+    assert output.exit_code == 0
 
 
 @pytest.mark.asyncio
@@ -35,10 +35,10 @@ async def test_bash_tool_incorrect_command():
 
     output = await bash_shell('asdwadawdd')
 
-    assert isinstance(output[0], str)
-    assert isinstance(output[1], int)
-    assert len(output[0]) > 0
-    assert output[1] == 1
+    assert isinstance(output.output, str)
+    assert isinstance(output.exit_code, int)
+    assert len(output.output) > 0
+    assert output.exit_code == 1
 
 
 @pytest.mark.asyncio
@@ -48,7 +48,7 @@ async def test_bash_tool_different_shell():
 
     output = await bash_shell('ps -p $$')
 
-    assert isinstance(output[0], str)
-    assert isinstance(output[1], int)
-    assert len(output[0]) > 0
-    assert output[1] == 0
+    assert isinstance(output.output, str)
+    assert isinstance(output.exit_code, int)
+    assert len(output.output) > 0
+    assert output.exit_code == 0

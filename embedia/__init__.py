@@ -5,11 +5,12 @@ from embedia.core.tokenizer import Tokenizer
 from embedia.core.tool import Tool
 from embedia.core.vectordb import VectorDB
 from embedia.helpers.panel import panel_discussion
-from embedia.helpers.similarity import embedding_similarity, string_similarity
+
 from embedia.schema.persona import Persona
 from embedia.schema.pubsub import Event
-from embedia.schema.similarity import (EmbeddingSimilarityMetric,
-                                       StringSimilarityMetric)
+from embedia.schema.tool import ToolDocumentation, ToolReturn, ArgDocumentation
+from embedia.schema.vectordb import VectorDBGetSimilar, VectorDBInsert
+
 from embedia.schema.textdoc import TextDoc
 from embedia.utils.file_callback import setup_file_callback
 from embedia.utils.print_callback import setup_print_callback

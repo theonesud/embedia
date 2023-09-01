@@ -1,8 +1,6 @@
 .env
 __pycache__/
 .DS_Store
-temp/
-_temp/
 .mypy_cache/
-*.Identifier
-logs/
+ignore/
+.coverage

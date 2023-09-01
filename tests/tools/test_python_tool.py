@@ -25,10 +25,10 @@ def count_lines_of_code(directory):
 current_directory = os.getcwd()
 count_lines_of_code(current_directory)""")
 
-    assert isinstance(output[0], int)
-    assert isinstance(output[1], int)
-    assert output[0] > 0
-    assert output[1] == 0
+    assert isinstance(output.output, int)
+    assert isinstance(output.exit_code, int)
+    assert output.output > 0
+    assert output.exit_code == 0
 
 
 @pytest.mark.asyncio
@@ -45,7 +45,7 @@ async def test_python_tool_incorrect_command():
 
     output = await python_shell('printsss("asdafas")')
 
-    assert isinstance(output[0], str)
-    assert isinstance(output[1], int)
-    assert len(output[0]) > 0
-    assert output[1] == 1
+    assert isinstance(output.output, str)
+    assert isinstance(output.exit_code, int)
+    assert len(output.output) > 0
+    assert output.exit_code == 1

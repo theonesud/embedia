@@ -9,12 +9,12 @@ from pydantic import BaseModel, Field
 
 class TextDoc(BaseModel):
     contents: str
-    meta: Optional[dict] = {}
+    meta: Optional[dict] = None
     id: str = Field(default_factory=lambda: str(uuid4()))
     created_at: str = Field(default_factory=lambda: str(datetime.now(timezone.utc).astimezone()))
 
     @classmethod
-    def from_file(cls, path: str, meta: Optional[dict] = {}, encoding: str = 'utf-8') -> 'TextDoc':
+    def from_file(cls, path: str, meta: Optional[dict] = None, encoding: str = 'utf-8') -> 'TextDoc':
         with open(path, 'r', encoding=encoding) as f:
             instance = cls(meta=meta, contents=f.read())
         return instance

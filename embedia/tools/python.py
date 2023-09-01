@@ -3,18 +3,24 @@ import asyncio
 import multiprocessing as mp
 from contextlib import redirect_stdout
 from io import StringIO
-from typing import Tuple
 
 from embedia.core.tool import Tool
+from embedia.schema.tool import ToolReturn, ArgDocumentation, ToolDocumentation
 
 
 class PythonInterpreter(Tool):
 
     def __init__(self, timeout=60):
-        super().__init__(name="Python Interpreter",
-                         desc="Runs the provided python code in the current interpreter",
-                         args={"code": "Python code to be run (type: str)",
-                               "vars": "A python dictionary containing variables to be passed to the code"})
+        super().__init__(docs=ToolDocumentation(
+            name="Python Interpreter",
+            desc="Runs the provided python code in the current interpreter",
+            args=[ArgDocumentation(
+                name="code",
+                desc="Python code to be run (type: str)"
+            ), ArgDocumentation(
+                name="vars",
+                desc="A python dictionary containing variables to be passed to the code"
+            )]))
         self.timeout = timeout
 
     def _target_func(self, queue, code: str, vars: dict) -> None:
@@ -50,7 +56,7 @@ class PythonInterpreter(Tool):
         except Exception as e:
             queue.put([str(e), 1])
 
-    async def _run(self, code: str, vars: dict = {}) -> Tuple[str, int]:
+    async def _run(self, code: str, vars: dict = {}) -> ToolReturn:
         loop = asyncio.get_running_loop()
         queue = mp.Queue()
         process = mp.Process(target=self._target_func, args=(queue, code, vars))
@@ -60,4 +66,4 @@ class PythonInterpreter(Tool):
             process.kill()
             raise asyncio.TimeoutError
         result = await loop.run_in_executor(None, queue.get)
-        return result[0], result[1]
+        return ToolReturn(output=result[0], exit_code=result[1])

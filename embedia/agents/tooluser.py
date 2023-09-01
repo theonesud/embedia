@@ -4,9 +4,10 @@ from typing import Any, List, Tuple
 
 from embedia.core.chatllm import ChatLLM
 from embedia.core.tool import Tool
-from embedia.schema.actionstep import Action, ActionStep
+from embedia.schema.agent import Action, Step
 from embedia.schema.persona import Persona
 from embedia.schema.pubsub import Event
+from embedia.schema.tool import ToolReturn, ArgDocumentation, ToolDocumentation
 from embedia.utils.exceptions import AgentError
 from embedia.utils.pubsub import publish_event
 from embedia.utils.typechecking import check_min_val, check_type
@@ -15,19 +16,20 @@ from embedia.utils.typechecking import check_min_val, check_type
 class ToolUser(Tool):
     def __init__(self, chatllm: ChatLLM, tools: List[Tool],
                  max_steps: int = 10, max_duration: int = 60) -> None:
-        super().__init__(name="Tool User",
-                         desc="It uses the available tools to answer the user's question",
-                         args={'question': 'The main question that needs to be answered (Type: str)'})
+        super().__init__(docs=ToolDocumentation(
+            name="Tool User",
+            desc="It uses the available tools to answer the user's question",
+            args=[ArgDocumentation(
+                name='question',
+                desc='The main question that needs to be answered (Type: str)'
+            )]))
         self.tools = tools
         self.max_steps = max_steps
         self.max_duration = max_duration
         self.arg_chooser = deepcopy(chatllm)
         self.tool_chooser = deepcopy(chatllm)
         self.sys1_thinker = deepcopy(chatllm)
-        self.action_steps = []
-        self._check_init()
-
-    def _check_init(self) -> None:
+        self.step_history = []
         check_type(self.chatllm, ChatLLM)
         check_min_val(len(self.tools), 1, 'len(tools)')
         for tool in self.tools:
@@ -83,7 +85,7 @@ class ToolUser(Tool):
 
     async def _choose_next_step(self) -> Tuple[str, str]:
         await self.sys1_thinker.set_system_prompt(Persona.Sys1Thinker)
-        prompt = "\n".join([str(step) for step in self.action_steps])
+        prompt = "\n".join([str(step) for step in self.step_history])
         resp = await self.sys1_thinker(prompt)
         resp = resp.content
         if resp.split(':')[0] == 'Question':
@@ -93,17 +95,21 @@ class ToolUser(Tool):
         else:
             raise AgentError(f"Agent's response: {resp} could not be parsed")
 
-    async def _run(self, question: str) -> Tuple[Any, int]:
+    async def _run(self, question: str) -> ToolReturn:
+        main_question = question
+        publish_event(Event.AgentStart, id(self), {'question': question})
         steps = 1
         now = time.time()
         while steps <= self.max_steps and time.time() - now <= self.max_duration:
 
-            if self.action_steps:
+            if self.step_history:
                 thought, thought_type = self._choose_next_step()
                 if thought_type == 'Question':
                     question = thought
                 elif thought_type == 'Final Answer':
-                    return thought, 0
+                    publish_event(Event.AgentEnd, id(self), {'question': main_question,
+                                                             'answer': thought})
+                    return ToolReturn(output=thought, exit_code=0)
 
             tool_choice = await self._choose_tool(question)
             kwargs = await self._choose_args(question, tool_choice)
@@ -111,15 +117,16 @@ class ToolUser(Tool):
             await self.human_confirmation({'tool': tool_choice.name, 'args': kwargs})
             result = await tool_choice(**kwargs)
 
-            action_step = ActionStep(question=question,
-                                     action=Action(tool_name=tool_choice.name,
-                                                   args=kwargs),
-                                     result=result)
-            self.action_steps.append(action_step)
+            step = Step(question=question,
+                        action=Action(tool_name=tool_choice.name,
+                                      args=kwargs),
+                        result=result)
+            self.step_history.append(step)
             steps += 1
-            publish_event(Event.AgentStep, data={'action_step': action_step})
+            publish_event(Event.AgentStep, id(self), {'step': step})
 
-        publish_event(Event.AgentTimeout, data={'action_steps': self.action_steps,
-                                                'duration': f'{time.time() - now :.2f}s',
-                                                'num_steps': steps - 1})
-        return self.action_steps[-1].result, 1
+        publish_event(Event.AgentTimeout, id(self), {'step_history': self.step_history,
+                                                     'duration': f'{time.time() - now :.2f}s',
+                                                     'num_steps': steps - 1})
+
+        return ToolReturn(output=self.step_history[-1].result, exit_code=1)

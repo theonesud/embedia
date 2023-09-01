@@ -4,10 +4,9 @@ import shutil
 import pytest
 
 from embedia import Persona
-from embedia.utils.exceptions import DefinitionError
 from tests.core.definitions import (ChatLLM, OpenAIChatLLM,
                                     OpenAIChatLLMOptional1, OpenAIChatLLMOptional2,
-                                    OpenAIChatLLMOptional3, OpenAILLM)
+                                    OpenAIChatLLMOptional3, OpenAIChatLLMOptional4, OpenAILLM)
 
 
 @pytest.mark.asyncio
@@ -25,7 +24,7 @@ async def test_chatllm():
 
     reply = await chatllm('How to merge two dataframes?')
     assert isinstance(reply, str)
-    assert len(reply.content) > 0
+    assert len(reply) > 0
 
 
 @pytest.mark.asyncio
@@ -36,41 +35,31 @@ async def test_from_llm():
         language='python', library='pandas'))
     reply = await chatllm('How to merge two dataframes?')
     assert isinstance(reply, str)
-    assert len(reply.content) > 0
+    assert len(reply) > 0
 
 
 @pytest.mark.asyncio
 async def test_chatllm_error():
-    chatllm = OpenAIChatLLM()
-    with pytest.raises(DefinitionError) as e:
-        await chatllm('How to merge two dataframes?')
-    print(e)
+    chatllm = OpenAIChatLLMOptional1()
+    reply = await chatllm('How to merge two dataframes?')
+    assert isinstance(reply, str)
+    assert len(reply) > 0
+
+    chatllm = OpenAIChatLLMOptional2()
     await chatllm.set_system_prompt(Persona.LibraryExpert.format(
         language='python', library='pandas'))
-    with pytest.raises(DefinitionError) as e:
-        await chatllm('')
-    print(e)
-    with pytest.raises(DefinitionError) as e:
-        await chatllm(666)
-    print(e)
-    with pytest.raises(DefinitionError) as e:
-        OpenAIChatLLMBroken1()
-    print(e)
-    with pytest.raises(DefinitionError) as e:
-        OpenAIChatLLMBroken2()
-    print(e)
-    with pytest.raises(DefinitionError) as e:
-        OpenAIChatLLMBroken3()
-    print(e)
-    with pytest.raises(DefinitionError) as e:
-        OpenAIChatLLMBroken4()
-    print(e)
-    with pytest.raises(DefinitionError) as e:
-        chatllm = OpenAIChatLLMBroken5()
-        await chatllm.set_system_prompt(Persona.LibraryExpert.format(
-            language='python', library='pandas'))
+    reply = await chatllm('How to merge two dataframes?')
+    assert isinstance(reply, str)
+    assert len(reply) > 0
+
+    chatllm = OpenAIChatLLMOptional3()
+    with pytest.raises(ValueError) as e:
         await chatllm('How to merge two dataframes?')
-    print(e)
-    with pytest.raises(DefinitionError) as e:
-        # check token length
-        pass
+    assert str(e) == "<ExceptionInfo ValueError('Length of input text: 7 token(s) is longer than max_input_tokens: 2') tblen=4>"
+
+    chatllm = OpenAIChatLLMOptional4()
+    await chatllm.set_system_prompt(Persona.LibraryExpert.format(
+        language='python', library='pandas'))
+    reply = await chatllm('How to merge two dataframes?')
+    assert isinstance(reply, str)
+    assert len(reply) > 0

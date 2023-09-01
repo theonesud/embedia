@@ -6,17 +6,24 @@ from embedia.schema.persona import Persona
 from embedia.utils.typechecking import check_min_val, check_type
 
 
-async def panel_discussion(question: str, personas: List[Persona], chatllm: ChatLLM, rounds: int = 5) -> None:
+def _init_check(question: str, personas: List[Persona], chatllm: ChatLLM, rounds: int):
     check_type(question, str)
     for persona in personas:
         check_type(persona, str)
     check_type(chatllm, ChatLLM)
     check_type(rounds, int)
     check_min_val(rounds, 1)
+
+
+async def panel_discussion(question: str, personas: List[Persona], chatllm: ChatLLM, rounds: int = 5) -> None:
+    _init_check(question, personas, chatllm, rounds)
+
     summarizer = deepcopy(chatllm)
-    asker = deepcopy(chatllm)
     await summarizer.set_system_prompt(Persona.Summary)
+
+    asker = deepcopy(chatllm)
     await asker.set_system_prompt(Persona.QuestionAsker)
+
     panelists = []
     for persona in personas:
         persona_chat = deepcopy(chatllm)

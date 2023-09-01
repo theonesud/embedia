@@ -16,11 +16,5 @@ class Message(BaseModel):
     role: MessageRole
     content: str
     id: str = Field(default_factory=lambda: str(uuid4()))
-    created_at: str = Field(default_factory=lambda: str(datetime.now(timezone.utc).astimezone()))
-
-    def to_json(self) -> dict:
-
-        return {
-            'role': self.role,
-            'content': self.content
-        }
+    created_at: str = Field(default_factory=lambda: str(
+        datetime.now(timezone.utc).astimezone()))

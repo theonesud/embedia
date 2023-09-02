@@ -3,7 +3,8 @@ from typing import List
 
 from embedia.core.chatllm import ChatLLM
 from embedia.schema.persona import Persona
-from embedia.utils.typechecking import check_min_val, check_type, check_exact_val
+from embedia.utils.typechecking import (check_exact_val, check_min_val,
+                                        check_type)
 
 
 def _init_check(question: str, personas: List[Persona], chatllm: ChatLLM, rounds: int):

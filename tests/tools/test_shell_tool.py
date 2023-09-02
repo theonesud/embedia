@@ -4,6 +4,7 @@ import pytest
 from dotenv import load_dotenv
 
 from embedia.tools import Terminal
+
 load_dotenv()
 
 

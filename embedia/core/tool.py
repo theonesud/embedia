@@ -4,7 +4,7 @@ from embedia.schema.pubsub import Event
 from embedia.schema.tool import ToolDocumentation, ToolReturn
 from embedia.utils.exceptions import UserDeniedError
 from embedia.utils.pubsub import publish_event
-from embedia.utils.typechecking import (check_args, check_type)
+from embedia.utils.typechecking import check_args, check_type
 
 
 class Tool(ABC):

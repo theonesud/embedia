@@ -5,8 +5,10 @@ import pytest
 
 from embedia import Persona
 from tests.core.definitions import (ChatLLM, OpenAIChatLLM,
-                                    OpenAIChatLLMOptional1, OpenAIChatLLMOptional2,
-                                    OpenAIChatLLMOptional3, OpenAIChatLLMOptional4, OpenAILLM)
+                                    OpenAIChatLLMOptional1,
+                                    OpenAIChatLLMOptional2,
+                                    OpenAIChatLLMOptional3,
+                                    OpenAIChatLLMOptional4, OpenAILLM)
 
 
 @pytest.mark.asyncio

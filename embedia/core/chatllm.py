@@ -1,6 +1,6 @@
-from abc import ABC
-from typing import Optional
 import pickle
+from abc import ABC
+from typing import List, Optional
 
 from embedia.core.llm import LLM
 from embedia.core.tokenizer import Tokenizer
@@ -8,12 +8,12 @@ from embedia.schema.message import Message, MessageRole
 from embedia.schema.pubsub import Event
 from embedia.utils.pubsub import publish_event
 from embedia.utils.tokens import check_token_length
-from embedia.utils.typechecking import (get_num_args)
+from embedia.utils.typechecking import get_num_args
 
 
 class ChatLLM(ABC):
     def __init__(self, tokenizer: Optional[Tokenizer] = None, max_input_tokens: Optional[int] = None) -> None:
-        self.chat_history = []
+        self.chat_history: List[Message] = []
         self.llm: LLM = None
         self.tokenizer = tokenizer
         self.max_input_tokens = max_input_tokens

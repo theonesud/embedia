@@ -5,7 +5,7 @@ from contextlib import redirect_stdout
 from io import StringIO
 
 from embedia.core.tool import Tool
-from embedia.schema.tool import ToolReturn, ArgDocumentation, ToolDocumentation
+from embedia.schema.tool import ArgDocumentation, ToolDocumentation, ToolReturn
 
 
 class PythonInterpreter(Tool):

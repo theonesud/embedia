@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any, List
-from embedia.schema.vectordb import VectorDBInsert, VectorDBGetSimilar
+
+from embedia.schema.vectordb import VectorDBGetSimilar, VectorDBInsert
 
 
 class VectorDB(ABC):

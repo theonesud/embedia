@@ -1,5 +1,6 @@
+from typing import Any, List, Literal, Optional
+
 from pydantic import BaseModel
-from typing import List, Literal, Optional, Any
 
 
 class ArgDocumentation(BaseModel):

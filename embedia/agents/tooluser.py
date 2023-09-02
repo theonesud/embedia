@@ -1,14 +1,14 @@
+import json
 import time
 from copy import deepcopy
 from typing import List, Tuple
-import json
 
 from embedia.core.chatllm import ChatLLM
 from embedia.core.tool import Tool
 from embedia.schema.agent import Action, Step
 from embedia.schema.persona import Persona
 from embedia.schema.pubsub import Event
-from embedia.schema.tool import ToolReturn, ArgDocumentation, ToolDocumentation
+from embedia.schema.tool import ArgDocumentation, ToolDocumentation, ToolReturn
 from embedia.utils.exceptions import AgentError
 from embedia.utils.pubsub import publish_event
 from embedia.utils.typechecking import check_min_val, check_type
@@ -31,7 +31,7 @@ class ToolUser(Tool):
         self.arg_chooser = deepcopy(chatllm)
         self.tool_chooser = deepcopy(chatllm)
         self.sys1_thinker = deepcopy(chatllm)
-        self.step_history = []
+        self.step_history: List[Step] = []
         check_min_val(len(self.tools), 1, 'len(tools)')
         for tool in self.tools:
             check_type(tool, Tool, self.__init__, 'tool')

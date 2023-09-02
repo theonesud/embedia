@@ -1,9 +1,10 @@
-import pytest
 from copy import deepcopy
 
-from embedia.schema.persona import Persona
+import pytest
+
 from embedia.agents import ToolUser
-from embedia.tools import (PythonInterpreter, Terminal)
+from embedia.schema.persona import Persona
+from embedia.tools import PythonInterpreter, Terminal
 from tests.core.definitions import OpenAIChatLLM
 
 

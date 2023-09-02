@@ -1,7 +1,8 @@
+from typing import Optional
+
 from embedia.schema.pubsub import Event
 from embedia.utils.pubsub import subscribe_event
 from embedia.utils.terminal_colors import colored
-from typing import Optional
 
 
 def print_callback(event_type: Event, id: int, timestamp: str, data: Optional[dict] = None):

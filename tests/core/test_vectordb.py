@@ -1,10 +1,11 @@
 import json
 import os
-import pytest
 import shutil
 
-from embedia import TextDoc, VectorDBInsert, VectorDBGetSimilar
-from tests.core.definitions import (WeaviateDB, OpenAIEmbedding)
+import pytest
+
+from embedia import TextDoc, VectorDBGetSimilar, VectorDBInsert
+from tests.core.definitions import OpenAIEmbedding, WeaviateDB
 
 
 @pytest.mark.asyncio

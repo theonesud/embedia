@@ -1,6 +1,7 @@
 import pytest
 
-from tests.core.definitions import (OpenAILLM, OpenAILLMOptional1, OpenAILLMOptional2, OpenAILLMOptional3)
+from tests.core.definitions import (OpenAILLM, OpenAILLMOptional1,
+                                    OpenAILLMOptional2, OpenAILLMOptional3)
 
 
 @pytest.mark.asyncio

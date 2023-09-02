@@ -15,3 +15,13 @@
 ### Tests
 - Write tests for every possible scenario
 - Run mypy and all tests before creating a PR
+
+
+### Commands
+- flake8
+- autopep8
+
+- python -m pytest --cov=./ --cov-report=html
+
+- mypy embedia
+- isort .

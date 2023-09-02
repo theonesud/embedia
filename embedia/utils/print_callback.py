@@ -5,51 +5,51 @@ from typing import Optional
 
 
 def print_callback(event_type: Event, id: int, timestamp: str, data: Optional[dict] = None):
-    print(f"\n[time: {timestamp}] [id: {id}] [event: {event_type}]\n")
+    print(f"\n[time: {timestamp}] [id: {id}] [event: {event_type}]")
     if event_type == Event.LLMStart:
-        msg = f"Prompt: {data['prompt']} ({data['prompt_tokens']} tokens)"
+        msg = f"Prompt ({data['prompt_tokens']} tokens):\n{data['prompt']}"
         color = 'cyan'
     elif event_type == Event.LLMEnd:
-        msg = f"Completion: {data['completion']} ({data['completion_tokens']} tokens)"
+        msg = f"Completion ({data['completion_tokens']} tokens):\n{data['completion']}"
         color = 'yellow'
     elif event_type == Event.ChatLLMInit:
-        msg = f"{data['system_role']}: {data['system_content']} ({data['system_tokens']} tokens)"
+        msg = f"{data['system_role']} ({data['system_tokens']} tokens):\n{data['system_content']}"
         color = 'red'
     elif event_type == Event.ChatLLMStart:
-        msg = f"{data['msg_role']}: {data['msg_content']} ({data['msg_tokens']} tokens)"
+        msg = f"{data['msg_role']} ({data['msg_tokens']} tokens):\n{data['msg_content']}"
         color = 'cyan'
     elif event_type == Event.ChatLLMEnd:
-        msg = f"{data['reply_role']}: {data['reply_content']} ({data['reply_tokens']} tokens)"
+        msg = f"{data['reply_role']} ({data['reply_tokens']} tokens):\n{data['reply_content']}"
         color = 'yellow'
     elif event_type == Event.ToolStart:
         msg = f"Tool: {data['name']}\nArgs: {data['args']}\nKwargs: {data['kwargs']}"
         color = 'blue'
     elif event_type == Event.ToolEnd:
-        msg = f"Tool: {data['name']}\nOutput: {data['output']}"
+        msg = f"Tool: {data['name']}\nExitCode: {data['tool_exit_code']}\nOutput:\n{data['tool_output']}"
         color = 'blue'
     elif event_type == Event.EmbeddingStart:
-        msg = f"Input: {data['input'][:100]}..."
+        msg = f"Input:\n{data['input'][:100]}..."
         color = 'magenta'
     elif event_type == Event.EmbeddingEnd:
-        msg = f"Embedding: {data['embedding'][:5]}..."
+        msg = f"Embedding:\n{data['embedding'][:5]}..."
         color = 'magenta'
     elif event_type == Event.AgentStart:
-        msg = f"Main Question: {data['question']}"
+        msg = f"Main Question:\n{data['question']}"
         color = 'cyan'
     elif event_type == Event.AgentStep:
-        msg = (f"Question: {data['step'].question}\nToolChoice: {data['step'].action.tool_name}\n"
-               f"ToolArgs: {data['step'].action.args}\nToolOutput: {data['step'].result.output}")
+        msg = (f"Question: {data['question']}\nToolChoice: {data['tool']}\n"
+               f"ToolArgs: {data['tool_args']}\nToolExitCode: {data['tool_exit_code']}\nToolOutput: {data['tool_output']}")
         color = 'yellow'
     elif event_type == Event.AgentEnd:
-        msg = f"Final Answer: {data['answer']}"
+        msg = f"Final Answer:\n{data['answer']}"
         color = 'yellow'
     elif event_type == Event.AgentTimeout:
         msg = (f"Agent Timeout. Duration: {data['duration']}, No. of Steps: {data['num_steps']}\n",
-               f"Step History: {data['step_history']}")
+               f"Step History:\n{data['step_history']}")
         color = 'red'
     else:
         raise ValueError(f"Unknown event type: {event_type}")
-    print(colored(msg), color)
+    print(colored(msg, color))
 
 
 def setup_print_callback():

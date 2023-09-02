@@ -30,7 +30,7 @@ async def test_print_denied(monkeypatch):
         await printtool('Hello World')
     error_str = str(e)
     error_str = error_str.replace('"', "'")
-    assert error_str == "<ExceptionInfo UserDeniedError('Tool: PrintTool Details: {'text': 'Hello World'}') tblen=4>"
+    assert "Tool: PrintTool Details: {'text': 'Hello World'}" in error_str
 
 
 @pytest.mark.asyncio
@@ -40,11 +40,11 @@ async def test_print_tool_error(monkeypatch):
         PrintToolBroken1()
     error_str = str(e)
     error_str = error_str.replace('"', "'")
-    assert error_str == "<ExceptionInfo DefinitionError('PrintToolBroken1._run expects arguments: ['self', 'texts'], got: ['self', 'text']') tblen=5>"
+    assert "PrintToolBroken1._run expects arguments: ['self', 'texts'], got: ['self', 'text']" in error_str
 
     printtool = PrintToolBroken2()
     with pytest.raises(TypeError) as e:
         await printtool('Hello World')
     error_str = str(e)
     error_str = error_str.replace('"', "'")
-    assert error_str == "<ExceptionInfo TypeError('Func: PrintToolBroken2._run output expected type: <class 'embedia.schema.tool.ToolReturn'>') tblen=3>"
+    assert "Func: PrintToolBroken2._run output expected type: <class 'embedia.schema.tool.ToolReturn'>" in error_str

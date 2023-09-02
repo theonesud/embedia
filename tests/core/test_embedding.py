@@ -17,8 +17,10 @@ async def test_emb_model():
 
     doc = TextDoc.from_file('./README.md')
     text = doc.contents
-    if doc.meta:
-        meta_str = json.dumps(doc.meta)
-        text = 'metadata:' + meta_str + '\n' + 'content:' + text
+    emb = await embmodel(text)
+    assert len(emb) == 1536
+
+    doc = TextDoc.from_file('./README.md', meta={'desc': 'Embedia Readme'})
+    text = 'metadata:' + json.dumps(doc.meta) + '\n' + 'content:' + doc.contents
     emb = await embmodel(text)
     assert len(emb) == 1536

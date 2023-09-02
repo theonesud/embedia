@@ -24,3 +24,8 @@ def check_args(func, args: list):
 def check_min_val(var, min_val: int, var_name: str):
     if var < min_val:
         raise ValueError(f"Var: {var_name} should be greater than or equal to {min_val}, got: {var}")
+
+
+def check_exact_val(var, val: int, var_name: str):
+    if var != val:
+        raise ValueError(f"Var: {var_name} should be equal to {val}, got: {var}")

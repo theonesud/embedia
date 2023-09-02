@@ -6,7 +6,7 @@ from embedia.tools import PythonInterpreter
 
 
 @pytest.mark.asyncio
-async def test_python_tool_without_llm():
+async def test_python_tool():
 
     python_shell = PythonInterpreter()
     output = await python_shell("""import os

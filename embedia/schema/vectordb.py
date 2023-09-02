@@ -5,10 +5,11 @@ from typing import List, Any, Optional
 class VectorDBInsert(BaseModel):
     id: str
     text: str
-    embedding: List[Any]
+    embedding: Optional[List[Any]] = None
     meta: Optional[dict] = None
 
 
 class VectorDBGetSimilar(BaseModel):
-    embedding: List[Any]
+    text: Optional[str] = None
+    embedding: Optional[List[Any]] = None
     n_results: int = 5

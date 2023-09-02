@@ -53,12 +53,9 @@ class ChatLLM(ABC):
             reply_tokens = len(await self.tokenizer(reply.content))
         else:
             reply_tokens = None
-        publish_event(Event.ChatLLMEnd, id(self), {'msg_role': message.role,
-                                                   'msg_content': message.content,
-                                                   'msg_tokens': msg_tokens,
-                                                   'reply_role': reply.role,
-                                                   'reply_content': reply.content,
-                                                   'reply_tokens': reply_tokens})
+        publish_event(Event.ChatLLMEnd, id(self), {'msg_role': message.role, 'msg_content': message.content,
+                                                   'msg_tokens': msg_tokens, 'reply_role': reply.role,
+                                                   'reply_content': reply.content, 'reply_tokens': reply_tokens})
         return reply
 
     async def _reply(self, prompt: Optional[str] = None) -> str:

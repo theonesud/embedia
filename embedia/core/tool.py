@@ -29,7 +29,8 @@ class Tool(ABC):
 
         publish_event(Event.ToolEnd, id(self), {'name': self.__class__.__name__,
                                                 'args': args, 'kwargs': kwargs,
-                                                'output': output})
+                                                'tool_output': output.output,
+                                                'tool_exit_code': output.exit_code})
         return output
 
     async def human_confirmation(self, details: dict) -> None:

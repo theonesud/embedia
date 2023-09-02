@@ -82,7 +82,7 @@ class FileDelete(Tool):
 
     async def _run(self, file_path: str):
         if self.verify_before_deleting:
-            self.human_confirmation(file_path)
+            await self.human_confirmation(file_path)
         return ToolReturn(output=os.remove(file_path), exit_code=0)
 
 
@@ -188,7 +188,7 @@ class FolderDelete(Tool):
 
     async def _run(self, folder: str):
         if self.verify_before_deleting:
-            self.human_confirmation(folder, contents=os.listdir(folder))
+            await self.human_confirmation({'folder_name': folder, 'contents': os.listdir(folder)})
         return ToolReturn(output=shutil.rmtree(folder, ignore_errors=True), exit_code=0)
 
 
@@ -207,8 +207,6 @@ class FolderCopy(Tool):
             )]))
 
     async def _run(self, folder: str, destination: str):
-        if '.' in destination:
-            return ToolReturn(output='Destination must be a folder not a file', exit_code=1)
         return ToolReturn(output=shutil.copytree(folder, destination), exit_code=0)
 
 

@@ -26,4 +26,4 @@ async def test_llm_error():
     llm = OpenAILLMOptional3()
     with pytest.raises(ValueError) as e:
         await llm('The capital of France is')
-    assert str(e) == "<ExceptionInfo ValueError('Length of input text: 5 token(s) is longer than max_input_tokens: 2') tblen=3>"
+    assert 'Length of input text: 5 token(s) is longer than max_input_tokens: 2' in str(e)

@@ -55,7 +55,7 @@ async def test_chatllm_error():
     chatllm = OpenAIChatLLMOptional3()
     with pytest.raises(ValueError) as e:
         await chatllm('How to merge two dataframes?')
-    assert str(e) == "<ExceptionInfo ValueError('Length of input text: 7 token(s) is longer than max_input_tokens: 2') tblen=4>"
+    assert "Length of input text: 7 token(s) is longer than max_input_tokens: 2" in str(e)
 
     chatllm = OpenAIChatLLMOptional4()
     await chatllm.set_system_prompt(Persona.LibraryExpert.format(

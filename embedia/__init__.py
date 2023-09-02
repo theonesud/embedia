@@ -5,6 +5,7 @@ from embedia.core.tokenizer import Tokenizer
 from embedia.core.tool import Tool
 from embedia.core.vectordb import VectorDB
 from embedia.helpers.panel import panel_discussion
+from embedia.helpers.one_on_one import one_on_one_chat
 
 from embedia.schema.persona import Persona
 from embedia.schema.pubsub import Event

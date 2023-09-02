@@ -3,6 +3,7 @@ import weaviate
 import os
 import time
 from typing import List
+import json
 
 import openai
 import tiktoken
@@ -56,6 +57,21 @@ class OpenAIChatLLM(ChatLLM):
         return completion.choices[0].message.content
 
 
+class OpenAIChatLLMCreative(ChatLLM):
+    def __init__(self):
+        super().__init__(tokenizer=OpenAITokenizer(),
+                         max_input_tokens=4096)
+
+    async def _reply(self, prompt: str) -> str:
+        completion = await openai.ChatCompletion.acreate(
+            model="gpt-3.5-turbo",
+            temperature=1,
+            max_tokens=500,
+            messages=[{'role': msg.role, 'content': msg.content} for msg in self.chat_history],
+        )
+        return completion.choices[0].message.content
+
+
 class SleepTool(Tool):
     def __init__(self):
         super().__init__(docs={
@@ -96,36 +112,57 @@ class OpenAIEmbedding(EmbeddingModel):
 class WeaviateDB(VectorDB):
     def __init__(self):
         super().__init__()
-        client = weaviate.Client(embedded_options=EmbeddedOptions())
-
-        # data_obj = {
-        #     "name": "Chardonnay",
-        #     "description": "Goes with fish"
-        # }
-        # client.data_object.create(data_obj, "Wine")
-
-        # self.client = chromadb.PersistentClient(path='temp/chromadb')
-        # self.collection = self.client.get_or_create_collection(
-        #     name='Embedia', metadata={"hnsw:space": "l2"})
+        self.client = weaviate.Client(embedded_options=EmbeddedOptions(persistence_data_path='./temp/weaviate'))
+        if not self.client.schema.get()['classes']:
+            self.client.schema.create_class({
+                'class': 'Document',
+                'properties': [
+                    {
+                        'name': 'contents',
+                        'dataType': ['text'],
+                    },
+                    {
+                        'name': 'meta',
+                        'dataType': ['text'],
+                    },
+                ],
+            })
 
     async def _insert(self, data: VectorDBInsert):
-        pass
-        # if not data.meta:
-        #     data.meta = {}
-        # self.collection.upsert(metadatas=[data.meta], embeddings=[data.embedding],
-        #                        documents=[data.text], ids=[data.id])
+        if not data.meta:
+            data.meta = {}
+        return self.client.data_object.create(
+            data_object={
+                'contents': data.text,
+                'meta': json.dumps(data.meta),
+            },
+            class_name='Document',
+            uuid=data.id,
+            vector=data.embedding,
+        )
 
     async def _get_similar(self, data: VectorDBGetSimilar):
-        pass
-        # resp = self.collection.query(query_embeddings=[data.embedding], n_results=data.n_results,
-        #                              include=["metadatas", "documents", "distances"])
-        # result = []
-        # for i in range(len(resp["ids"][0])):
-        #     doc = TextDoc(id=resp["ids"][0][i], contents=resp["documents"][0][i],
-        #                   meta=resp["metadatas"][0][i])
-        #     similarity = 1 / (1 + resp["distances"][0][i])
-        #     result.append((similarity, doc))
-        # return result
+        response = (
+            self.client.query
+            .get("Document", ["contents", "meta"])
+            .with_near_vector({
+                "vector": data.embedding,
+            })
+            .with_limit(data.n_results)
+            .with_additional(["distance", "id"])
+            .do()
+        )
+        docs = response['data']['Get']['Document']
+
+        result = []
+        for doc in docs:
+            print(doc)
+            meta = json.loads(doc['meta'])
+            result.append((1 - doc['_additional']['distance'],
+                           TextDoc(id=doc['_additional']['id'],
+                                   contents=doc['contents'],
+                                   meta=meta)))
+        return result
 
 
 class OpenAILLMOptional1(LLM):

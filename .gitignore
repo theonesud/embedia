@@ -1,5 +1,8 @@
 .env
 __pycache__/
 .DS_Store
+.mypy_cache/
+ignore/
+.coverage
 temp/
-_temp/
+htmlcov/

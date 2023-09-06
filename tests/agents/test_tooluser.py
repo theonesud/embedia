@@ -2,8 +2,8 @@ from copy import deepcopy
 
 import pytest
 
+from embedia import Persona
 from embedia.agents import ToolUser
-from embedia.schema.persona import Persona
 from embedia.tools import PythonInterpreter, Terminal
 from tests.core.definitions import OpenAIChatLLM
 

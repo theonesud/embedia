@@ -2,19 +2,32 @@ import os
 import shutil
 
 from embedia.core.tool import Tool
-from embedia.schema.tool import ArgDocumentation, ToolDocumentation, ToolReturn
+from embedia.schema.tool import (ParamDocumentation, ToolDocumentation,
+                                 ToolReturn)
 
 
 class FileRead(Tool):
+    """Read a file.
+
+    Parameters
+    ----------
+    - `file_path` (str): The path to the file to be read.
+    - `encoding` (str, optional): The encoding of the file, defaults to utf-8.
+
+    Returns
+    -------
+    - `output` (str): The contents of the file.
+    - `exit_code` (int): 0 if success, 1 if failure.
+    """
 
     def __init__(self):
         super().__init__(docs=ToolDocumentation(
             name="File Read",
             desc="Read a file",
-            args=[ArgDocumentation(
+            params=[ParamDocumentation(
                 name="file_path",
                 desc="The path to the file to be read (type: str)"
-            ), ArgDocumentation(
+            ), ParamDocumentation(
                 name="encoding",
                 desc="The encoding of the file, defaults to utf-8 (type: str)"
             )]))
@@ -25,18 +38,31 @@ class FileRead(Tool):
 
 
 class FileWrite(Tool):
+    """Write to a file, overwrites if it exists.
+
+    Parameters
+    ----------
+    - `file_path` (str): The path to the file to be written to.
+    - `content` (str): The content to be written to the file.
+    - `encoding` (str, optional): The encoding of the file, defaults to utf-8.
+
+    Returns
+    -------
+    - `output` (int): The number of characters written to the file.
+    - `exit_code` (int): 0 if success, 1 if failure.
+    """
 
     def __init__(self):
         super().__init__(docs=ToolDocumentation(
             name="File Write",
             desc="Write to a file, overwrites if it exists",
-            args=[ArgDocumentation(
+            params=[ParamDocumentation(
                 name="file_path",
                 desc="The path to the file to be written to (type: str)"
-            ), ArgDocumentation(
+            ), ParamDocumentation(
                 name="content",
                 desc="The content to be written to the file (type: str)"
-            ), ArgDocumentation(
+            ), ParamDocumentation(
                 name="encoding",
                 desc="The encoding of the file, defaults to utf-8 (type: str)"
             )]))
@@ -47,18 +73,31 @@ class FileWrite(Tool):
 
 
 class FileAppend(Tool):
+    """Append to a file, create if it doesn't exist.
+
+    Parameters
+    ----------
+    - `file_path` (str): The path to the file to be appended to.
+    - `content` (str): The content to be appended to the file.
+    - `encoding` (str, optional): The encoding of the file, defaults to utf-8.
+
+    Returns
+    -------
+    - `output` (int): The number of characters written to the file.
+    - `exit_code` (int): 0 if success, 1 if failure.
+    """
 
     def __init__(self):
         super().__init__(docs=ToolDocumentation(
             name="File Append",
             desc="Append to a file, create if it doesn't exist",
-            args=[ArgDocumentation(
+            params=[ParamDocumentation(
                 name="file_path",
                 desc="The path to the file to be appended to (type: str)"
-            ), ArgDocumentation(
+            ), ParamDocumentation(
                 name="content",
                 desc="The content to be appended to the file (type: str)"
-            ), ArgDocumentation(
+            ), ParamDocumentation(
                 name="encoding",
                 desc="The encoding of the file, defaults to utf-8 (type: str)"
             )]))
@@ -69,12 +108,23 @@ class FileAppend(Tool):
 
 
 class FileDelete(Tool):
+    """Delete a file. Asks for confirmation before deleting.
+
+    Parameters
+    ----------
+    - `file_path` (str): The path to the file to be deleted.
+
+    Returns
+    -------
+    - `output` (None): None.
+    - `exit_code` (int): 0 if success, 1 if failure.
+    """
 
     def __init__(self, verify_before_deleting=True):
         super().__init__(docs=ToolDocumentation(
             name="File Delete",
             desc="Delete a file",
-            args=[ArgDocumentation(
+            params=[ParamDocumentation(
                 name="file_path",
                 desc="The path to the file to be deleted (type: str)"
             )]))
@@ -87,15 +137,27 @@ class FileDelete(Tool):
 
 
 class FileFolderMove(Tool):
+    """Move a file or a folder.
+
+    Parameters
+    ----------
+    - `src` (str): The path to the file or folder to be moved.
+    - `destination` (str): The path to the destination.
+
+    Returns
+    -------
+    - `output` (None): None.
+    - `exit_code` (int): 0 if success, 1 if failure.
+    """
 
     def __init__(self):
         super().__init__(docs=ToolDocumentation(
             name="File Folder Move",
             desc="Move a file or a folder",
-            args=[ArgDocumentation(
+            params=[ParamDocumentation(
                 name="src",
                 desc="The path to the file or folder to be moved (type: str)"
-            ), ArgDocumentation(
+            ), ParamDocumentation(
                 name="destination",
                 desc="The path to the destination (type: str)"
             )]))
@@ -105,15 +167,27 @@ class FileFolderMove(Tool):
 
 
 class FileCopy(Tool):
+    """Copy a file, overwrites if destination exists.
+
+    Parameters
+    ----------
+    - `file_path` (str): The path to the file to be copied.
+    - `destination` (str): The path to the destination.
+
+    Returns
+    -------
+    - `output` (None): None.
+    - `exit_code` (int): 0 if success, 1 if failure.
+    """
 
     def __init__(self):
         super().__init__(docs=ToolDocumentation(
             name="File Copy",
             desc="Copy a file, overwrites if destination exists",
-            args=[ArgDocumentation(
+            params=[ParamDocumentation(
                 name="file_path",
                 desc="The path to the file to be copied (type: str)"
-            ), ArgDocumentation(
+            ), ParamDocumentation(
                 name="destination",
                 desc="The path to the destination (type: str)"
             )]))
@@ -123,12 +197,23 @@ class FileCopy(Tool):
 
 
 class FileFolderExists(Tool):
+    """Check if a file or folder exists.
+
+    Parameters
+    ----------
+    - `path` (str): The path to the file or folder to be checked.
+
+    Returns
+    -------
+    - `output` (bool): True if exists, False if not.
+    - `exit_code` (int): 0 if success, 1 if failure.
+    """
 
     def __init__(self):
         super().__init__(docs=ToolDocumentation(
             name="File Folder Exists",
             desc="Check if a file or folder exists",
-            args=[ArgDocumentation(
+            params=[ParamDocumentation(
                 name="path",
                 desc="The path to the file or folder to be checked (type: str)"
             )]))
@@ -138,33 +223,51 @@ class FileFolderExists(Tool):
 
 
 class FolderSearch(Tool):
+    """Search for a file in a folder and its subfolders.
+
+    Parameters
+    ----------
+    - `folder` (str): The path to the folder to be searched.
+    - `filename` (str): The name of the file to be searched for.
+    """
 
     def __init__(self):
         super().__init__(docs=ToolDocumentation(
             name="Folder Search",
             desc="Search for a file in a folder and its subfolders",
-            args=[ArgDocumentation(
+            params=[ParamDocumentation(
                 name="folder",
                 desc="The path to the folder to be searched (type: str)"
-            ), ArgDocumentation(
-                name="file_path",
-                desc="The path to the file to be searched for (type: str)"
+            ), ParamDocumentation(
+                name="filename",
+                desc="The name of the file to be searched for (type: str)"
             )]))
 
-    async def _run(self, folder: str, file_path: str):
+    async def _run(self, folder: str, filename: str):
         for root, _, files in os.walk(folder):
-            if file_path in files:
-                return ToolReturn(output=os.path.join(root, file_path), exit_code=0)
+            if filename in files:
+                return ToolReturn(output=os.path.join(root, filename), exit_code=0)
         return ToolReturn(output=None, exit_code=1)
 
 
 class FolderCreate(Tool):
+    """Create a folder, ignores if it exists.
+
+    Parameters
+    ----------
+    - `folder` (str): The path to the folder to be created.
+
+    Returns
+    -------
+    - `output` (None): None.
+    - `exit_code` (int): 0 if success, 1 if failure.
+    """
 
     def __init__(self):
         super().__init__(docs=ToolDocumentation(
             name="Folder Create",
             desc="Create a folder, ignores if it exists",
-            args=[ArgDocumentation(
+            params=[ParamDocumentation(
                 name="folder",
                 desc="The path to the folder to be created (type: str)"
             )]))
@@ -174,12 +277,23 @@ class FolderCreate(Tool):
 
 
 class FolderDelete(Tool):
+    """Delete a folder and its contents, ignores if it doesn't exist. Asks for confirmation before deleting.
+
+    Parameters
+    ----------
+    - `folder` (str): The path to the folder to be deleted.
+
+    Returns
+    -------
+    - `output` (None): None.
+    - `exit_code` (int): 0 if success, 1 if failure.
+    """
 
     def __init__(self, verify_before_deleting=True):
         super().__init__(docs=ToolDocumentation(
             name="Folder Delete",
             desc="Delete a folder and its contents, ignores if it doesn't exist",
-            args=[ArgDocumentation(
+            params=[ParamDocumentation(
                 name="folder",
                 desc="The path to the folder to be deleted (type: str)"
             )]))
@@ -193,15 +307,27 @@ class FolderDelete(Tool):
 
 
 class FolderCopy(Tool):
+    """Copy a folder.
+
+    Parameters
+    ----------
+    - `folder` (str): The path to the folder to be copied.
+    - `destination` (str): The path to the destination.
+
+    Returns
+    -------
+    - `output` (None): None.
+    - `exit_code` (int): 0 if success, 1 if failure.
+    """
 
     def __init__(self):
         super().__init__(docs=ToolDocumentation(
             name="Folder Copy",
             desc="Copy a folder",
-            args=[ArgDocumentation(
+            params=[ParamDocumentation(
                 name="folder",
                 desc="The path to the folder to be copied (type: str)"
-            ), ArgDocumentation(
+            ), ParamDocumentation(
                 name="destination",
                 desc="The path to the destination (type: str)"
             )]))
@@ -211,12 +337,23 @@ class FolderCopy(Tool):
 
 
 class FolderList(Tool):
+    """List the contents of a folder.
+
+    Parameters
+    ----------
+    - `folder` (str): The path to the folder to be listed.
+
+    Returns
+    -------
+    - `output` (List[str]): The contents of the folder.
+    - `exit_code` (int): 0 if success, 1 if failure.
+    """
 
     def __init__(self):
         super().__init__(docs=ToolDocumentation(
             name="Folder List",
             desc="List the contents of a folder",
-            args=[ArgDocumentation(
+            params=[ParamDocumentation(
                 name="folder",
                 desc="The path to the folder to be listed (type: str)"
             )]))

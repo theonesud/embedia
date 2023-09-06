@@ -9,10 +9,10 @@ load_dotenv()
 
 
 @pytest.mark.asyncio
-async def test_bash_tool_without_llm():
+async def test_bash_tool():
 
-    bash_shell = Terminal(timeout=5)
-    output = await bash_shell('ls -l')
+    bash_shell = Terminal()
+    output = await bash_shell('ls -l', timeout=5)
 
     assert isinstance(output.output, str)
     assert isinstance(output.exit_code, int)
@@ -23,16 +23,16 @@ async def test_bash_tool_without_llm():
 @pytest.mark.asyncio
 async def test_bash_tool_timeout():
 
-    bash_shell = Terminal(timeout=1)
+    bash_shell = Terminal()
 
     with pytest.raises(asyncio.TimeoutError):
-        await bash_shell('sleep 10')
+        await bash_shell('sleep 10', timeout=1)
 
 
 @pytest.mark.asyncio
 async def test_bash_tool_incorrect_command():
 
-    bash_shell = Terminal(timeout=1)
+    bash_shell = Terminal()
 
     output = await bash_shell('asdwadawdd')
 
@@ -45,9 +45,9 @@ async def test_bash_tool_incorrect_command():
 @pytest.mark.asyncio
 async def test_bash_tool_different_shell():
 
-    bash_shell = Terminal(timeout=5, executable='/bin/bash')
+    bash_shell = Terminal()
 
-    output = await bash_shell('ps -p $$')
+    output = await bash_shell('ps -p $$', timeout=5, executable='/bin/bash')
 
     assert isinstance(output.output, str)
     assert isinstance(output.exit_code, int)

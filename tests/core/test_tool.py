@@ -40,7 +40,7 @@ async def test_print_tool_error(monkeypatch):
         PrintToolBroken1()
     error_str = str(e)
     error_str = error_str.replace('"', "'")
-    assert "PrintToolBroken1._run expects arguments: ['self', 'texts'], got: ['self', 'text']" in error_str
+    assert "PrintToolBroken1._run expects parameters: ['self', 'texts'], got: ['self', 'text']" in error_str
 
     printtool = PrintToolBroken2()
     with pytest.raises(TypeError) as e:

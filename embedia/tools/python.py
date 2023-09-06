@@ -5,29 +5,51 @@ from contextlib import redirect_stdout
 from io import StringIO
 
 from embedia.core.tool import Tool
-from embedia.schema.tool import ArgDocumentation, ToolDocumentation, ToolReturn
+from embedia.schema.tool import (ParamDocumentation, ToolDocumentation,
+                                 ToolReturn)
 
 
 class PythonInterpreter(Tool):
+    """Runs the provided python code in the current interpreter
 
-    def __init__(self, timeout=60):
+    Parameters
+    ----------
+    - `code` (str): Python code to be run
+    - `vars` (dict): A python dictionary containing variables to be passed to the code
+    - `timeout` (int): Timeout in seconds. Defaults to 60.
+    """
+
+    def __init__(self):
         super().__init__(docs=ToolDocumentation(
             name="Python Interpreter",
             desc="Runs the provided python code in the current interpreter",
-            args=[ArgDocumentation(
+            params=[ParamDocumentation(
                 name="code",
                 desc="Python code to be run (type: str)"
-            ), ArgDocumentation(
+            ), ParamDocumentation(
                 name="vars",
                 desc="A python dictionary containing variables to be passed to the code"
+            ), ParamDocumentation(
+                name="timeout",
+                desc="Timeout in seconds (type: int). Defaults to 60."
             )]))
-        self.timeout = timeout
 
     def _target_func(self, queue, code: str, vars: dict) -> None:
+        """Target function for the multiprocessing process.
+
+        Imports are parsed separately and added to the global variables.
+
+        The code is split into two parts:
+        the first part is everything except the last statement.
+        The first part is run using `exec()`.
+        The last statement is run using `eval()` and the result is returned.
+        If the `eval()` returns an error, the tool will return the error message with exit code 1.
+        """
         try:
             global_vars = {'__builtins__': __builtins__}
             local_vars = vars
             tree = ast.parse(code)
+
             imports = [x for x in tree.body if isinstance(x, ast.Import)]
             imports_from = [x for x in tree.body if isinstance(x, ast.ImportFrom)]
             for import_ in imports:
@@ -36,8 +58,10 @@ class PythonInterpreter(Tool):
                 for name in import_from.names:
                     global_vars.update(
                         {name.name: getattr(__import__(import_from.module), name.name)})
+
             module = ast.Module(tree.body[:-1], type_ignores=[])
             exec(ast.unparse(module), global_vars, local_vars)
+
             module_end = ast.Module(tree.body[-1:], type_ignores=[])
             module_end_str = ast.unparse(module_end)
             io_buffer = StringIO()
@@ -56,12 +80,12 @@ class PythonInterpreter(Tool):
         except Exception as e:
             queue.put([str(e), 1])
 
-    async def _run(self, code: str, vars: dict = {}) -> ToolReturn:
+    async def _run(self, code: str, vars: dict = {}, timeout=60) -> ToolReturn:
         loop = asyncio.get_running_loop()
         queue = mp.Queue()
         process = mp.Process(target=self._target_func, args=(queue, code, vars))
         process.start()
-        process.join(self.timeout)
+        process.join(timeout)
         if process.is_alive():
             process.kill()
             raise asyncio.TimeoutError

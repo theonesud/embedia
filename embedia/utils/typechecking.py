@@ -8,17 +8,17 @@ def check_type(var, type, func, src='input'):
         raise TypeError(f"Func: {func.__qualname__} {src} expected type: {type}")
 
 
-def get_num_args(func):
+def get_num_params(func):
     sig = inspect.signature(func)
     return len(sig.parameters)
 
 
-def check_args(func, args: list):
+def check_params(func, params: list):
     argspec = inspect.getfullargspec(func)
-    arg_names = argspec.args
-    if set(arg_names) != set(args):
-        raise DefinitionError(f"{func.__qualname__} expects arguments: {sorted(set(args))},"
-                              f" got: {sorted(set(arg_names))}")
+    param_names = argspec.args
+    if set(param_names) != set(params):
+        raise DefinitionError(f"{func.__qualname__} expects parameters: {sorted(set(params))},"
+                              f" got: {sorted(set(param_names))}")
 
 
 def check_min_val(var, min_val: int, var_name: str):

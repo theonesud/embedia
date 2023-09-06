@@ -2,6 +2,8 @@ from enum import Enum
 
 
 class Event(str, Enum):
+    """The available events in the pubsub pipeline.
+    """
     LLMStart = 'LLM Start'
     LLMEnd = 'LLM End'
     ChatLLMInit = 'ChatLLM Init'

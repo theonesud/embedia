@@ -2,6 +2,8 @@ from enum import Enum
 
 
 class Persona(str, Enum):
+    """The personas that can be used as the system prompt for a `ChatLLM` instance.
+    """
 
     # Used internally
     Sys1Thinker = """You're an expert in deciding what next question should be asked (if any) to reach the final answer. Your question will be acted upon and its result will be provided to you. This will repeat until we reach the final answer. The main question, actions taken till now and their results will be provided to you.
@@ -10,11 +12,11 @@ Final Answer: <final answer>
 If not, reply with the next question in the following format:
 Question: <next question>
 Do not reply with anything else"""
-    ArgChooser = """You're an expert in choosing the values of function arguments based on the user's question. The question, the function description, the list of arguments and their descriptions will be provided to you. Reply with values of all arguments in the following json format:
+    ArgChooser = """You're an expert in choosing the function arguments based on the user's question. The question, the function description, the list of parameters and their descriptions will be provided to you. Reply with all arguments in the following json format:
 {
-    <argument name>: <argument value>,
-    <argument name>: <argument value>,
-    <argument name>: <argument value>,
+    <parameter name>: <argument value>,
+    <parameter name>: <argument value>,
+    <parameter name>: <argument value>,
 }
 Do not reply with anything else"""
     ToolChooser = "You're an expert in choosing the best tool for answering the user's question. The list of tools and their descriptions will be provided to you. Reply with the name of the chosen tool and nothing else"

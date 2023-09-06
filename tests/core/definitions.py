@@ -11,7 +11,7 @@ from tenacity import (retry, retry_if_not_exception_type, stop_after_attempt,
                       wait_random_exponential)
 from weaviate.embedded import EmbeddedOptions
 
-from embedia import (LLM, ArgDocumentation, ChatLLM, EmbeddingModel, TextDoc,
+from embedia import (LLM, ChatLLM, EmbeddingModel, ParamDocumentation, TextDoc,
                      Tokenizer, Tool, ToolDocumentation, ToolReturn, VectorDB,
                      VectorDBGetSimilar, VectorDBInsert)
 
@@ -90,7 +90,7 @@ class PrintTool(Tool):
         super().__init__(docs=ToolDocumentation(
             name="Sleep Tool",
             desc="Sleeps for 1 second",
-            args=[ArgDocumentation(name="text", desc="The text to be printed. Type: String")]))
+            params=[ParamDocumentation(name="text", desc="The text to be printed. Type: String")]))
 
     async def _run(self, text: str):
         await self.human_confirmation(details={'text': text})
@@ -156,7 +156,6 @@ class WeaviateDB(VectorDB):
 
         result = []
         for doc in docs:
-            print(doc)
             meta = json.loads(doc['meta'])
             result.append((1 - doc['_additional']['distance'],
                            TextDoc(id=doc['_additional']['id'],
@@ -271,7 +270,7 @@ class PrintToolBroken1(Tool):
         super().__init__(docs=ToolDocumentation(
             name="Sleep Tool",
             desc="Sleeps for 1 second",
-            args=[{'name': 'texts', 'desc': 'The text to be printed. Type: String'}]))
+            params=[{'name': 'texts', 'desc': 'The text to be printed. Type: String'}]))
 
     async def _run(self, text: str):
         await self.human_confirmation(details={'text': text})
@@ -284,7 +283,7 @@ class PrintToolBroken2(Tool):
         super().__init__(docs=ToolDocumentation(
             name="Sleep Tool",
             desc="Sleeps for 1 second",
-            args=[ArgDocumentation(name="text", desc="The text to be printed. Type: String")]))
+            params=[ParamDocumentation(name="text", desc="The text to be printed. Type: String")]))
 
     async def _run(self, text: str):
         await self.human_confirmation(details={'text': text})

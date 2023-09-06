@@ -33,9 +33,9 @@ count_lines_of_code(current_directory)""")
 
 @pytest.mark.asyncio
 async def test_python_tool_timeout():
-    python_shell = PythonInterpreter(timeout=1)
+    python_shell = PythonInterpreter()
     with pytest.raises(asyncio.TimeoutError):
-        await python_shell('import time; time.sleep(10)')
+        await python_shell('import time; time.sleep(10)', timeout=1)
 
 
 @pytest.mark.asyncio

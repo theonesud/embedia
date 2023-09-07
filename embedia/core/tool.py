@@ -66,6 +66,12 @@ class Tool(ABC):
         -------
         - `output` (`ToolReturn`): The output of the tool.
         """
+        try:
+            self.docs
+        except AttributeError:
+            raise NotImplementedError("Please call `Tool` init method from your subclass init method with the Tool's documentation")
+        # TODO: add testcase for this
+
         publish_event(Event.ToolStart, id(self), {'name': self.__class__.__name__,
                                                   'args': args, 'kwargs': kwargs})
         output = await self._run(*args, **kwargs)

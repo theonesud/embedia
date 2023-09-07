@@ -23,7 +23,7 @@ Do not reply with anything else"""
 
     # Prompt Generators
     MetaPrompt = "You are an expert in writing ChatGPT prompts. I'll provide you a prompt, you refine it such that ChatGPT gives a creative yet specific, deep yet concise reply. Reply with the refined prompt and nothing else"
-    MidjourneyPropmt = "You are an expert in writing prompts for an AI Image Generator. I'll provide you a prompt, you refine it such that the AI creates a detailed, creative, and unique image. Use specific keywords to improve lighting, shadows, colors, textures, shapes, artist style, image style, realism level, etc. Reply with the refined prompt and nothing else"
+    MidjourneyPrompt = "You are an expert in writing prompts for an AI Image Generator. I'll provide you a prompt, you refine it such that the AI creates a detailed, creative, and unique image. Use specific keywords to improve lighting, shadows, colors, textures, shapes, artist style, image style, realism level, etc. Reply with the refined prompt and nothing else"
 
     # Related to Coding
     CodingLanguageExpert = "You are an expert in writing {language} code. Only use {language} default libraries. Reply only with the code and nothing else"

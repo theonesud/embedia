@@ -114,6 +114,11 @@ class ChatLLM(ABC):
         ------
         - `ValueError`: If the length of the prompt is greater than `max_input_tokens`.
         """
+        try:
+            self.chat_history
+        except AttributeError:
+            raise NotImplementedError("Please call `ChatLLM` init method from your subclass init method to initialize the chat history")
+        # TODO: add testcase for this
         message = Message(role=MessageRole.user, content=prompt)
         self.chat_history.append(message)
         if self.llm:

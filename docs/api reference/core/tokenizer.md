@@ -1,16 +1,22 @@
 # Tokenizer
 
-`Tokenizer` is an abstract class.
-Your `Tokenizer` subclass needs to define the `_tokenize` method.
+A tokenizer is used to convert a string into a list of tokens. Tokens can either be of type `int` or `str`. To learn more about tokenization, please refer to this [article](https://huggingface.co/docs/transformers/tokenizer_summary).
 
-In the `_tokenize` method you need tokenize the input text into a list of tokens. The tokens can be of any type.
+`Tokenizer` is an abstract class. Inherit from this class and define the `_tokenize` method. To use it, call the class instance like a function with the input text as the argument.
 
-To use your subclass, call the class instance like a function with the input text as the argument.
+### Methods:
+- `_tokenize` (abstract): Implement this method with the tokenization logic. Do not call this method directly. Instead, use the `__call__` method.
+    - Expected input: `str`
+    - Expected output: `List[Any]`
+
+- `__call__` : Internally calls the `_tokenize` method. Use this method by calling the class instance like a function with the input text as the argument.
+    - Expected input: `str`
+    - Expected output: `List[int]` or `List[str]`
 
 
 ## Basic Usage
 
-> Remember to add `async` before the definition of `_tokenize` and `await` before calling the subclass instance.
+Let's build a tokenizer that OpenAI uses for `gpt-3.5 turbo`, `text-davinci-003` and `gpt-4`. They recommend using the `tiktoken` library for tokenization.
 
 `Run in CodeSandbox`
 

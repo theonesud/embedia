@@ -149,9 +149,9 @@ The `data` field published for each event is as follows:
 
 # Subscribing to an Event
 
-You can create your own event subscribers in case you want to execute some code whenever a certain event occurs.
+You can create your own event subscribers in case you want to execute some code whenever a certain event occurs. To do so, you can use the `subscribe_event` function.
 
-To do so, you can use the `subscribe_event` function. In the following example, we create a custom subscriber for the `ChatLLMEnd` event. A reason why you would want to do that is to keep a track of the number of tokens that have been consumed (if you are using a third party service like OpenAI) to keep a track of costs.
+Lets create a custom subscriber for the `ChatLLMEnd` event. Lets say you want to track the number of tokens that have been consumed (if you are using a third party service like OpenAI) to keep a track of your costs.
 
 ```python
 from embedia import Event, subscribe_event

@@ -96,6 +96,6 @@ class Tool(ABC):
         ------
         - `UserDeniedError`: If the user denies the human confirmation.
         """
-        user_input = input(f"\nTool: {self.__class__.__name__}\nDetails: {details} (y/n): ")
+        user_input = input(f"\nTool: {self.__class__.__name__}\nDetails: {details} Confirm (y/n): ")
         if user_input.lower() != 'y':
             raise UserDeniedError(f'Tool: {self.__class__.__name__} Details: {details}')

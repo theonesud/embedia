@@ -88,8 +88,8 @@ class SleepTool(Tool):
 class PrintTool(Tool):
     def __init__(self):
         super().__init__(docs=ToolDocumentation(
-            name="Sleep Tool",
-            desc="Sleeps for 1 second",
+            name="Print Tool",
+            desc="Prints whatever you want",
             params=[ParamDocumentation(name="text", desc="The text to be printed. Type: String")]))
 
     async def _run(self, text: str):

@@ -7,7 +7,7 @@ class Tokenizer(ABC):
 
     Methods
     -------
-    - `_tokenize` (abstract): Implement this method to tokenize a text into a list of tokens.
+    - `_tokenize` (abstract): Implement this method with the tokenization logic. Do not call this method directly. Instead, call the `__call__` method.
     - `__call__` : Internally calls the `_tokenize` method.
     """
 

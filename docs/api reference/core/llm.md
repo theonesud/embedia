@@ -60,7 +60,7 @@ Paris.
 
 ## Usage with Tokenizer
 
-Notice that the number of tokens are `None` in the above printed log. This is because the `LLM` class doesnt have the optional `tokenizer` parameter in the constructor.
+Notice that the number of tokens is `None` in the above-printed log. This is because the `LLM` class doesn't have the optional `tokenizer` parameter in the constructor.
 If you add the `tokenizer` argument to the `LLM` constructor, it will count the length of the input and output in tokens.
 
 > Note that the way your tokenizer counts the number of tokens might slightly vary from how a service provider (eg: OpenAI) counts them. They might add a few tokens internally for the service to function properly.

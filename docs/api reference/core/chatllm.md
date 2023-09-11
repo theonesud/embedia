@@ -7,12 +7,12 @@ Your `ChatLLM` subclass needs to define the `_reply` method.
 
 > You can convert an instance of a `LLM` subclass into an instance of a `ChatLLM` subclass (more on that below)
 
-In the `_reply` method, you need to get a reply from your LLM by sending the input message to your LLM and return the reply.
+In the `_reply` method, you need to get a reply from your LLM by sending the input message to your LLM and returning the reply.
 
 
 ## Message format
 
-Before we move on to the next step, you need to know about the `Message` [Pydantic model](https://docs.pydantic.dev/latest/usage/models/). The `Message` model represents a message sent or recieved by the `ChatLLM` subclass. It has two main attributes: `role` and `content`. The `role` attribute is chosen from the `MessageRole` enum. The `content` attribute is the actual message content.
+Before we move on to the next step, let's understand the `Message` [Pydantic model](https://docs.pydantic.dev/latest/usage/models/). The `Message` model represents a message sent or received by the `ChatLLM` subclass. It has two main attributes: `role` and `content`. The `role` attribute is chosen from the `MessageRole` enum. The `content` attribute is the actual message content.
 
 The other two attributes `created_at` and `id` are automatically assigned when an instance of the `Message` model is created.
 
@@ -36,7 +36,7 @@ role=<MessageRole.user: 'user'> content='Hello World' id='008bedd2-b182-423b-8a9
 
 ## Basic Usage for ChatLLM
 
-The `ChatLLM` class keeps all the `Message` objects sent and recieved in its `chat_history` attribute. You can access it from anywhere in your subclass using `self.chat_history`.
+The `ChatLLM` class keeps all the `Message` objects sent and received in its `chat_history` attribute. You can access it from anywhere in your subclass using `self.chat_history`.
 
 > Remember to add `async` before the definition of `_reply` and `await` before calling the subclass instance.
 
@@ -146,7 +146,7 @@ The capital of Italy is Rome.
 
 ## Personas
 
-Before we move on to the next step, you need to know about the `Persona` enum. It contains common system prompts that will define how the LLM responds to your input. Some of these system prompts have placeholders that you'll need to fill in with the appropriate values.
+Before we move on to the next step, let's understand the `Persona` enum. It contains common system prompts that will define how the LLM responds to your input. Some of these system prompts have placeholders that you'll need to fill in with the appropriate values.
 
 > `Help Needed:` If you want to improve a prompt or add new ones, please open a pull request on GitHub.
 
@@ -236,7 +236,7 @@ print(count)
 
 ## Using ChatLLM with Tokenizer and max_input_tokens
 
-Notice that the number of tokens are `None` in the above printed log. This is because the `ChatLLM` class doesnt have the optional `tokenizer` parameter in the constructor.
+Notice that the number of tokens is `None` in the above-printed log. This is because the `ChatLLM` class doesn't have the optional `tokenizer` parameter in the constructor.
 If you add the `tokenizer` argument to the `ChatLLM` constructor, it will count the length of the input, output and system message contents.
 
 Another optional parameter is called `max_input_tokens`. If the length of the entire chat history contents is greater than `max_input_tokens`, the class will raise a `ValueError`.
@@ -313,13 +313,13 @@ print(count)
 
 ## Converting LLM to ChatLLM
 
-You can convert an instance of an `LLM` subclass into an instance of `ChatLLM` subclass using the `from_llm` classmethod present in the `ChatLLM` class. Once you've converted the `LLM` instance, you can use it exactly like a `ChatLLM` instance.
+You can convert an instance of an `LLM` subclass into an instance of a `ChatLLM` subclass using the `from_llm` classmethod present in the `ChatLLM` class. Once you've converted the `LLM` instance, you can use it exactly like a `ChatLLM` instance.
 
-Internally, we combine all the messages from the `chat_history` and format them using the message role and its contents. This entire string is then sent to the `LLM` subclass' `__call__` function. This makes an LLM with a next token generation interface behave like an LLM with a chat interface.
+Internally, `Embedia` combines all the messages from the `chat_history` and formats them using the message role and its contents. This entire string is then sent to the `LLM` subclass' `__call__` function. This makes an LLM with a next-token generation interface behave like an LLM with a chat interface.
 
-This is very useful since a lot of LLM service providers (and even opensource models) only provide a next token generation interface and not a chat interface.
+This is very useful since a lot of LLM service providers (and even open-source models) only provide a next-token generation interface and not a chat interface.
 
-The `tokenizer` and `max_input_tokens` parameters behave the same way as they would if it was an `LLM` subclass. Setting the system prompt is also supported for these kind of instances.
+The `tokenizer` and `max_input_tokens` parameters behave the same way as they would if it were an `LLM` subclass. Setting the system prompt is also supported for these kinds of instances.
 
 `Run in CodeSandbox`
 

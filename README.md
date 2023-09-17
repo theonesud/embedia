@@ -89,4 +89,4 @@ If this project helped you, or if you'd like to contribute to an amazing AI proj
 
 Copyright Sudhanshu Passi, 2023.
 
-Distributed under the terms of the [MIT license](LICENSE), Embedia is free and open source software.
+Distributed under the terms of the [Apache 2.0 license](LICENSE), Embedia is free and open source software.

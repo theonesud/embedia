@@ -20,11 +20,11 @@
 
 ### What is Embedia?
 
-Embedia is a framework for building LLM-powered (think: ChatGPT-powered) features that can be added to your webapp.
+Embedia is a framework for building LLM-powered (like ChatGPT) features that can be added to your webapp.
 
 ### Some examples of features you can create with Embedia:
 
-- Chatbots (think: ChatGPT) with a permanent memory that can correlate information across multiple chats or access the internet
+- Chatbots (like ChatGPT) with a permanent memory that can correlate information across multiple chats or access the internet
 - Chatbots with a specific personality (or a combination of personalities)
 - Natural language search over a set of documents / webpages / datasets
 - Customer support bots with access to the FAQs that can guide the user in the right direction

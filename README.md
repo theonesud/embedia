@@ -16,9 +16,6 @@
   <a href="https://twitter.com/Embedia_ai"><strong>Twitter</strong></a> ·
   <a href="https://discord.gg/aQa53fRdXx"><strong>Discord</strong></a>
 </p>
-<p align="center">
-  Author: <a href="https://twitter.com/Sudhanshupassi">Sudhanshu Passi</a>
-</p>
 <br/>
 
 ### What is Embedia?
@@ -36,19 +33,17 @@ Embedia is a framework for building LLM-powered (think: ChatGPT-powered) feature
 - Autonomous AI Agents that can mindfully use the tools you provide
 - Entire SAAS products that use LLMs (Opensource or 3rd party) to solve a specific problem
 
-
 ### Why choose Embedia?:
-- *__Developer friendly__*: Easy to follow documentation, IntelliSense enabled
-- *__Async__*: Built from ground up to be async
-- *__Small__*: Has very few dependencies and a tiny package size
-- *__Pub-sub based event system__* to build highly customizable workflows
-- *__LLM agnostic__*: Use any LLM you want (ChatGPT, Bard, Llama, Custom-trained, etc)
-- *__Vector DB agnostic__*: Use any vector DB you want (Weaviate, Pinecone, Chroma, etc)
-- *__Graph DB agnostic__*: Use any graph DB you want (Neo4j, Nebula, etc)
-- *__Pre-defined common AI Agents and Tools__*
-- *__Small dev team__* with a clear focus on developer experience and scalability
 
-
+- _**Developer friendly**_: Easy to follow documentation, IntelliSense enabled
+- _**Async**_: Built from ground up to be async
+- _**Small**_: Has very few dependencies and a tiny package size
+- _**Pub-sub based event system**_ to build highly customizable workflows
+- _**LLM agnostic**_: Use any LLM you want (ChatGPT, Bard, Llama, Custom-trained, etc)
+- _**Vector DB agnostic**_: Use any vector DB you want (Weaviate, Pinecone, Chroma, etc)
+- _**Graph DB agnostic**_: Use any graph DB you want (Neo4j, Nebula, etc)
+- _**Pre-defined common AI Agents and Tools**_
+- _**Small dev team**_ with a clear focus on developer experience and scalability
 
 ### How to use it?
 
@@ -107,11 +102,12 @@ asyncio.run(tool_user(code))
 
 <b>Enjoy as the event logs unfold:</b>
 
-![Output](assets/terminal.png)
+![Output](./assets/terminal.png)
 
 ### Quick glance over the library internals
 
 The core classes of Embedia are:
+
 - `Tokenizer`: A class that converts text into tokens
 - `LLM`: A class that interfaces with a next token generation type large language model (eg: text-davinci-003)
 - `ChatLLM`: A class that interfaces with a chat type large language model (eg: gpt-3.5-turbo)
@@ -120,14 +116,17 @@ The core classes of Embedia are:
 - `VectorDB`: A class that interfaces with a vector database (eg: Weaviate)
 
 Pre-defined Tools include:
+
 - `PythonInterpreter`: A tool that can run python code in the python interpreter
 - `Terminal`: A tool that can run shell commands in the terminal
 - 10+ file operations tools: For reading, writing, copying, moving, deleting files / folders
 
 Pre-defined Agents include:
+
 - `ToolUser`: LLM powered System-1 thinker that can run tools in a loop by reading their docstrings
 
 Helpers include:
+
 - Pub-sub based event system for building highly customizable workflows
 - `Persona`: An enum class containing pre-defined system prompts
 - `TextDoc`: A class used for dealing with text documents
@@ -140,18 +139,20 @@ This library is under active and rapid development. We'd love your contributions
 
 Our goal is to make a developer friendly framework that can help build scalable web applications powered by AI.
 
-To get started, you too can check out the [contributing.md](CONTRIBUTING.md)
-
+To get started, you too can check out the [contributing.md](./CONTRIBUTING.md)
 
 ### Become a sponsor
-Recurring revenue sponsors will get benifits like:
-- [Sponsorware](https://github.com/sponsorware/docs): AI based projects built exclusively for sponsors (exclusive until we hit a certain threshold of monthly revenue, opensourced after that)
+
+Recurring revenue sponsors will get benefits like:
+
 - Sponsored Screencasts with code
 - Early access to Embedia's SAAS products
-
+- Visibility on our website and social media
 
 ### Partner with us
+
 We'd love to partner with companies and libraries in the AI and web-dev ecosystem. If you'd like to get in touch, we're always active on our [Discord server](https://discord.gg/aQa53fRdXx).
 
 ### License
-Copyright Sudhanshu Passi, 2023 under the the terms of the [Apache 2.0 license](LICENSE)
+
+Copyright - Sudhanshu Passi, 2023 under the the terms of the [Apache 2.0 license](./LICENSE)

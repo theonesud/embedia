@@ -100,10 +100,6 @@ tool_user = ToolUser(chatllm=OpenAIChatLLM(), tools=[PythonInterpreter()])
 asyncio.run(tool_user(code))
 ```
 
-<b>Enjoy as the event logs unfold:</b>
-
-![Output](https://github.com/Embedia-ai/embedia/blob/main/assets/terminal.png?raw=true)
-
 ### Quick glance over the library internals
 
 The core classes of Embedia are:

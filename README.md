@@ -1,92 +1,157 @@
-# Embedia
-<center> Website: <a href='https://embedia.ai'>embedia.ai</a> </center>
-<center> Documentation: <a href='https://embedia.ai/docs'>embedia.ai/docs</a> </center>
-<center> Author: <a href='https://twitter.com/Sudhanshupassi'>@sudhanshupassi (twitter)</a> <a href='https://twitter.com/Sudhanshupassi'>@sdhnshu (github)</a> </center>
+<p align="center">
+  <a href="https://embedia.ai">
+    <img src="https://embedia.ai/_next/image?url=%2Flogo.png&w=64&q=75" height="64">
+    <h3 align="center">Embedia</h3>
+  </a>
+</p>
 
----
-<br>
-<i><b>Embedia is what Langchain, Llamaindex and AutoGPT should have been.</b></i>
+<p align="center">
+  Amplify your webapp's capabilities with AI
+</p>
 
-- It lets you create LLM (think ChatGPT) powered Autonomous AI Agents that are ready for a production release
-- We created a universal API interface so you can connect any LLM, Tool, DB to it
-- We have an easy to follow [documentation](https://embedia.ai/docs), so you can pick it up fast
-- It is natively async and is blazing fast (with sync versions available)
-- It has very few dependencies and a tiny package size
-- Its transparent - everything action by the LLM is logged
-- IntelliSense enabled - your editor will provide suggestions as you type
+<p align="center">
+  <a href="https://embedia.ai/"><strong>Website</strong></a> ·
+  <a href="https://embedia.ai/docs"><strong>Docs</strong></a> ·
+  <a href="https://embedia.ai/blog"><strong>Blog</strong></a> ·
+  <a href="https://twitter.com/Embedia_ai"><strong>Twitter</strong></a> ·
+  <a href="https://discord.gg/aQa53fRdXx"><strong>Discord</strong></a>
+</p>
+<p align="center">
+  Author: <a href="https://twitter.com/Sudhanshupassi">Sudhanshu Passi</a>
+</p>
+<br/>
 
-### Origin story:
-As a long time python developer, I've built many backend systems, data processing pipelines and HTTP servers. When ChatGPT took the world by storm, I decided to build applications using LangChain, LlamaIndex, AutoGPT, BabyAGI, etc. But none of them were production ready, their documentations were either non-existent or extremely hard to follow. So I decided to create Embedia - a framework that any developer who wants to build applications using LLMs can use and take them to production.
+### What is Embedia?
 
-## How can I use it?
+Embedia is a framework for building LLM-powered (think: ChatGPT-powered) features that can be added to your webapp.
+
+### Some examples of features you can create with Embedia:
+
+- Chatbots (think: ChatGPT) with a permanent memory that can correlate information across multiple chats or access the internet
+- Chatbots with a specific personality (or a combination of personalities)
+- Natural language search over a set of documents / webpages / datasets
+- Customer support bots with access to the FAQs that can guide the user in the right direction
+- Retrieval Augmented Generation (RAG) based recommendation / clustering systems
+- AI Agents that work with you to solve problems
+- Autonomous AI Agents that can mindfully use the tools you provide
+- Entire SAAS products that use LLMs (Opensource or 3rd party) to solve a specific problem
+
+
+### Why choose Embedia?:
+- *__Developer friendly__*: Easy to follow documentation, IntelliSense enabled
+- *__Async__*: Built from ground up to be async
+- *__Small__*: Has very few dependencies and a tiny package size
+- *__Pub-sub based event system__* to build highly customizable workflows
+- *__LLM agnostic__*: Use any LLM you want (ChatGPT, Bard, Llama, Custom-trained, etc)
+- *__Vector DB agnostic__*: Use any vector DB you want (Weaviate, Pinecone, Chroma, etc)
+- *__Graph DB agnostic__*: Use any graph DB you want (Neo4j, Nebula, etc)
+- *__Pre-defined common AI Agents and Tools__*
+- *__Small dev team__* with a clear focus on developer experience and scalability
+
+
+
+### How to use it?
+
 - You'll need `Python 3.9` or higher to use this library
-- Installation is a simple command `pip install embedia`
+- Install using `pip install embedia`
 
-<b>Step 1: Define your ChatLLM class:</b>
+<b>Step 1: Define your Tokenizer class:</b>
 
 ```python
-from embedia import ChatLLM, Message
-import openai
+import tiktoken
+from embedia import Tokenizer
 
-class OpenAILLM(ChatLLM):
-    async def reply(self,message: Message) -> Message:
+class OpenAITokenizer(Tokenizer):
+    async def _tokenize(self, text):
+        return tiktoken.encoding_for_model("gpt-3.5-turbo").encode(text)
+```
+
+<b>Step 2: Define your ChatLLM class:</b>
+
+```python
+import openai
+from embedia import ChatLLM
+
+class OpenAIChatLLM(ChatLLM):
+    def __init__(self):
+        super().__init__(tokenizer=OpenAITokenizer())
+        openai.api_key = "YOUR-API-KEY"
+
+    async def _reply(self):
         completion = await openai.ChatCompletion.acreate(
             model="gpt-3.5-turbo",
-            messages=self.chat_history,
+            messages=[{'role': msg.role, 'content': msg.content}
+                      for msg in self.chat_history],
         )
-        return Message(**completion.choices[0].message)
-
+        return completion.choices[0].message.content
 ```
 
-<b>Step 2: Define your Agent class:</b>
+<b>Step 3: Run your AI Agent</b>
 
 ```python
-from embedia import Agent
-from embedia.tools import PythonREPL
+import asyncio
+from embedia import Persona
+from embedia.agents import ToolUser
+from embedia.tools import PythonInterpreter
 
-class PythonAgent(Agent):
-    llm: OpenAILLM
-    tools:[PythonREPL]
-```
-<b>Step 3: Talk to your Agent</b>
-
-```python
-python_agent = PythonAgent()
-python_agent.reply("Loop through this folder and list the filenames")
-```
-
-```text
->>> Thought: I should write and run python code to loop through this folder and list filenames
->>> Action: import os; [print(f) for f in os.listdir('.') if os.path.isfile(f)]
->>> Observation: file1.py
-file2.py
-file3.py
+python_coder = OpenAIChatLLM()
+asyncio.run(python_coder.set_system_prompt(
+    Persona.CodingLanguageExpert.format(language='Python')
+))
+code = asyncio.run(python_coder(
+    'Count number of lines of python code in the current directory'
+))
+tool_user = ToolUser(chatllm=OpenAIChatLLM(), tools=[PythonInterpreter()])
+asyncio.run(tool_user(code))
 ```
 
-### Advanced Usage
+<b>Enjoy as the event logs unfold:</b>
 
-We provide 3 main classes that you will frequently come across:
-- LLM - to communicate with a LLM
-- Tool - to run any function you desire
-- Agent - runs a loop that uses the LLM to reason, choose parameters for a tool and observe its output
+![Output](assets/terminal.png)
 
-You can use any of our predefined tools, agents or create your own. Just connect them with your LLM and you've created your own Autonomous AI Agent. For details on how to do that, follow the simple steps in our documentation link below
+### Quick glance over the library internals
 
-<b><center> Docs: <a href='https://embedia.ai/docs'>embedia.ai/docs</a> </center></b>
+The core classes of Embedia are:
+- `Tokenizer`: A class that converts text into tokens
+- `LLM`: A class that interfaces with a next token generation type large language model (eg: text-davinci-003)
+- `ChatLLM`: A class that interfaces with a chat type large language model (eg: gpt-3.5-turbo)
+- `Tool`: A class that can convert any python function into a tool that can be used by the Agent
+- `EmbeddingModel`: A class that interfaces with the Embedding Model (eg: text-embedding-ada-002)
+- `VectorDB`: A class that interfaces with a vector database (eg: Weaviate)
+
+Pre-defined Tools include:
+- `PythonInterpreter`: A tool that can run python code in the python interpreter
+- `Terminal`: A tool that can run shell commands in the terminal
+- 10+ file operations tools: For reading, writing, copying, moving, deleting files / folders
+
+Pre-defined Agents include:
+- `ToolUser`: LLM powered System-1 thinker that can run tools in a loop by reading their docstrings
+
+Helpers include:
+- Pub-sub based event system for building highly customizable workflows
+- `Persona`: An enum class containing pre-defined system prompts
+- `TextDoc`: A class used for dealing with text documents
+
+Learn about them more on their [documentation page](https://embedia.ai/docs)
+
+### How to contribute to the codebase?
+
+This library is under active and rapid development. We'd love your contributions to make it better.
+
+Our goal is to make a developer friendly framework that can help build scalable web applications powered by AI.
+
+To get started, you too can check out the [contributing.md](CONTRIBUTING.md)
 
 
-## How can I contribute?
-If you have a product/service that can be used
+### Become a sponsor
+Recurring revenue sponsors will get benifits like:
+- [Sponsorware](https://github.com/sponsorware/docs): AI based projects built exclusively for sponsors (exclusive until we hit a certain threshold of monthly revenue, opensourced after that)
+- Sponsored Screencasts with code
+- Early access to Embedia's SAAS products
 
-we'd love to create convenience functions for them in Embedia. Please check out the [contributing.md](CONTRIBUTING.md).
 
-Or if you simply want to add features, make improvements to Embedia, you too can check out the [contributing.md](CONTRIBUTING.md)
+### Partner with us
+We'd love to partner with companies and libraries in the AI and web-dev ecosystem. If you'd like to get in touch, we're always active on our [Discord server](https://discord.gg/aQa53fRdXx).
 
-## Support Embedia
-If this project helped you, or if you'd like to contribute to an amazing AI project, consider becoming a sponsor.
-
-## License
-
-Copyright Sudhanshu Passi, 2023.
-
-Distributed under the terms of the [Apache 2.0 license](LICENSE), Embedia is free and open source software.
+### License
+Copyright Sudhanshu Passi, 2023 under the the terms of the [Apache 2.0 license](LICENSE)

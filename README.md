@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://embedia.ai">
-    <img src="https://embedia.ai/_next/image?url=%2Flogo.png&w=64&q=75" height="64">
+    <img src="https://embedia.ai/logo.png" height="64">
     <h3 align="center">Embedia</h3>
   </a>
 </p>
@@ -102,7 +102,7 @@ asyncio.run(tool_user(code))
 
 <b>Enjoy as the event logs unfold:</b>
 
-![Output](./assets/terminal.png)
+![Output](https://github.com/Embedia-ai/embedia/blob/main/assets/terminal.png?raw=true)
 
 ### Quick glance over the library internals
 

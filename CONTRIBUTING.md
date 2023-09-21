@@ -29,8 +29,8 @@ Read our [Code of Conduct](./CODE_OF_CONDUCT.md) to keep our community approacha
 - Test for positive as well as negative test cases
 - Keep docstrings for all user facing classes and functions up-to-date
 - Before commiting your code, make sure of two things:
-    - Make sure it passes all the tests by running `pytest` from the root directory
-    - Run `pre-commit run --all-files` from the root directory to ensure your code is formatted properly and passes all the checks
+    - Make sure that running `./scripts/test.sh` from the root dir does not throw any errors
+    - Run `./scripts/format.sh` from the root dir to ensure your code is formatted properly. (It will automatically format before you commit, but it's better to check beforehand)
 
 ## How to set up for local development?
 

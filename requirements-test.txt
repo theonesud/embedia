@@ -1,0 +1,17 @@
+-e .
+
+black>=23.9.1,<24.0.0
+coverage[toml]>=7.3.1,<8.0.0
+mypy>=1.5.1,<2.0.0
+pre-commit>=3.4.0,<4.0.0
+pytest-asyncio==0.21.1
+pytest>=7.4.2,<8.0.0
+python-dotenv>=1.0.0,<2.0.0
+ruff==0.0.290
+
+# for testing 3rd party integrations
+openai==0.27.10
+tiktoken==0.4.0
+numpy>=1.24.4,<2.0.0
+weaviate-client>=3.24.1,<4.0.0
+tenacity>=8.2.3,<9.0.0

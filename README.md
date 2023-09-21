@@ -6,48 +6,43 @@
 </p>
 
 <p align="center">
-  Amplify your webapp's capabilities with AI
+  Create LLM-powered webapps with ease
 </p>
 
 <p align="center">
-  <a href="https://embedia.ai/"><strong>Website</strong></a> ·
+  <a href="https://discord.gg/aQa53fRdXx"><strong>Discord</strong></a> ·
   <a href="https://embedia.ai/docs"><strong>Docs</strong></a> ·
   <a href="https://embedia.ai/blog"><strong>Blog</strong></a> ·
-  <a href="https://twitter.com/Embedia_ai"><strong>Twitter</strong></a> ·
-  <a href="https://discord.gg/aQa53fRdXx"><strong>Discord</strong></a>
+  <a href="https://twitter.com/Embedia_ai"><strong>Twitter</strong></a>
 </p>
 <br/>
 
-### What is Embedia?
-
-Embedia is a framework for building LLM-powered (like ChatGPT) features that can be added to your webapp.
-
-### Some examples of features you can create with Embedia:
+### Webapps you can create using Embedia
 
 - Chatbots (like ChatGPT) with a permanent memory that can correlate information across multiple chats or access the internet
 - Chatbots with a specific personality (or a combination of personalities)
-- Natural language search over a set of documents / webpages / datasets
+- Natural language search over a set of documents / webpages / datasets using Retrieval Augmented Generation (RAG)
 - Customer support bots with access to the FAQs that can guide the user in the right direction
 - Retrieval Augmented Generation (RAG) based recommendation / clustering systems
 - AI Agents that work with you to solve problems
 - Autonomous AI Agents that can mindfully use the tools you provide
-- Entire SAAS products that use LLMs (Opensource or 3rd party) to solve a specific problem
+- Entire SAAS products that use LLMs to solve a specific problem
 
 ### Why choose Embedia?:
 
 - _**Developer friendly**_: Easy to follow documentation, IntelliSense enabled
-- _**Async**_: Built from ground up to be async
-- _**Small**_: Has very few dependencies and a tiny package size
-- _**Pub-sub based event system**_ to build highly customizable workflows
-- _**LLM agnostic**_: Use any LLM you want (ChatGPT, Bard, Llama, Custom-trained, etc)
-- _**Vector DB agnostic**_: Use any vector DB you want (Weaviate, Pinecone, Chroma, etc)
-- _**Graph DB agnostic**_: Use any graph DB you want (Neo4j, Nebula, etc)
 - _**Pre-defined common AI Agents and Tools**_
+- _**LLM agnostic**_: Connect any LLM you want (GPT-4, Bard, Llama, Custom-trained, etc)
+- _**Vector DB agnostic**_: Connect any vector DB you want (Weaviate, Pinecone, Chroma, etc)
+- _**Graph DB agnostic**_: Connect any graph DB you want (Neo4j, Nebula, etc)
+- _**Pub-sub based event system**_ to build highly customizable workflows
+- _**Async**_: Built from ground up to be async
+- _**Lightweight**_: Has very few dependencies and a tiny package size
 - _**Small dev team**_ with a clear focus on developer experience and scalability
 
 ### How to use it?
 
-- You'll need `Python 3.9` or higher to use this library
+- You'll need `Python 3.8` or higher to use this library
 - Install using `pip install embedia`
 
 <b>Step 1: Define your Tokenizer class:</b>
@@ -127,15 +122,11 @@ Helpers include:
 - `Persona`: An enum class containing pre-defined system prompts
 - `TextDoc`: A class used for dealing with text documents
 
-Learn about them more on their [documentation page](https://embedia.ai/docs)
+Learn about them more on our [documentation page](https://embedia.ai/docs)
 
 ### How to contribute to the codebase?
 
-This library is under active and rapid development. We'd love your contributions to make it better.
-
-Our goal is to make a developer friendly framework that can help build scalable web applications powered by AI.
-
-To get started, you too can check out the [contributing.md](./CONTRIBUTING.md)
+This library is under active and rapid development. We'd love your contributions to make it better. To get started, you can check out [contributing.md](./CONTRIBUTING.md)
 
 ### Become a sponsor
 

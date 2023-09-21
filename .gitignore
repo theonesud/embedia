@@ -8,3 +8,4 @@ temp/
 htmlcov/
 env/
 .ruff_cache/
+dist/

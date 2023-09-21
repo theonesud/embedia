@@ -1,1 +1,1 @@
-from embedia.agents.tooluser import ToolUser
+from .tooluser import ToolUser

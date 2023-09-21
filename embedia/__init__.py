@@ -1,20 +1,21 @@
-from embedia.core.chatllm import ChatLLM
-from embedia.core.embedding import EmbeddingModel
-from embedia.core.llm import LLM
-from embedia.core.tokenizer import Tokenizer
-from embedia.core.tool import Tool
-from embedia.core.vectordb import VectorDB
-from embedia.schema.agent import Action, Step
-from embedia.schema.message import Message, MessageRole
-from embedia.schema.persona import Persona
-from embedia.schema.pubsub import Event
-from embedia.schema.textdoc import TextDoc
-from embedia.schema.tool import (ParamDocumentation, ToolDocumentation,
-                                 ToolReturn)
-from embedia.schema.vectordb import VectorDBGetSimilar, VectorDBInsert
-from embedia.utils.file_callback import setup_file_callback
-from embedia.utils.print_callback import setup_print_callback
-from embedia.utils.pubsub import subscribe_event
+__version__ = "0.0.1"
+
+from .core.chatllm import ChatLLM
+from .core.embedding import EmbeddingModel
+from .core.llm import LLM
+from .core.tokenizer import Tokenizer
+from .core.tool import Tool
+from .core.vectordb import VectorDB
+from .schema.agent import Action, Step
+from .schema.message import Message, MessageRole
+from .schema.persona import Persona
+from .schema.pubsub import Event
+from .schema.textdoc import TextDoc
+from .schema.tool import ParamDocumentation, ToolDocumentation, ToolReturn
+from .schema.vectordb import VectorDBGetSimilar, VectorDBInsert
+from .utils.file_callback import setup_file_callback
+from .utils.print_callback import setup_print_callback
+from .utils.pubsub import subscribe_event
 
 setup_print_callback()
 setup_file_callback()

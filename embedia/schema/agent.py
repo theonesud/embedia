@@ -1,6 +1,5 @@
-from pydantic import BaseModel
-
 from embedia.schema.tool import ToolReturn
+from pydantic import BaseModel
 
 
 class Action(BaseModel):
@@ -11,6 +10,7 @@ class Action(BaseModel):
     - `tool_name` (str): The name of the tool to be used.
     - `args` (dict): The arguments to the tool.
     """
+
     tool_name: str
     args: dict
 
@@ -24,11 +24,14 @@ class Step(BaseModel):
     - `action` (`Action`): The action that was performed by the agent.
     - `result` (`ToolReturn`): The result of the action.
     """
+
     question: str
     action: Action
     result: ToolReturn
 
     def serialize(self):
-        return {'question': self.question,
-                'action': dict(self.action),
-                'result': dict(self.result)}
+        return {
+            "question": self.question,
+            "action": dict(self.action),
+            "result": dict(self.result),
+        }

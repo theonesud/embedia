@@ -8,8 +8,7 @@ from embedia.core.tool import Tool
 from embedia.schema.agent import Action, Step
 from embedia.schema.persona import Persona
 from embedia.schema.pubsub import Event
-from embedia.schema.tool import (ParamDocumentation, ToolDocumentation,
-                                 ToolReturn)
+from embedia.schema.tool import ParamDocumentation, ToolDocumentation, ToolReturn
 from embedia.utils.exceptions import AgentError
 from embedia.utils.pubsub import publish_event
 from embedia.utils.typechecking import check_min_val, check_type
@@ -40,8 +39,13 @@ class ToolUser(Tool):
     - `step_history` (List[`Step`]): The history of steps taken by the agent.
     """
 
-    def __init__(self, chatllm: ChatLLM, tools: List[Tool],
-                 max_steps: int = 10, max_duration: int = 60) -> None:
+    def __init__(
+        self,
+        chatllm: ChatLLM,
+        tools: List[Tool],
+        max_steps: int = 10,
+        max_duration: int = 60,
+    ) -> None:
         """Constructor for the `ToolUser` class.
 
         Parameters
@@ -51,24 +55,29 @@ class ToolUser(Tool):
         - `max_steps` (int, optional): The maximum number of steps the agent can take. Defaults to 10.
         - `max_duration` (int, optional): The maximum duration of the agent in seconds. Defaults to 60.
         """
-        super().__init__(docs=ToolDocumentation(
-            name="Tool User",
-            desc="It uses the available tools to answer the user's question",
-            params=[ParamDocumentation(
-                name='question',
-                desc='The main question that needs to be answered (Type: str)'
-            )]))
+        super().__init__(
+            docs=ToolDocumentation(
+                name="Tool User",
+                desc="It uses the available tools to answer the user's question",
+                params=[
+                    ParamDocumentation(
+                        name="question",
+                        desc="The main question that needs to be answered (Type: str)",
+                    )
+                ],
+            )
+        )
         self.tools = tools
         self.max_steps = max_steps
         self.max_duration = max_duration
-        check_type(chatllm, ChatLLM, self.__init__, 'chatllm')
+        check_type(chatllm, ChatLLM, self.__init__, "chatllm")
         self.arg_chooser = deepcopy(chatllm)
         self.tool_chooser = deepcopy(chatllm)
         self.sys1_thinker = deepcopy(chatllm)
         self.step_history: List[Step] = []
-        check_min_val(len(self.tools), 1, 'len(tools)')
+        check_min_val(len(self.tools), 1, "len(tools)")
         for tool in self.tools:
-            check_type(tool, Tool, self.__init__, 'tool')
+            check_type(tool, Tool, self.__init__, "tool")
 
     async def _choose_tool(self, question: str) -> Tool:
         """Choose a tool based on the question.
@@ -89,9 +98,10 @@ class ToolUser(Tool):
         """
         if len(self.tools) == 1:
             return self.tools[0]
-        available_tools = "\n".join([f"{tool.docs.name}: {tool.docs.desc}" for tool in self.tools])
-        prompt = (f"Question: {question}\n\n"
-                  f"Tools:\n{available_tools}")
+        available_tools = "\n".join(
+            [f"{tool.docs.name}: {tool.docs.desc}" for tool in self.tools]
+        )
+        prompt = f"Question: {question}\n\n Tools:\n{available_tools}"
         await self.tool_chooser.set_system_prompt(Persona.ToolChooser)
         tool_choice = await self.tool_chooser(prompt)
         for tool in self.tools:
@@ -122,25 +132,31 @@ class ToolUser(Tool):
         """
         if len(tool_choice.docs.params) == 0:
             return {}
-        param_docs = ''
+        param_docs = ""
         for paramdoc in tool_choice.docs.params:
             param_docs += f"{paramdoc.name}: {paramdoc.desc}\n"
-        prompt = (f"Question: {question}\n"
-                  f"Function: {tool_choice.docs.desc}\n"
-                  f"Parameters:\n{param_docs}")
+        prompt = (
+            f"Question: {question}\n"
+            f"Function: {tool_choice.docs.desc}\n"
+            f"Parameters:\n{param_docs}"
+        )
 
         await self.arg_chooser.set_system_prompt(Persona.ArgChooser)
         arg_choice = await self.arg_chooser(prompt)
         try:
             arg_choice = json.loads(arg_choice)
-        except Exception:
-            raise AgentError(f"Agent's arg choice: {arg_choice} could not be parsed")
+        except Exception as e:
+            raise AgentError(
+                f"Agent's arg choice: {arg_choice} could not be parsed"
+            ) from e
 
         kwargs = {}
         available_params = [param.name for param in tool_choice.docs.params]
         for param in arg_choice.keys():
             if param not in available_params:
-                raise AgentError(f"Parameter: {param} not found in Tool: {tool_choice.docs.name} Tool params: {available_params}")
+                raise AgentError(
+                    f"Parameter: {param} not found in Tool: {tool_choice.docs.name} Tool params: {available_params}"
+                )
             try:
                 kwargs[param] = eval(arg_choice[param])
             except Exception:
@@ -165,17 +181,18 @@ class ToolUser(Tool):
         """
         await self.sys1_thinker.set_system_prompt(Persona.Sys1Thinker)
 
-        prompt = f'Main question: {self.main_question}\n\n'
+        prompt = f"Main question: {self.main_question}\n\n"
         for step in self.step_history:
-            output_type = 'Output' if step.result.exit_code == 0 else 'Error'
-            prompt += (f'Question: {step.question}\n'
-                       f'{output_type}: {step.result.output}\n')
+            output_type = "Output" if step.result.exit_code == 0 else "Error"
+            prompt += (
+                f"Question: {step.question}\n {output_type}: {step.result.output}\n"
+            )
 
         resp = await self.sys1_thinker(prompt)
-        if resp.split(':')[0] == 'Question':
-            return resp.split(':')[1], 'Question'
-        elif resp.split(':')[0] == 'Final Answer':
-            return ':'.join(resp.split(':')[1:]), 'Final Answer'
+        if resp.split(":")[0] == "Question":
+            return resp.split(":")[1], "Question"
+        elif resp.split(":")[0] == "Final Answer":
+            return ":".join(resp.split(":")[1:]), "Final Answer"
         else:
             raise AgentError(f"Agent's response: {resp} could not be parsed")
 
@@ -200,40 +217,57 @@ class ToolUser(Tool):
             If the agent found the final answer before timing out, the final answer is returned.
         """
         self.main_question = question
-        publish_event(Event.AgentStart, id(self), {'question': question})
+        publish_event(Event.AgentStart, id(self), {"question": question})
         steps = 1
         now = time.time()
         while steps <= self.max_steps and time.time() - now <= self.max_duration:
-
             if self.step_history:
                 thought, thought_type = await self._choose_next_step()
-                if thought_type == 'Question':
+                if thought_type == "Question":
                     question = thought
-                elif thought_type == 'Final Answer':
-                    publish_event(Event.AgentEnd, id(self), {'question': self.main_question,
-                                                             'answer': thought})
+                elif thought_type == "Final Answer":
+                    publish_event(
+                        Event.AgentEnd,
+                        id(self),
+                        {"question": self.main_question, "answer": thought},
+                    )
                     return ToolReturn(output=thought, exit_code=0)
 
             tool_choice = await self._choose_tool(question)
             kwargs = await self._choose_args(question, tool_choice)
 
-            await self.human_confirmation({'tool': tool_choice.docs.name, 'args': kwargs})
+            await self.human_confirmation(
+                {"tool": tool_choice.docs.name, "args": kwargs}
+            )
             result = await tool_choice(**kwargs)
 
-            step = Step(question=question,
-                        action=Action(tool_name=tool_choice.docs.name,
-                                      args=kwargs),
-                        result=result)
+            step = Step(
+                question=question,
+                action=Action(tool_name=tool_choice.docs.name, args=kwargs),
+                result=result,
+            )
             self.step_history.append(step)
             steps += 1
-            publish_event(Event.AgentStep, id(self), {'question': step.question,
-                                                      'tool': step.action.tool_name,
-                                                      'tool_args': step.action.args,
-                                                      'tool_output': step.result.output,
-                                                      'tool_exit_code': step.result.exit_code})
+            publish_event(
+                Event.AgentStep,
+                id(self),
+                {
+                    "question": step.question,
+                    "tool": step.action.tool_name,
+                    "tool_args": step.action.args,
+                    "tool_output": step.result.output,
+                    "tool_exit_code": step.result.exit_code,
+                },
+            )
 
-        publish_event(Event.AgentTimeout, id(self), {'step_history': [x.serialize() for x in self.step_history],
-                                                     'duration': f'{time.time() - now :.2f}s',
-                                                     'num_steps': steps - 1})
+        publish_event(
+            Event.AgentTimeout,
+            id(self),
+            {
+                "step_history": [x.serialize() for x in self.step_history],
+                "duration": f"{time.time() - now :.2f}s",
+                "num_steps": steps - 1,
+            },
+        )
 
         return ToolReturn(output=self.step_history[-1].result.output, exit_code=1)

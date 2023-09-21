@@ -22,8 +22,11 @@ class LLM(ABC):
     - `max_input_tokens` (int): Used for checking if the prompt is too long.
     """
 
-    def __init__(self, tokenizer: Optional[Tokenizer] = None,
-                 max_input_tokens: Optional[int] = None) -> None:
+    def __init__(
+        self,
+        tokenizer: Optional[Tokenizer] = None,
+        max_input_tokens: Optional[int] = None,
+    ) -> None:
         """Constructor for the `LLM` class.
 
         Parameters
@@ -71,8 +74,9 @@ class LLM(ABC):
             prompt_tokens = len(tokens)
         else:
             prompt_tokens = None
-        publish_event(Event.LLMStart, id(self), {'prompt': prompt,
-                                                 'prompt_tokens': prompt_tokens})
+        publish_event(
+            Event.LLMStart, id(self), {"prompt": prompt, "prompt_tokens": prompt_tokens}
+        )
 
         completion = await self._complete(prompt)
 
@@ -81,9 +85,15 @@ class LLM(ABC):
             comp_tokens = len(tokens)
         else:
             comp_tokens = None
-        publish_event(Event.LLMEnd, id(self), {'prompt': prompt,
-                                               'prompt_tokens': prompt_tokens,
-                                               'completion': completion,
-                                               'completion_tokens': comp_tokens})
+        publish_event(
+            Event.LLMEnd,
+            id(self),
+            {
+                "prompt": prompt,
+                "prompt_tokens": prompt_tokens,
+                "completion": completion,
+                "completion_tokens": comp_tokens,
+            },
+        )
 
         return completion

@@ -32,7 +32,11 @@ class ChatLLM(ABC):
     - `max_input_tokens` (int): Used for checking if the prompt is too long.
     """
 
-    def __init__(self, tokenizer: Optional[Tokenizer] = None, max_input_tokens: Optional[int] = None) -> None:
+    def __init__(
+        self,
+        tokenizer: Optional[Tokenizer] = None,
+        max_input_tokens: Optional[int] = None,
+    ) -> None:
         """Constructor for the `ChatLLM` class.
 
         Parameters
@@ -46,7 +50,7 @@ class ChatLLM(ABC):
         self.max_input_tokens = max_input_tokens
 
     async def _call_llm(self, message: Message) -> Message:
-        prompt = ''
+        prompt = ""
         for message in self.chat_history:
             prompt += "{}: {}\n".format(message.role, message.content)
         prompt += f"{MessageRole.assistant}: "
@@ -67,9 +71,15 @@ class ChatLLM(ABC):
             msg_tokens = len(await self.tokenizer(message.content))
         else:
             msg_tokens = None
-        publish_event(Event.ChatLLMStart, id(self), {'msg_role': message.role,
-                                                     'msg_content': message.content,
-                                                     'msg_tokens': msg_tokens})
+        publish_event(
+            Event.ChatLLMStart,
+            id(self),
+            {
+                "msg_role": message.role,
+                "msg_content": message.content,
+                "msg_tokens": msg_tokens,
+            },
+        )
 
         if not get_num_params(self._reply):
             reply = await self._reply()
@@ -80,9 +90,18 @@ class ChatLLM(ABC):
             reply_tokens = len(await self.tokenizer(reply.content))
         else:
             reply_tokens = None
-        publish_event(Event.ChatLLMEnd, id(self), {'msg_role': message.role, 'msg_content': message.content,
-                                                   'msg_tokens': msg_tokens, 'reply_role': reply.role,
-                                                   'reply_content': reply.content, 'reply_tokens': reply_tokens})
+        publish_event(
+            Event.ChatLLMEnd,
+            id(self),
+            {
+                "msg_role": message.role,
+                "msg_content": message.content,
+                "msg_tokens": msg_tokens,
+                "reply_role": reply.role,
+                "reply_content": reply.content,
+                "reply_tokens": reply_tokens,
+            },
+        )
         return reply
 
     async def _reply(self, prompt: Optional[str] = None) -> str:
@@ -115,9 +134,11 @@ class ChatLLM(ABC):
         - `ValueError`: If the length of the prompt is greater than `max_input_tokens`.
         """
         try:
-            self.chat_history
-        except AttributeError:
-            raise NotImplementedError("Please call `ChatLLM` init method from your subclass init method to initialize the chat history")
+            _ = self.chat_history
+        except AttributeError as e:
+            raise NotImplementedError(
+                "Please call `ChatLLM` init method from your subclass init method to initialize the chat history"
+            ) from e
         # TODO: add testcase for this
         message = Message(role=MessageRole.user, content=prompt)
         self.chat_history.append(message)
@@ -129,7 +150,7 @@ class ChatLLM(ABC):
         return reply.content
 
     @classmethod
-    def from_llm(cls, llm: LLM) -> 'ChatLLM':
+    def from_llm(cls, llm: LLM) -> "ChatLLM":
         """Create a `ChatLLM` instance from an `LLM` instance.
 
         Parameters
@@ -156,9 +177,15 @@ class ChatLLM(ABC):
             num_tokens = len(tokens)
         else:
             num_tokens = None
-        publish_event(Event.ChatLLMInit, id(self), {'system_role': MessageRole.system,
-                                                    'system_content': system_prompt,
-                                                    'system_tokens': num_tokens})
+        publish_event(
+            Event.ChatLLMInit,
+            id(self),
+            {
+                "system_role": MessageRole.system,
+                "system_content": system_prompt,
+                "system_tokens": num_tokens,
+            },
+        )
         self.chat_history = [Message(role=MessageRole.system, content=system_prompt)]
 
     async def save_chat(self, filepath: str) -> None:

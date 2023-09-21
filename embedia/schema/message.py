@@ -6,11 +6,11 @@ from pydantic import BaseModel, Field
 
 
 class MessageRole(str, Enum):
-    """The available roles for a message.
-    """
-    user = 'user'
-    assistant = 'assistant'
-    system = 'system'
+    """The available roles for a message."""
+
+    user = "user"
+    assistant = "assistant"
+    system = "system"
 
 
 class Message(BaseModel):
@@ -23,8 +23,10 @@ class Message(BaseModel):
     - `id` (str, optional): The id of the message. Defaults to a random uuid.
     - `created_at` (str, optional): The timestamp of the message. Defaults to the current time with system's timezone.
     """
+
     role: MessageRole
     content: str
     id: str = Field(default_factory=lambda: str(uuid4()))
-    created_at: str = Field(default_factory=lambda: str(
-        datetime.now(timezone.utc).astimezone()))
+    created_at: str = Field(
+        default_factory=lambda: str(datetime.now(timezone.utc).astimezone())
+    )

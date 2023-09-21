@@ -2,8 +2,7 @@ from enum import Enum
 
 
 class Persona(str, Enum):
-    """The personas that can be used as the system prompt for a `ChatLLM` instance.
-    """
+    """The personas that can be used as the system prompt for a `ChatLLM` instance."""
 
     # Used internally
     Sys1Thinker = """You're an expert in deciding what next question should be asked (if any) to reach the final answer. Your question will be acted upon and its result will be provided to you. This will repeat until we reach the final answer. The main question, actions taken till now and their results will be provided to you.

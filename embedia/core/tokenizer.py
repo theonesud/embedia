@@ -12,8 +12,7 @@ class Tokenizer(ABC):
     """
 
     def __init__(self) -> None:
-        """Constructor for the `Tokenizer` class.
-        """
+        """Constructor for the `Tokenizer` class."""
         pass
 
     @abstractmethod

@@ -15,8 +15,7 @@ class EmbeddingModel(ABC):
     """
 
     def __init__(self) -> None:
-        """Constructor for the `EmbeddingModel` class.
-        """
+        """Constructor for the `EmbeddingModel` class."""
         pass
 
     @abstractmethod
@@ -45,8 +44,9 @@ class EmbeddingModel(ABC):
         -------
         - `embedding` (List[Any]): The embedding of the input.
         """
-        publish_event(Event.EmbeddingStart, id(self), {'input': input})
+        publish_event(Event.EmbeddingStart, id(self), {"input": input})
         embedding = await self._embed(input)
-        publish_event(Event.EmbeddingEnd, id(self), {'input': input,
-                                                     'embedding': embedding})
+        publish_event(
+            Event.EmbeddingEnd, id(self), {"input": input, "embedding": embedding}
+        )
         return embedding

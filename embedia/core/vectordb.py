@@ -16,8 +16,7 @@ class VectorDB(ABC):
     """
 
     def __init__(self) -> None:
-        """Constructor for the `VectorDB` class.
-        """
+        """Constructor for the `VectorDB` class."""
         pass
 
     async def insert(self, data: VectorDBInsert) -> None:

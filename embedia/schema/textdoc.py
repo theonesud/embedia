@@ -24,13 +24,18 @@ class TextDoc(BaseModel):
     - `split_on_separator`: Split the contents on a separator and return a list of `TextDoc` instances.
     - `extract_regex`: Extract `TextDoc` instances from the content using a regex pattern.
     """
+
     contents: str
     meta: Optional[dict] = None
     id: str = Field(default_factory=lambda: str(uuid4()))
-    created_at: str = Field(default_factory=lambda: str(datetime.now(timezone.utc).astimezone()))
+    created_at: str = Field(
+        default_factory=lambda: str(datetime.now(timezone.utc).astimezone())
+    )
 
     @classmethod
-    def from_file(cls, path: str, meta: Optional[dict] = None, encoding: str = 'utf-8') -> 'TextDoc':
+    def from_file(
+        cls, path: str, meta: Optional[dict] = None, encoding: str = "utf-8"
+    ) -> "TextDoc":
         """Create a `TextDoc` instance from a file.
 
         Parameters
@@ -39,11 +44,13 @@ class TextDoc(BaseModel):
         - `meta` (dict, optional): Any metadata related to the text document. Defaults to None.
         - `encoding` (str, optional): The encoding of the file. Defaults to 'utf-8'.
         """
-        with open(path, 'r', encoding=encoding) as f:
+        with open(path, encoding=encoding) as f:
             instance = cls(meta=meta, contents=f.read())
         return instance
 
-    def split_on_separator(self, separator: str = '\n', strip_after_split: bool = False) -> List['TextDoc']:
+    def split_on_separator(
+        self, separator: str = "\n", strip_after_split: bool = False
+    ) -> List["TextDoc"]:
         """Split the contents on a separator and return a list of `TextDoc` instances.
         The metadata of the original instance is copied to the split instances.
         A `segment_number` and `parent_id` are added to the metadata of the split instances.
@@ -59,17 +66,17 @@ class TextDoc(BaseModel):
         """
         result = []
         for idx, content in enumerate(self.contents.split(separator)):
-            if content.strip() == '':
+            if content.strip() == "":
                 continue
             elif strip_after_split:
                 content = content.strip()
             new_meta = copy.deepcopy(self.meta)
-            new_meta['segment_number'] = idx + 1
-            new_meta['parent_id'] = self.id
+            new_meta["segment_number"] = idx + 1
+            new_meta["parent_id"] = self.id
             result.append(TextDoc(contents=content, meta=new_meta))
         return result
 
-    def extract_regex(self, pattern: str) -> List['TextDoc']:
+    def extract_regex(self, pattern: str) -> List["TextDoc"]:
         """Extract `TextDoc` instances from the content using a regex pattern.
         The metadata of the original instance is copied to the extracted instances.
         A `parent_id` is added to the metadata of the extracted instances.
@@ -83,6 +90,8 @@ class TextDoc(BaseModel):
         - `result` (List[TextDoc]): The list of `TextDoc` instances.
         """
         new_meta = copy.deepcopy(self.meta)
-        new_meta['parent_id'] = self.id
-        return [TextDoc(contents=content, meta=new_meta) for
-                content in re.findall(pattern, self.contents, re.DOTALL)]
+        new_meta["parent_id"] = self.id
+        return [
+            TextDoc(contents=content, meta=new_meta)
+            for content in re.findall(pattern, self.contents, re.DOTALL)
+        ]

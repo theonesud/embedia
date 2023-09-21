@@ -14,6 +14,7 @@ class VectorDBInsert(BaseModel):
     - `embedding` (List[Any], optional): The embedding of the data. Defaults to None.
     - `meta` (dict, optional): Any metadata related to the text. Defaults to None.
     """
+
     id: str
     text: str
     embedding: Optional[List[Any]] = None
@@ -30,6 +31,7 @@ class VectorDBGetSimilar(BaseModel):
     - `embedding` (List[Any], optional): The embedding you want to vector search for. Defaults to None.
     - `n_results` (int, optional): The number of results to return. Defaults to 5.
     """
+
     text: Optional[str] = None
     embedding: Optional[List[Any]] = None
     n_results: int = 5

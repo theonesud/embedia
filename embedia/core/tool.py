@@ -36,7 +36,9 @@ class Tool(ABC):
             docs = ToolDocumentation(**docs)
         self.docs = docs
         if self.docs.params:
-            check_params(self._run, [param.name for param in self.docs.params] + ['self'])
+            check_params(
+                self._run, [param.name for param in self.docs.params] + ["self"]
+            )
 
     @abstractmethod
     async def _run(self, *args, **kwargs) -> ToolReturn:
@@ -67,22 +69,34 @@ class Tool(ABC):
         - `output` (`ToolReturn`): The output of the tool.
         """
         try:
-            self.docs
-        except AttributeError:
-            raise NotImplementedError("Please call `Tool` init method from your subclass init method with the Tool's documentation")
+            _ = self.docs
+        except AttributeError as e:
+            raise NotImplementedError(
+                "Please call `Tool` init method from your subclass init method with the Tool's documentation"
+            ) from e
         # TODO: add testcase for this
 
-        publish_event(Event.ToolStart, id(self), {'name': self.__class__.__name__,
-                                                  'args': args, 'kwargs': kwargs})
+        publish_event(
+            Event.ToolStart,
+            id(self),
+            {"name": self.__class__.__name__, "args": args, "kwargs": kwargs},
+        )
         output = await self._run(*args, **kwargs)
         if isinstance(output, dict):
             output = ToolReturn(**output)
-        check_type(output, ToolReturn, self._run, 'output')
+        check_type(output, ToolReturn, self._run, "output")
 
-        publish_event(Event.ToolEnd, id(self), {'name': self.__class__.__name__,
-                                                'args': args, 'kwargs': kwargs,
-                                                'tool_output': output.output,
-                                                'tool_exit_code': output.exit_code})
+        publish_event(
+            Event.ToolEnd,
+            id(self),
+            {
+                "name": self.__class__.__name__,
+                "args": args,
+                "kwargs": kwargs,
+                "tool_output": output.output,
+                "tool_exit_code": output.exit_code,
+            },
+        )
         return output
 
     async def human_confirmation(self, details: dict) -> None:
@@ -96,6 +110,8 @@ class Tool(ABC):
         ------
         - `UserDeniedError`: If the user denies the human confirmation.
         """
-        user_input = input(f"\nTool: {self.__class__.__name__}\nDetails: {details} Confirm (y/n): ")
-        if user_input.lower() != 'y':
-            raise UserDeniedError(f'Tool: {self.__class__.__name__} Details: {details}')
+        user_input = input(
+            f"\nTool: {self.__class__.__name__}\nDetails: {details} Confirm (y/n): "
+        )
+        if user_input.lower() != "y":
+            raise UserDeniedError(f"Tool: {self.__class__.__name__} Details: {details}")

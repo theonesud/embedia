@@ -1,0 +1,101 @@
+[build-system]
+requires = ["hatchling >= 1.13.0"]
+build-backend = "hatchling.build"
+
+
+[project]
+name = "embedia"
+description = "Create LLM-powered webapps with ease"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { file = "LICENSE" }
+authors = [{ name = "Sudhanshu Passi", email = "sudhanshupassi@gmail.com" }]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Web Environment",
+    "Framework :: AsyncIO",
+    "Framework :: FastAPI",
+    "Framework :: Pydantic :: 2",
+    "Framework :: Pydantic :: 1",
+    "Framework :: Pydantic",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python",
+    "Topic :: Games/Entertainment",
+    "Topic :: Home Automation",
+    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Internet",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Human Machine Interfaces",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Software Development :: Code Generators",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development",
+    "Typing :: Typed",
+]
+dependencies = [
+    "pydantic>=1.7.4,!=1.8,!=1.8.1,!=2.0.0,!=2.0.1,!=2.1.0,<3.0.0",
+    "astor>=0.8",
+]
+dynamic = ["version"]
+
+
+[project.urls]
+Homepage = "https://embedia.ai/"
+Documentation = "https://embedia.ai/docs"
+Repository = "https://github.com/Embedia-ai/embedia"
+
+
+[tool.hatch.version]
+path = "embedia/__init__.py"
+
+
+[tool.mypy]
+strict = true
+
+
+[tool.pytest.ini_options]
+addopts = ["--strict-config", "--strict-markers", "--capture=no"]
+
+
+[tool.coverage.run]
+parallel = true
+source = ["tests", "embedia"]
+
+
+[tool.ruff]
+select = [
+    "E", # pycodestyle errors
+    "W", # pycodestyle warnings
+    "F", # pyflakes
+    "I", # isort
+    "C", # flake8-comprehensions
+    "B", # flake8-bugbear
+]
+ignore = [
+    "E501", # line too long, handled by black
+    "B027", # empty method in an abstract base class, but has no abstract decorator
+    "C901", # function is too complex
+]
+
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
+"embedia/core/chatllm.py" = ["B024"]
+
+[tool.ruff.isort]
+known-third-party = ["embedia", "pydantic", "astor"]

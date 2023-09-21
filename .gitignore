@@ -6,3 +6,5 @@ ignore/
 .coverage
 temp/
 htmlcov/
+env/
+.ruff_cache/

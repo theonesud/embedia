@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  Create LLM-powered webapps with ease
+  Make LLM-powered webapps with ease
 </p>
 
 <p align="center">
@@ -17,18 +17,24 @@
 </p>
 <br/>
 
-### Webapps you can create using Embedia
+## Which webapps can be created using Embedia?
 
-- Chatbots (like ChatGPT) with a permanent memory that can correlate information across multiple chats or access the internet
-- Chatbots with a specific personality (or a combination of personalities)
-- Natural language search over a set of documents / webpages / datasets using Retrieval Augmented Generation (RAG)
-- Customer support bots with access to the FAQs that can guide the user in the right direction
-- Retrieval Augmented Generation (RAG) based recommendation / clustering systems
-- AI Agents that work with you to solve problems
-- Autonomous AI Agents that can mindfully use the tools you provide
-- Entire SAAS products that use LLMs to solve a specific problem
+- **Chatbots (like ChatGPT)** with feature like:
+  - permanent memory
+  - access to the web search
+  - correlations between multiple chats
+  - specific personality (or a combination of personalities)
+- **Natural language search** (powered by Retrieval Augmented Generation) over:
+  - user uploaded files
+  - entire websites
+  - custom large datasets
+- **AI Agents** that can:
+  - work with you to solve complex problems
+  - autonomously run predefined code with custom parameters based on
+    conversation context
+- **Entire SAAS products** that use LLMs to solve a specific problem
 
-### Why choose Embedia?:
+## Why choose Embedia?
 
 - _**Developer friendly**_: Easy to follow documentation, IntelliSense enabled
 - _**Pre-defined common AI Agents and Tools**_
@@ -40,12 +46,12 @@
 - _**Lightweight**_: Has very few dependencies and a tiny package size
 - _**Small dev team**_ with a clear focus on developer experience and scalability
 
-### How to use it?
+## How to use it?
 
 - You'll need `Python 3.8` or higher to use this library
 - Install using `pip install embedia`
 
-<b>Step 1: Define your Tokenizer class:</b>
+### Step 1: Define your Tokenizer class
 
 ```python
 import tiktoken
@@ -56,7 +62,7 @@ class OpenAITokenizer(Tokenizer):
         return tiktoken.encoding_for_model("gpt-3.5-turbo").encode(text)
 ```
 
-<b>Step 2: Define your ChatLLM class:</b>
+### Step 2: Define your ChatLLM class
 
 ```python
 import openai
@@ -76,7 +82,7 @@ class OpenAIChatLLM(ChatLLM):
         return completion.choices[0].message.content
 ```
 
-<b>Step 3: Run your AI Agent</b>
+### Step 3: Run your AI Agent
 
 ```python
 import asyncio
@@ -95,7 +101,7 @@ tool_user = ToolUser(chatllm=OpenAIChatLLM(), tools=[PythonInterpreter()])
 asyncio.run(tool_user(code))
 ```
 
-### Quick glance over the library internals
+## Quick glance over the library internals
 
 The core classes of Embedia are:
 
@@ -124,11 +130,11 @@ Helpers include:
 
 Learn about them more on our [documentation page](https://embedia.ai/docs)
 
-### How to contribute to the codebase?
+## How to contribute to the codebase?
 
 This library is under active and rapid development. We'd love your contributions to make it better. To get started, you can check out [contributing.md](./CONTRIBUTING.md)
 
-### Become a sponsor
+## Become a sponsor
 
 Recurring revenue sponsors will get benefits like:
 
@@ -136,10 +142,10 @@ Recurring revenue sponsors will get benefits like:
 - Early access to Embedia's SAAS products
 - Visibility on our website and social media
 
-### Partner with us
+## Partner with us
 
 We'd love to partner with companies and libraries in the AI and web-dev ecosystem. If you'd like to get in touch, we're always active on our [Discord server](https://discord.gg/aQa53fRdXx).
 
-### License
+## License
 
 Copyright - Sudhanshu Passi, 2023 under the the terms of the [Apache 2.0 license](./LICENSE)

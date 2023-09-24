@@ -2,14 +2,14 @@ import asyncio
 
 import pytest
 from dotenv import load_dotenv
-from embedia.tools import Terminal
+from embedia.tools import TerminalTool
 
 load_dotenv()
 
 
 @pytest.mark.asyncio
 async def test_bash_tool():
-    bash_shell = Terminal()
+    bash_shell = TerminalTool()
     output = await bash_shell("ls -l", timeout=5)
 
     assert isinstance(output.output, str)
@@ -20,7 +20,7 @@ async def test_bash_tool():
 
 @pytest.mark.asyncio
 async def test_bash_tool_timeout():
-    bash_shell = Terminal()
+    bash_shell = TerminalTool()
 
     with pytest.raises(asyncio.TimeoutError):
         await bash_shell("sleep 10", timeout=1)
@@ -28,7 +28,7 @@ async def test_bash_tool_timeout():
 
 @pytest.mark.asyncio
 async def test_bash_tool_incorrect_command():
-    bash_shell = Terminal()
+    bash_shell = TerminalTool()
 
     output = await bash_shell("asdwadawdd")
 
@@ -40,7 +40,7 @@ async def test_bash_tool_incorrect_command():
 
 @pytest.mark.asyncio
 async def test_bash_tool_different_shell():
-    bash_shell = Terminal()
+    bash_shell = TerminalTool()
 
     output = await bash_shell("ps -p $$", timeout=5, executable="/bin/bash")
 

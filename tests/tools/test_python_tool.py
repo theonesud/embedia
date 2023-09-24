@@ -1,12 +1,12 @@
 import asyncio
 
 import pytest
-from embedia.tools import PythonInterpreter
+from embedia.tools import PythonInterpreterTool
 
 
 @pytest.mark.asyncio
 async def test_python_tool():
-    python_shell = PythonInterpreter()
+    python_shell = PythonInterpreterTool()
     output = await python_shell(
         """import os
 
@@ -33,14 +33,14 @@ count_lines_of_code(current_directory)"""
 
 @pytest.mark.asyncio
 async def test_python_tool_timeout():
-    python_shell = PythonInterpreter()
+    python_shell = PythonInterpreterTool()
     with pytest.raises(asyncio.TimeoutError):
         await python_shell("import time; time.sleep(10)", timeout=1)
 
 
 @pytest.mark.asyncio
 async def test_python_tool_incorrect_command():
-    python_shell = PythonInterpreter()
+    python_shell = PythonInterpreterTool()
 
     output = await python_shell('printsss("asdafas")')
 

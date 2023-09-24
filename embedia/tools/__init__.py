@@ -1,16 +1,16 @@
 from .fileops import (
-    FileAppend,
-    FileCopy,
-    FileDelete,
-    FileFolderExists,
-    FileFolderMove,
-    FileRead,
-    FileWrite,
-    FolderCopy,
-    FolderCreate,
-    FolderDelete,
-    FolderList,
-    FolderSearch,
+    FileAppendTool,
+    FileCopyTool,
+    FileDeleteTool,
+    FileFolderExistsTool,
+    FileFolderMoveTool,
+    FileReadTool,
+    FileWriteTool,
+    FolderCopyTool,
+    FolderCreateTool,
+    FolderDeleteTool,
+    FolderListTool,
+    FolderSearchTool,
 )
-from .python import PythonInterpreter
-from .terminal import Terminal
+from .python import PythonInterpreterTool
+from .terminal import TerminalTool

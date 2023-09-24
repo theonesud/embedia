@@ -1,1 +1,1 @@
-from .tooluser import ToolUser
+from .tooluser import ToolUserAgent

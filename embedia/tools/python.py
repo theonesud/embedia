@@ -9,7 +9,7 @@ from embedia.core.tool import Tool
 from embedia.schema.tool import ParamDocumentation, ToolDocumentation, ToolReturn
 
 
-class PythonInterpreter(Tool):
+class PythonInterpreterTool(Tool):
     """Runs the provided python code in the current interpreter
 
     Parameters

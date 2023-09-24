@@ -5,7 +5,7 @@ from embedia.core.tool import Tool
 from embedia.schema.tool import ParamDocumentation, ToolDocumentation, ToolReturn
 
 
-class FileRead(Tool):
+class FileReadTool(Tool):
     """Read a file.
 
     Parameters
@@ -42,7 +42,7 @@ class FileRead(Tool):
             return ToolReturn(output=f.read(), exit_code=0)
 
 
-class FileWrite(Tool):
+class FileWriteTool(Tool):
     """Write to a file, overwrites if it exists.
 
     Parameters
@@ -84,7 +84,7 @@ class FileWrite(Tool):
             return ToolReturn(output=f.write(content), exit_code=0)
 
 
-class FileAppend(Tool):
+class FileAppendTool(Tool):
     """Append to a file, create if it doesn't exist.
 
     Parameters
@@ -126,7 +126,7 @@ class FileAppend(Tool):
             return ToolReturn(output=f.write(content), exit_code=0)
 
 
-class FileDelete(Tool):
+class FileDeleteTool(Tool):
     """Delete a file. Asks for confirmation before deleting.
 
     Parameters
@@ -160,7 +160,7 @@ class FileDelete(Tool):
         return ToolReturn(output=os.remove(file_path), exit_code=0)
 
 
-class FileFolderMove(Tool):
+class FileFolderMoveTool(Tool):
     """Move a file or a folder.
 
     Parameters
@@ -196,7 +196,7 @@ class FileFolderMove(Tool):
         return ToolReturn(output=os.rename(src, destination), exit_code=0)
 
 
-class FileCopy(Tool):
+class FileCopyTool(Tool):
     """Copy a file, overwrites if destination exists.
 
     Parameters
@@ -232,7 +232,7 @@ class FileCopy(Tool):
         return ToolReturn(output=shutil.copy2(file_path, destination), exit_code=0)
 
 
-class FileFolderExists(Tool):
+class FileFolderExistsTool(Tool):
     """Check if a file or folder exists.
 
     Parameters
@@ -263,7 +263,7 @@ class FileFolderExists(Tool):
         return ToolReturn(output=os.path.exists(path), exit_code=0)
 
 
-class FolderSearch(Tool):
+class FolderSearchTool(Tool):
     """Search for a file in a folder and its subfolders.
 
     Parameters
@@ -297,7 +297,7 @@ class FolderSearch(Tool):
         return ToolReturn(output=None, exit_code=1)
 
 
-class FolderCreate(Tool):
+class FolderCreateTool(Tool):
     """Create a folder, ignores if it exists.
 
     Parameters
@@ -328,7 +328,7 @@ class FolderCreate(Tool):
         return ToolReturn(output=os.makedirs(folder, exist_ok=True), exit_code=0)
 
 
-class FolderDelete(Tool):
+class FolderDeleteTool(Tool):
     """Delete a folder and its contents, ignores if it doesn't exist. Asks for confirmation before deleting.
 
     Parameters
@@ -365,7 +365,7 @@ class FolderDelete(Tool):
         return ToolReturn(output=shutil.rmtree(folder, ignore_errors=True), exit_code=0)
 
 
-class FolderCopy(Tool):
+class FolderCopyTool(Tool):
     """Copy a folder.
 
     Parameters
@@ -401,7 +401,7 @@ class FolderCopy(Tool):
         return ToolReturn(output=shutil.copytree(folder, destination), exit_code=0)
 
 
-class FolderList(Tool):
+class FolderListTool(Tool):
     """List the contents of a folder.
 
     Parameters

@@ -47,7 +47,7 @@ class OpenAILLM(LLM):
 
     async def _complete(self, prompt: str) -> str:
         completion = await openai.Completion.acreate(
-            model="text-davinci-003",
+            model="gpt-3.5-turbo-instruct",
             prompt=prompt,
             max_tokens=500,
             temperature=0.1,
@@ -203,7 +203,7 @@ class OpenAILLMOptional1(LLM):
 
     async def _complete(self, prompt: str) -> str:
         completion = await openai.Completion.acreate(
-            model="text-davinci-003",
+            model="gpt-3.5-turbo-instruct",
             prompt=prompt,
             max_tokens=500,
             temperature=0.1,
@@ -217,7 +217,7 @@ class OpenAILLMOptional2(LLM):
 
     async def _complete(self, prompt: str) -> str:
         completion = await openai.Completion.acreate(
-            model="text-davinci-003",
+            model="gpt-3.5-turbo-instruct",
             prompt=prompt,
             max_tokens=500,
             temperature=0.1,
@@ -231,7 +231,7 @@ class OpenAILLMOptional3(LLM):
 
     async def _complete(self, prompt: str) -> str:
         completion = await openai.Completion.acreate(
-            model="text-davinci-003",
+            model="gpt-3.5-turbo-instruct",
             prompt=prompt,
             max_tokens=500,
             temperature=0.1,

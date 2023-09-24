@@ -87,8 +87,8 @@ class OpenAIChatLLM(ChatLLM):
 ```python
 import asyncio
 from embedia import Persona
-from embedia.agents import ToolUser
-from embedia.tools import PythonInterpreter
+from embedia.agents import ToolUserAgent
+from embedia.tools import PythonInterpreterTool
 
 python_coder = OpenAIChatLLM()
 asyncio.run(python_coder.set_system_prompt(
@@ -97,7 +97,7 @@ asyncio.run(python_coder.set_system_prompt(
 code = asyncio.run(python_coder(
     'Count number of lines of python code in the current directory'
 ))
-tool_user = ToolUser(chatllm=OpenAIChatLLM(), tools=[PythonInterpreter()])
+tool_user = ToolUserAgent(chatllm=OpenAIChatLLM(), tools=[PythonInterpreterTool()])
 asyncio.run(tool_user(code))
 ```
 
@@ -106,7 +106,7 @@ asyncio.run(tool_user(code))
 The core classes of Embedia are:
 
 - `Tokenizer`: A class that converts text into tokens
-- `LLM`: A class that interfaces with a next token generation type large language model (eg: text-davinci-003)
+- `LLM`: A class that interfaces with a next token generation type large language model (eg: gpt-3.5-turbo-instruct)
 - `ChatLLM`: A class that interfaces with a chat type large language model (eg: gpt-3.5-turbo)
 - `Tool`: A class that can convert any python function into a tool that can be used by the Agent
 - `EmbeddingModel`: A class that interfaces with the Embedding Model (eg: text-embedding-ada-002)
@@ -114,13 +114,13 @@ The core classes of Embedia are:
 
 Pre-defined Tools include:
 
-- `PythonInterpreter`: A tool that can run python code in the python interpreter
-- `Terminal`: A tool that can run shell commands in the terminal
+- `PythonInterpreterTool`: A tool that can run python code in the python interpreter
+- `TerminalTool`: A tool that can run shell commands in the terminal
 - 10+ file operations tools: For reading, writing, copying, moving, deleting files / folders
 
 Pre-defined Agents include:
 
-- `ToolUser`: LLM powered System-1 thinker that can run tools in a loop by reading their docstrings
+- `ToolUserAgent`: LLM powered System-1 thinker that can run tools in a loop by reading their docstrings
 
 Helpers include:
 

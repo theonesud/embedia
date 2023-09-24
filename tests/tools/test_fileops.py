@@ -3,18 +3,18 @@ import shutil
 
 import pytest
 from embedia.tools import (
-    FileAppend,
-    FileCopy,
-    FileDelete,
-    FileFolderExists,
-    FileFolderMove,
-    FileRead,
-    FileWrite,
-    FolderCopy,
-    FolderCreate,
-    FolderDelete,
-    FolderList,
-    FolderSearch,
+    FileAppendTool,
+    FileCopyTool,
+    FileDeleteTool,
+    FileFolderExistsTool,
+    FileFolderMoveTool,
+    FileReadTool,
+    FileWriteTool,
+    FolderCopyTool,
+    FolderCreateTool,
+    FolderDeleteTool,
+    FolderListTool,
+    FolderSearchTool,
 )
 
 
@@ -25,23 +25,23 @@ async def test_fileops(monkeypatch):
     shutil.rmtree("temp", ignore_errors=True)
     os.makedirs("temp")
 
-    foldercreate = FolderCreate()
-    filewrite = FileWrite()
+    foldercreate = FolderCreateTool()
+    filewrite = FileWriteTool()
 
-    filecopy = FileCopy()
-    foldercopy = FolderCopy()
-    filemove = FileFolderMove()
+    filecopy = FileCopyTool()
+    foldercopy = FolderCopyTool()
+    filemove = FileFolderMoveTool()
 
-    fileexists = FileFolderExists()
-    foldersearch = FolderSearch()
-    folderlist = FolderList()
+    fileexists = FileFolderExistsTool()
+    foldersearch = FolderSearchTool()
+    folderlist = FolderListTool()
 
-    fileappend = FileAppend()
+    fileappend = FileAppendTool()
 
-    fileread = FileRead()
+    fileread = FileReadTool()
 
-    filedelete = FileDelete()
-    folderdelete = FolderDelete()
+    filedelete = FileDeleteTool()
+    folderdelete = FolderDeleteTool()
 
     with pytest.raises(FileNotFoundError):
         await fileread("temp/unknown.txt")

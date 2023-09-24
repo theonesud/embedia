@@ -14,7 +14,7 @@ from embedia.utils.pubsub import publish_event
 from embedia.utils.typechecking import check_min_val, check_type
 
 
-class ToolUser(Tool):
+class ToolUserAgent(Tool):
     """An agent that uses the `available tools` to answer the `Main Question`.
 
     It runs the following loop internally:
@@ -46,7 +46,7 @@ class ToolUser(Tool):
         max_steps: int = 10,
         max_duration: int = 60,
     ) -> None:
-        """Constructor for the `ToolUser` class.
+        """Constructor for the `ToolUserAgent` class.
 
         Parameters
         ----------

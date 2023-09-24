@@ -5,7 +5,7 @@ from embedia.core.tool import Tool
 from embedia.schema.tool import ParamDocumentation, ToolDocumentation, ToolReturn
 
 
-class Terminal(Tool):
+class TerminalTool(Tool):
     def __init__(self):
         super().__init__(
             docs=ToolDocumentation(

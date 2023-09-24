@@ -13,7 +13,7 @@ from embedia.utils.typechecking import get_num_params
 
 class ChatLLM(ABC):
     """Abstract class for chat based LLMs (eg: gpt-3.5-turbo).
-    For LLMs with a next token generation interface (eg: gpt-3.5-turbo-instruct), use `LLM`.
+    For LLMs with a next token generation interface (eg: text-davinci-003), use `LLM`.
 
     Methods
     -------

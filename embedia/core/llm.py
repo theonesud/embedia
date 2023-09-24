@@ -8,7 +8,7 @@ from embedia.utils.tokens import check_token_length
 
 
 class LLM(ABC):
-    """Abstract class for next token generation based LLMs (eg: gpt-3.5-turbo-instruct).
+    """Abstract class for next token generation based LLMs (eg: text-davinci-003).
     For LLMs with a chat interface (eg: gpt-3.5-turbo), use `ChatLLM`.
 
     Methods

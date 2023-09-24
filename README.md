@@ -106,7 +106,7 @@ asyncio.run(tool_user(code))
 The core classes of Embedia are:
 
 - `Tokenizer`: A class that converts text into tokens
-- `LLM`: A class that interfaces with a next token generation type large language model (eg: gpt-3.5-turbo-instruct)
+- `LLM`: A class that interfaces with a next token generation type large language model (eg: text-davinci-003)
 - `ChatLLM`: A class that interfaces with a chat type large language model (eg: gpt-3.5-turbo)
 - `Tool`: A class that can convert any python function into a tool that can be used by the Agent
 - `EmbeddingModel`: A class that interfaces with the Embedding Model (eg: text-embedding-ada-002)

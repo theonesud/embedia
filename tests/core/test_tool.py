@@ -5,6 +5,7 @@ from tests.core.definitions import (
     PrintTool,
     PrintToolBroken1,
     PrintToolBroken2,
+    PrintToolBroken3,
     SleepTool,
 )
 
@@ -56,5 +57,15 @@ async def test_print_tool_error(monkeypatch):
     error_str = error_str.replace('"', "'")
     assert (
         "Func: PrintToolBroken2._run output expected type: <class 'embedia.schema.tool.ToolReturn'>"
+        in error_str
+    )
+
+    printtool = PrintToolBroken3()
+    with pytest.raises(NotImplementedError) as e:
+        await printtool("Hello World")
+    error_str = str(e)
+    error_str = error_str.replace('"', "'")
+    assert (
+        "Please call `Tool` init method from your subclass init method with the Tool's documentation"
         in error_str
     )

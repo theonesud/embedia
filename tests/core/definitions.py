@@ -303,6 +303,22 @@ class OpenAIChatLLMOptional4(ChatLLM):
         return completion.choices[0].message.content
 
 
+class OpenAIChatLLMBroken(ChatLLM):
+    def __init__(self):
+        pass
+
+    async def _reply(self) -> str:
+        completion = await openai.ChatCompletion.acreate(
+            model="gpt-3.5-turbo",
+            temperature=0.1,
+            max_tokens=500,
+            messages=[
+                {"role": msg.role, "content": msg.content} for msg in self.chat_history
+            ],
+        )
+        return completion.choices[0].message.content
+
+
 class PrintToolBroken1(Tool):
     def __init__(self):
         super().__init__(
@@ -334,6 +350,16 @@ class PrintToolBroken2(Tool):
                 ],
             )
         )
+
+    async def _run(self, text: str):
+        await self.human_confirmation(details={"text": text})
+        print(text)
+        return "done"
+
+
+class PrintToolBroken3(Tool):
+    def __init__(self):
+        pass
 
     async def _run(self, text: str):
         await self.human_confirmation(details={"text": text})

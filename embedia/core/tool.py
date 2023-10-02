@@ -75,7 +75,6 @@ class Tool(ABC):
             raise NotImplementedError(
                 "Please call `Tool` init method from your subclass init method with the Tool's documentation"
             ) from e
-        # TODO: add testcase for this
 
         publish_event(
             Event.ToolStart,

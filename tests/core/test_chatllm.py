@@ -11,6 +11,7 @@ from tests.core.definitions import (
     OpenAIChatLLMOptional2,
     OpenAIChatLLMOptional3,
     OpenAIChatLLMOptional4,
+    OpenAIChatLLMBroken,
     OpenAILLM,
 )
 
@@ -75,3 +76,11 @@ async def test_chatllm_error():
     reply = await chatllm("How to merge two dataframes?")
     assert isinstance(reply, str)
     assert len(reply) > 0
+
+    chatllm = OpenAIChatLLMBroken()
+    with pytest.raises(NotImplementedError) as e:
+        reply = await chatllm("How to merge two dataframes?")
+    assert (
+        "Please call `ChatLLM` init method from your subclass init method to initialize the chat history"
+        in str(e)
+    )

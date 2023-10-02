@@ -139,7 +139,6 @@ class ChatLLM(ABC):
             raise NotImplementedError(
                 "Please call `ChatLLM` init method from your subclass init method to initialize the chat history"
             ) from e
-        # TODO: add testcase for this
         message = Message(role=MessageRole.user, content=prompt)
         self.chat_history.append(message)
         if self.llm:

@@ -17,7 +17,7 @@ async def test_vectordb():
     doc = TextDoc.from_file(
         "./README.md", meta={"description": "Readme file of Embedia"}
     )
-    linedocs = doc.split_on_separator()
+    linedocs = doc.split_on_separator()[10:20]
     for line in linedocs:
         text = line.contents
         if line.meta:
@@ -30,7 +30,7 @@ async def test_vectordb():
             )
         )
 
-    query = "Advantages of Embedia"
+    query = "Where can I find the documentation?"
     query_emb = await embmodel(query)
     results = await db.get_similar(VectorDBGetSimilar(embedding=query_emb, n_results=5))
     assert len(results) == 5

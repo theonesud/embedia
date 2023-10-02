@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Union
 
 from embedia.schema.pubsub import Event
 from embedia.schema.tool import ToolDocumentation, ToolReturn
@@ -21,7 +22,7 @@ class Tool(ABC):
     - `docs` (`ToolDocumentation`): The documentation for the tool.
     """
 
-    def __init__(self, docs: ToolDocumentation) -> None:
+    def __init__(self, docs: Union[ToolDocumentation, dict]) -> None:
         """Constructor for the `Tool` class.
 
         Parameters

@@ -17,88 +17,108 @@
 </p>
 <br/>
 
+## What is Embedia?
+
+Embedia is a framework for making LLM-powered webapps with ease.
+
+With `Python 3.8` or higher set up, install Embedia using:
+
+```bash
+pip install embedia
+```
+
 ## Which webapps can be created using Embedia?
 
-- **Chatbots (like ChatGPT)** with feature like:
-  - permanent memory
-  - access to the web search
-  - correlations between multiple chats
-  - specific personality (or a combination of personalities)
-- **Natural language search** (powered by Retrieval Augmented Generation) over:
-  - user uploaded files
-  - entire websites
-  - custom large datasets
-- **AI Agents** that can:
-  - work with you to solve complex problems
-  - autonomously run predefined code with custom parameters based on
-    conversation context
-- **Entire SAAS products** that use LLMs to solve a specific problem
+Embedia is built keeping in mind the common as well as advanced usecases of LLMs
+in webapps.
+
+Some advanced usecases include:
+
+- **AI Agents** that can **run predefined code** with **custom parameters**
+  based on **conversation context**
+- **Natural language search** over files, websites, or datasets powered by
+  **Retrieval Augmented Generation**
+- **Coding assistants** that can **translate, write, run, test, and debug code**
+- All the **functionalities of OpenAI ChatGPT**, but with an **opensource LLM**
+  like llama-2
+
+Some common usecases include:
+
+- Chatbots with a personality (similar to
+  [character.ai](https://beta.character.ai/))
+- A panel discussion between multiple personalities. These multiple
+  personalities can also be internal to a single complex chatbot.
+- Language translators, improvers, and correctors
+- Text summarizers
+- Keyword extractors
+- Sentiment analyzers
+- Social media content generators
+- Creative writing assistants
+- Specific planner for a complex task
+- Text based adventure games
 
 ## Why choose Embedia?
 
 - _**Developer friendly**_: Easy to follow documentation, IntelliSense enabled
 - _**Pre-defined common AI Agents and Tools**_
-- _**LLM agnostic**_: Connect any LLM you want (GPT-4, Bard, Llama, Custom-trained, etc)
-- _**Vector DB agnostic**_: Connect any vector DB you want (Weaviate, Pinecone, Chroma, etc)
-- _**Graph DB agnostic**_: Connect any graph DB you want (Neo4j, Nebula, etc)
+- _**LLM agnostic**_: Our universal APIs are LLM independent, it can be used
+  with any LLM - whether you're using a service provider like OpenAI, Anthropic,
+  Google or have deployed your own open-source model like Llama-2, Falcon, or
+  Vicuna.
+- _**DB agnostic**_: Our APIs are also independent of what Vector database (or
+  Graph Database) you want to connect to your web application. Your vector
+  database might be managed by a cloud provider like Weaviate, Pinecone or
+  ElasticSearch. Or it might be hosted on a docker container besides your
+  webapp.
 - _**Pub-sub based event system**_ to build highly customizable workflows
-- _**Async**_: Built from ground up to be async
-- _**Lightweight**_: Has very few dependencies and a tiny package size
-- _**Small dev team**_ with a clear focus on developer experience and scalability
+- _**Async**_: Built from ground up to be asynchronus. It works out of the box
+  with asynchronomous web frameworks like FastAPI, Starlette, Sanic, etc.
+- _**Lightweight**_: Keeping production use-cases in mind, we have kept the
+  library's dependencies to a minimum. This makes it a very lightweight
+  component in your webstack.
+- _**Small dev team**_ with a clear focus on developer experience and
+  scalability
 
 ## How to use it?
 
-- You'll need `Python 3.8` or higher to use this library
-- Install using `pip install embedia`
-
-### Step 1: Define your Tokenizer class
-
-```python
-import tiktoken
-from embedia import Tokenizer
-
-class OpenAITokenizer(Tokenizer):
-    async def _tokenize(self, text):
-        return tiktoken.encoding_for_model("gpt-3.5-turbo").encode(text)
-```
-
-### Step 2: Define your ChatLLM class
+### Step 1: Connect your LLM
 
 ```python
 import openai
 from embedia import ChatLLM
 
+
 class OpenAIChatLLM(ChatLLM):
     def __init__(self):
-        super().__init__(tokenizer=OpenAITokenizer())
-        openai.api_key = "YOUR-API-KEY"
+        super().__init__()
+        openai.api_key = "OPENAI_API_KEY"
 
-    async def _reply(self):
+    async def _reply(self, prompt):
         completion = await openai.ChatCompletion.acreate(
             model="gpt-3.5-turbo",
-            messages=[{'role': msg.role, 'content': msg.content}
-                      for msg in self.chat_history],
+            temperature=0.1,
+            messages=[
+                {"role": msg.role, "content": msg.content} for msg in self.chat_history
+            ],
         )
         return completion.choices[0].message.content
 ```
 
-### Step 3: Run your AI Agent
+### Step 2: Use your AI Agent
 
 ```python
 import asyncio
-from embedia import Persona
 from embedia.agents import ToolUserAgent
-from embedia.tools import PythonInterpreterTool
+from embedia.tools import PythonInterpreterTool, TerminalTool
 
-python_coder = OpenAIChatLLM()
-asyncio.run(python_coder.set_system_prompt(
-    Persona.CodingLanguageExpert.format(language='Python')
-))
-code = asyncio.run(python_coder(
-    'Count number of lines of python code in the current directory'
-))
-tool_user = ToolUserAgent(chatllm=OpenAIChatLLM(), tools=[PythonInterpreterTool()])
-asyncio.run(tool_user(code))
+# Create an AI agent and give it Tools
+ai_agent = ToolUserAgent(
+    chatllm=OpenAIChatLLM(), tools=[PythonInterpreterTool(), TerminalTool()]
+)
+
+# Ask the AI agent to solve a problem for you
+question = "Find the number of lines of code in main.py"
+asyncio.run(ai_agent(question))
 ```
 
 ## Quick glance over the library internals

@@ -6,7 +6,7 @@ from embedia.schema.tool import ParamDocumentation, ToolDocumentation, ToolRetur
 
 
 class FileReadTool(Tool):
-    """Read a file.
+    """Reads a file and returns its contents.
 
     Parameters
     ----------
@@ -43,7 +43,7 @@ class FileReadTool(Tool):
 
 
 class FileWriteTool(Tool):
-    """Write to a file, overwrites if it exists.
+    """Writes the provided contents to a file, overwrites if it.
 
     Parameters
     ----------
@@ -85,7 +85,7 @@ class FileWriteTool(Tool):
 
 
 class FileAppendTool(Tool):
-    """Append to a file, create if it doesn't exist.
+    """Appends the provided contents to a file, creates if it doesn't exist.
 
     Parameters
     ----------
@@ -127,7 +127,7 @@ class FileAppendTool(Tool):
 
 
 class FileDeleteTool(Tool):
-    """Delete a file. Asks for confirmation before deleting.
+    """Deletes the requested file. Asks for confirmation before deleting.
 
     Parameters
     ----------
@@ -161,7 +161,8 @@ class FileDeleteTool(Tool):
 
 
 class FileFolderMoveTool(Tool):
-    """Move a file or a folder.
+    """Moves a file or a folder from one location to another.
+    Can also be used to rename a file or folder.
 
     Parameters
     ----------
@@ -197,7 +198,7 @@ class FileFolderMoveTool(Tool):
 
 
 class FileCopyTool(Tool):
-    """Copy a file, overwrites if destination exists.
+    """Copies a file from one location to another, overwrites if destination exists.
 
     Parameters
     ----------
@@ -264,12 +265,17 @@ class FileFolderExistsTool(Tool):
 
 
 class FolderSearchTool(Tool):
-    """Search for a file in a folder and its subfolders.
+    """Searches for the location of a requested file in a folder and its subfolders.
 
     Parameters
     ----------
     - `folder` (str): The path to the folder to be searched.
     - `filename` (str): The name of the file to be searched for.
+
+    Returns
+    -------
+    - `output` (str): The path to the file if found, None if not found.
+    - `exit_code` (int): 0 if success, 1 if failure.
     """
 
     def __init__(self):
@@ -298,7 +304,7 @@ class FolderSearchTool(Tool):
 
 
 class FolderCreateTool(Tool):
-    """Create a folder, ignores if it exists.
+    """Creates a folder, ignores if it exists.
 
     Parameters
     ----------
@@ -329,7 +335,8 @@ class FolderCreateTool(Tool):
 
 
 class FolderDeleteTool(Tool):
-    """Delete a folder and its contents, ignores if it doesn't exist. Asks for confirmation before deleting.
+    """Deletes the requested folder and its contents, ignores if it doesn't exist.
+    Asks for confirmation before deleting.
 
     Parameters
     ----------
@@ -366,7 +373,7 @@ class FolderDeleteTool(Tool):
 
 
 class FolderCopyTool(Tool):
-    """Copy a folder.
+    """Copies a folder from one location to another.
 
     Parameters
     ----------
@@ -402,7 +409,7 @@ class FolderCopyTool(Tool):
 
 
 class FolderListTool(Tool):
-    """List the contents of a folder.
+    """Lists the contents of the requested folder.
 
     Parameters
     ----------

@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "embedia"
-description = "Create LLM-powered webapps with ease"
+description = "Make LLM-powered webapps with ease"
 readme = "README.md"
 requires-python = ">=3.8"
 license = { file = "LICENSE" }

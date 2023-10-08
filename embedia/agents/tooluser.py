@@ -53,7 +53,7 @@ class ToolUserAgent(Tool):
         - `chatllm` (`ChatLLM`): The chatllm that is used to - choose the appropriate tool, choose the tool arguments, and choose the next step.
         - `tools` (List[`Tool`]): The tools available to the agent.
         - `max_steps` (int, optional): The maximum number of steps the agent can take. Defaults to 10.
-        - `max_duration` (int, optional): The maximum duration of the agent in seconds. Defaults to 60.
+        - `max_duration` (int, optional): The maximum duration (in seconds) the agent is allowed to run. Defaults to 60.
         """
         super().__init__(
             docs=ToolDocumentation(

@@ -23,7 +23,7 @@ class FileReadTool(Tool):
         super().__init__(
             docs=ToolDocumentation(
                 name="File Read",
-                desc="Read a file",
+                desc="Reads a file and returns its contents.",
                 params=[
                     ParamDocumentation(
                         name="file_path",
@@ -61,7 +61,7 @@ class FileWriteTool(Tool):
         super().__init__(
             docs=ToolDocumentation(
                 name="File Write",
-                desc="Write to a file, overwrites if it exists",
+                desc="Writes the provided contents to a file, overwrites if it.",
                 params=[
                     ParamDocumentation(
                         name="file_path",
@@ -103,7 +103,7 @@ class FileAppendTool(Tool):
         super().__init__(
             docs=ToolDocumentation(
                 name="File Append",
-                desc="Append to a file, create if it doesn't exist",
+                desc="Appends the provided contents to a file, creates if it doesn't exist.",
                 params=[
                     ParamDocumentation(
                         name="file_path",
@@ -143,7 +143,7 @@ class FileDeleteTool(Tool):
         super().__init__(
             docs=ToolDocumentation(
                 name="File Delete",
-                desc="Delete a file",
+                desc="Deletes the requested file. Asks for confirmation before deleting.",
                 params=[
                     ParamDocumentation(
                         name="file_path",
@@ -179,7 +179,7 @@ class FileFolderMoveTool(Tool):
         super().__init__(
             docs=ToolDocumentation(
                 name="File Folder Move",
-                desc="Move a file or a folder",
+                desc="Moves a file or a folder from one location to another. Can also be used to rename a file or folder.",
                 params=[
                     ParamDocumentation(
                         name="src",
@@ -215,7 +215,7 @@ class FileCopyTool(Tool):
         super().__init__(
             docs=ToolDocumentation(
                 name="File Copy",
-                desc="Copy a file, overwrites if destination exists",
+                desc="Copies a file from one location to another, overwrites if destination exists.",
                 params=[
                     ParamDocumentation(
                         name="file_path",
@@ -250,7 +250,7 @@ class FileFolderExistsTool(Tool):
         super().__init__(
             docs=ToolDocumentation(
                 name="File Folder Exists",
-                desc="Check if a file or folder exists",
+                desc="Check if a file or folder exists.",
                 params=[
                     ParamDocumentation(
                         name="path",
@@ -282,7 +282,7 @@ class FolderSearchTool(Tool):
         super().__init__(
             docs=ToolDocumentation(
                 name="Folder Search",
-                desc="Search for a file in a folder and its subfolders",
+                desc="Searches for the location of a requested file in a folder and its subfolders.",
                 params=[
                     ParamDocumentation(
                         name="folder",
@@ -320,7 +320,7 @@ class FolderCreateTool(Tool):
         super().__init__(
             docs=ToolDocumentation(
                 name="Folder Create",
-                desc="Create a folder, ignores if it exists",
+                desc="Creates a folder, ignores if it exists.",
                 params=[
                     ParamDocumentation(
                         name="folder",
@@ -352,7 +352,7 @@ class FolderDeleteTool(Tool):
         super().__init__(
             docs=ToolDocumentation(
                 name="Folder Delete",
-                desc="Delete a folder and its contents, ignores if it doesn't exist",
+                desc="Deletes the requested folder and its contents, ignores if it doesn't exist. Asks for confirmation before deleting.",
                 params=[
                     ParamDocumentation(
                         name="folder",
@@ -390,7 +390,7 @@ class FolderCopyTool(Tool):
         super().__init__(
             docs=ToolDocumentation(
                 name="Folder Copy",
-                desc="Copy a folder",
+                desc="Copies a folder from one location to another.",
                 params=[
                     ParamDocumentation(
                         name="folder",
@@ -425,7 +425,7 @@ class FolderListTool(Tool):
         super().__init__(
             docs=ToolDocumentation(
                 name="Folder List",
-                desc="List the contents of a folder",
+                desc="Lists the contents of the requested folder.",
                 params=[
                     ParamDocumentation(
                         name="folder",

@@ -10,10 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://discord.gg/aQa53fRdXx"><strong>Discord</strong></a> ·
-  <a href="https://embedia.ai/docs"><strong>Docs</strong></a> ·
-  <a href="https://embedia.ai/blog"><strong>Blog</strong></a> ·
-  <a href="https://twitter.com/Embedia_ai"><strong>Twitter</strong></a>
+  <a href="https://embedia-website-kohl.vercel.app/docs"><strong>Docs</strong></a>
 </p>
 <br/>
 

@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://embedia.ai">
-    <img src="https://embedia.ai/logo.png" height="64">
+    <img src="https://embedia-website-kohl.vercel.app/logo.png" height="64">
     <h3 align="center">Embedia</h3>
   </a>
 </p>

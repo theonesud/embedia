@@ -154,18 +154,6 @@ Learn about them more on our [documentation page](https://embedia.ai/docs)
 
 This library is under active and rapid development. We'd love your contributions to make it better. To get started, you can check out [contributing.md](./CONTRIBUTING.md)
 
-## Become a sponsor
-
-Recurring revenue sponsors will get benefits like:
-
-- Sponsored Screencasts with code
-- Early access to Embedia's SAAS products
-- Visibility on our website and social media
-
-## Partner with us
-
-We'd love to partner with companies and libraries in the AI and web-dev ecosystem. If you'd like to get in touch, we're always active on our [Discord server](https://discord.gg/aQa53fRdXx).
-
 ## License
 
 Copyright - Sudhanshu Passi, 2023 under the the terms of the [Apache 2.0 license](./LICENSE)

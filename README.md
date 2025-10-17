@@ -145,7 +145,7 @@ Helpers include:
 - `Persona`: An enum class containing pre-defined system prompts
 - `TextDoc`: A class used for dealing with text documents
 
-Learn about them more on our [documentation page](https://embedia.ai/docs)
+Learn about them more on our [documentation page](https://embedia-ai.vercel.app/docs)
 
 ## How to contribute to the codebase?
 

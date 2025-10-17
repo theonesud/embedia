@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://embedia-website-kohl.vercel.app/docs"><strong>Docs</strong></a>
+  <a href="https://embedia-ai.vercel.app/docs"><strong>Docs</strong></a>
 </p>
 <br/>
 

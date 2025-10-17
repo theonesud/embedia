@@ -55,9 +55,9 @@ dynamic = ["version"]
 
 
 [project.urls]
-Homepage = "https://embedia.ai/"
-Documentation = "https://embedia.ai/docs"
-Repository = "https://github.com/sdhnshu/embedia"
+Homepage = "https://embedia-ai.vercel.app/"
+Documentation = "https://embedia-ai.vercel.app/docs"
+Repository = "https://github.com/theonesud/embedia"
 
 
 [tool.hatch.version]
